@@ -1,0 +1,20 @@
+// Global SCSS styling
+// @see https://docs.nativescript.org/ui/styling
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+.font-awesome {
+    font-family: "Font Awesome 5 Free", "fa-solid-900";
+    font-weight: 900;
+}
+
+.font-awesome-regular {
+    font-family: "Font Awesome 5 Free", "fa-regular-400";
+    font-weight: 400;
+}
+
+.font-awesome-brands {
+    font-family: "Font Awesome 5 Brands", "fa-brands-400";
+    font-weight: 400;
+}

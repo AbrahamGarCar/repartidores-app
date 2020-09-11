@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "809034328621",
+    "firebase_url": "https://majalca-58d71.firebaseio.com",
+    "project_id": "majalca-58d71",
+    "storage_bucket": "majalca-58d71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:809034328621:android:953ad5241871400cd326a4",
+        "android_client_info": {
+          "package_name": "com.partnergrammer.majalca"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "809034328621-pvjkomcn88i4avsckk8qmsaqofjq3ril.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.partnergrammer.majalca",
+            "certificate_hash": "4d01dc23127d0e4fbcc9ce69f3b1f792b7100551"
+          }
+        },
+        {
+          "client_id": "809034328621-82106ie7mit6g17nt8607t4p3ipt1h6r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3eiQCO6o-gB-oNF4MMlSj3EHbh_KpAZ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "809034328621-82106ie7mit6g17nt8607t4p3ipt1h6r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
