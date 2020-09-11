@@ -118,13 +118,16 @@ export default {
 
                                                                     switch (this.reservation.step) {
                                                                         case 1:
-                                                                            this.$navigator.navigate('/reservation')
-                                                                            break;
-                                                                        case 2:
                                                                             this.$navigator.navigate('/ubications')
                                                                             break;
                                                                         case 2:
                                                                             this.$navigator.navigate('/information-payment')
+                                                                            break;
+                                                                        case 3:
+                                                                            this.$navigator.navigate('/paypal')
+                                                                            break;
+                                                                        case 4:
+                                                                            this.$navigator.navigate('/qr')
                                                                             break;
                                                                     
                                                                         default:
@@ -136,6 +139,10 @@ export default {
                                                                 }
                                                             })
                                                         })
+
+                if (this.reservation == null) {
+                    this.$navigator.navigate('/reservation')
+                }
             } catch (e) {
                 console.log(e)
             }

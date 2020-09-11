@@ -3,7 +3,7 @@
         <GridLayout rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
-                    <GridLayout rows="60, *, 20" columns="*">
+                    <GridLayout rows="60, *" columns="*">
                         <FlexboxLayout col="0" row="0" justifyContent="center" alignItems="center" flexDirection="column">
                             <Label text="Nombre del area" textWrap="true" />
                             <Label fontSize="20" text="Reservacion" textWrap="true" />
@@ -86,11 +86,8 @@
                             <StackLayout marginTop="10" width="90%">
                                 <TextField v-model="questions.question3" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Actividad" text="" />
                             </StackLayout>
-                        </StackLayout>
 
-                        <StackLayout row="2" col="0">
-                            <Button text="Hacer pago" @tap="makePayment" />
-                            
+                            <Button backgroundColor="black" color="white" text="Hacer pago" @tap="makePayment" />
                         </StackLayout>
                     </GridLayout>
                 </WrapLayout>
@@ -175,6 +172,7 @@ export default {
         },
 
         async makePayment(){
+            console.log('olis')
             try {
                 let response = await firebase.firestore.collection('reservations')
                                                         .where('user', '==', this.user.uid)
@@ -182,17 +180,22 @@ export default {
                                                         .get()
                                                         .then(query => {
                                                             query.forEach(async doc => {
+                                                                console.log(doc)
                                                                 await firebase.firestore.collection('reservations')
                                                                                         .doc(doc.id)
-                                                                                        .update({ persons: this.persons, cars: this.cars, questions })
+                                                                                        .update({ persons: this.persons, cars: this.cars, questions: this.questions, step: 3 })
                                                             })
                                                         })
 
-                // this.goToInformation()
+                this.goToPaypal()
             } catch (e) {
                 console.log(e)
             }
-        }
+        },
+
+        goToPaypal(){
+            this.$navigator.navigate('/paypal')
+        },
     }
 }
 </script>

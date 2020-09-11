@@ -4,6 +4,8 @@ import HomePage from './components/pages/HomePage'
 import ReservationPage from './components/pages/ReservationPage'
 import UbicationsPage from './components/pages/UbicationsPage'
 import InformationPaymentPage from './components/pages/InformationPaymentPage'
+import PaypalPage from './components/pages/PaypalPage'
+import QRPage from './components/pages/QRPage'
 
 
 export const routes = {
@@ -29,5 +31,13 @@ export const routes = {
 
     '/information-payment': {
         component: InformationPaymentPage,
+    },
+
+    '/paypal': {
+        component: PaypalPage,
+    },
+
+    '/qr': {
+        component: QRPage,
     }
 }
