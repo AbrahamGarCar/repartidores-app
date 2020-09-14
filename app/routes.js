@@ -6,6 +6,11 @@ import UbicationsPage from './components/pages/UbicationsPage'
 import InformationPaymentPage from './components/pages/InformationPaymentPage'
 import PaypalPage from './components/pages/PaypalPage'
 import QRPage from './components/pages/QRPage'
+import ActiveReservationPage from './components/user/ActiveReservationPage'
+import HistoryPage from './components/user/HistoryPage'
+import PanicButtonPage from './components/pages/PanicButtonPage'
+import PanicButton2Page from './components/pages/PanicButton2Page'
+import TermsPage from './components/user/TermsPage'
 
 
 export const routes = {
@@ -39,5 +44,25 @@ export const routes = {
 
     '/qr': {
         component: QRPage,
+    },
+
+    '/active-reservation': { 
+        component: ActiveReservationPage,
+    },
+
+    '/history': { 
+        component: HistoryPage,
+    },
+
+    '/panic-button': { 
+        component: PanicButtonPage,
+    },
+
+    '/panic-button-2': { 
+        component: PanicButton2Page,
+    },
+
+    '/terms': { 
+        component: TermsPage,
     }
 }

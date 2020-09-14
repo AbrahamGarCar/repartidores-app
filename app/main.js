@@ -82,9 +82,13 @@ new Vue({
                 if(response.exists){
                     let user = response.data()
 
-                    this.$store.commit('updateUser', user)
-                    
-                    this.$navigator.navigate('/home', { clearHistory: true })
+                    if(user.terms){
+                      this.$store.commit('updateUser', user)
+                      this.$navigator.navigate('/home', { clearHistory: true })
+                    }else{
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/terms', { clearHistory: true })
+                    }
                     
                 }
             })

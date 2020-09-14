@@ -1,6 +1,6 @@
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="*" columns="*">
+        <GridLayout class="box-1" rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
                     <GridLayout rows="60, *" columns="*">
@@ -200,6 +200,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+    .box-1{
+        background-image: url('~/assets/images/bg-1.png');
+        background-position: center top;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
 
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
 </style>

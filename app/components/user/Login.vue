@@ -1,12 +1,21 @@
-<style>
+<style scoped>
+    .box-1{
+        background-image: url('~/assets/images/bg-2.png');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
 
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
 </style>
 
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="*, 2*" columns="*">
+        <GridLayout class="box-1" rows="*, 2*" columns="*">
             <FlexboxLayout row="0" col="0" justifyContent="flex-end" alignItems="center" flexDirection="column">
-                <Label text="Logo" textWrap="true" />
+                <Image src="~/assets/images/logo.png" width="150" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
                 <Label text="Bienvenido" fontSize="30" textWrap="true" />
             </FlexboxLayout>
 
@@ -31,11 +40,11 @@
                     <StackLayout width="90%" borderWidth="0 0 1 0" borderColor="black" />
 
                     <FlexboxLayout width="90%" marginTop="10" justifyContent="center" alignItems="center" flexDirection="column">
-                        <Button text="Iniciar sesion con Facebook" marginTop="5" tap="" />
-                        <Button text="Iniciar sesion con Google" marginTop="5" @tap="loginGoogle" />
-                        <Button text="Iniciar sesion con Apple" marginTop="5" tap="" />
+                        <Button width="100%" backgroundColor="#758266" color="white" text="Iniciar sesion con Facebook" marginTop="5" tap="" />
+                        <Button width="100%" backgroundColor="#758266" color="white" text="Iniciar sesion con Google" marginTop="5" @tap="loginGoogle" />
+                        <Button width="100%" backgroundColor="black" color="white" text="Iniciar sesion con Apple" marginTop="5" tap="" />
 
-                        <Label color="black" marginTop="10" text="¿No tienes una cuenta? Registrate aqui." textWrap="true" @tap="goToRegister" />
+                        <Label color="white" marginTop="10" text="¿No tienes una cuenta? Registrate aqui." textWrap="true" @tap="goToRegister" />
                         
                     </FlexboxLayout>
                 </FlexboxLayout>
@@ -138,7 +147,7 @@ export default {
                         this.$navigator.navigate('/home', { clearHistory: true })
                     }else{
                         this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/home', { clearHistory: true })
+                        this.$navigator.navigate('/terms', { clearHistory: true })
                     }
                     
                 }

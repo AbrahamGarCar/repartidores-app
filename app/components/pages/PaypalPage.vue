@@ -1,7 +1,7 @@
 <template>
     <Page actionBarHidden="true" navigatedTo="onNavigatedTo">
-        <GridLayout rows="*, 60" columns="*">
-            <WebViewExt row="0" col="0" ref="webview" src="http://192.168.0.6:3000" @webAlert="changeTitle" />
+        <GridLayout class="box-1" rows="*, 60" columns="*">
+            <WebViewExt row="0" col="0" ref="webview" src="https://paypal-majalca.herokuapp.com" @webAlert="changeTitle" />
             <StackLayout row="1" col="0">
                 <Button width="100%" backgroundColor="black" color="white" text="Continuar" @tap="changeTitle" />
             </StackLayout>
@@ -32,6 +32,7 @@ export default {
     data(){
         return{
             gotMessageData: null,
+            reservationID: null,
         }
     },
 
@@ -83,9 +84,10 @@ export default {
                                                         .then(query => {
                                                             query.forEach(async doc => {
                                                                 console.log(doc)
+                                                                this.reservationID = doc.id
                                                                 await firebase.firestore.collection('reservations')
                                                                                         .doc(doc.id)
-                                                                                        .update({ step: 4, status: false })
+                                                                                        .update({ step: 4, payment: true, status: false, process: 'PENDIENTE' })
                                                             })
                                                         })
 
@@ -96,12 +98,21 @@ export default {
         },
 
         goToQR(){
-            this.$navigator.navigate('/qr')
+            this.$navigator.navigate('/qr', { props: { id: this.reservationID } })
         }
     }
 }
 </script>
 
-<style>
+<style scoped>
+    .box-1{
+        background-image: url('~/assets/images/bg-1.png');
+        background-position: center top;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
 
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
 </style>

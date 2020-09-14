@@ -1,11 +1,24 @@
+<style scoped>
+    .box-1{
+        background-image: url('~/assets/images/bg-2.png');
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
+</style>
+
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="*" columns="*">
+        <GridLayout class="box-1" rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
                     <GridLayout rows="*, 2*" columns="*">
                         <FlexboxLayout row="0" col="0" justifyContent="flex-end" alignItems="center" flexDirection="column">
-                            <Label text="Logo" textWrap="true" />
+                            <Image src="~/assets/images/logo.png" width="150" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
                             <Label text="Bienvenido" fontSize="30" textWrap="true" />
                         </FlexboxLayout>
 
@@ -200,7 +213,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>

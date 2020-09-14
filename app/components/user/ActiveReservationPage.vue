@@ -1,6 +1,6 @@
 <template>
     <Page actionBarHidden="true">
-        <GridLayout backgroundColor="white" columns="*" rows="*">
+        <GridLayout columns="*" rows="*" backgroundColor="#F3F3F3">
             <ScrollView col="0" row="0">
                 <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
                     
@@ -100,8 +100,6 @@ const moment = require('moment')
 export default {
     name: 'QRPage',
 
-    props: ['id'],
-
     data(){
         return{
             date: 'uno',
@@ -134,22 +132,36 @@ export default {
         async getReservation(){
             console.log('olis')
             try {
-                let data = await firebase.firestore.collection('reservations')
-                                                    .doc(this.id)
-                                                    .get()
+                let response = await firebase.firestore.collection('reservations')
+                                                        .where('user', '==', this.user.uid)
+                                                        .where('process', '==', 'PENDIENTE')
+                                                        .where('payment', '==', true)
+                                                        .orderBy('dateOne')
+                                                        .limit(1)
+                                                        .get()
+                                                        .then(query => {
+                                                            query.forEach(async doc => {
+                                                                this.reservationID = doc.id
 
-                let data2 = await firebase.firestore.collection('ubications')
-                                        .doc(data.data().ubication)
-                                        .get()
+                                                                let data = await firebase.firestore.collection('reservations')
+                                                                                        .doc(doc.id)
+                                                                                        .get()
 
-                this.reservation = data.data()
-                this.ubication = data2.data()
-                console.log(this.reservation)
-                this.date = this.reservation.dateOne
+                                                                let data2 = await firebase.firestore.collection('ubications')
+                                                                                        .doc(data.data().ubication)
+                                                                                        .get()
 
-                let result = new QrGenerator().generate(this.id);
+                                                                this.reservation = data.data()
+                                                                this.ubication = data2.data()
+                                                                console.log(this.reservation)
+                                                                this.date = this.reservation.dateOne
+                                                                
+                                                            })
+                                                        })
 
-                this.printQR(result)
+            let result = new QrGenerator().generate(this.reservationID);
+
+            this.printQR(result)
             } catch (e) {
                 console.log(e)
             }
@@ -165,20 +177,12 @@ export default {
 
         finishReservation(){
             this.$navigator.navigate('/home')
-        }
+        },
+
     }
 }
 </script>
 
-<style scoped>
-    .box-1{
-        background-image: url('~/assets/images/bg-1.png');
-        background-position: center top;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
+<style>
 
-    .bg-color{
-        background-color: rgba(128, 145, 107, 0.7);
-    }
 </style>

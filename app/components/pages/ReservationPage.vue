@@ -1,6 +1,6 @@
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="60, *, *, 60" columns="*">
+        <GridLayout class="box-1" rows="60, *, *, 60" columns="*">
             <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center">
                 <Label color="black" fontSize="22" text="Reservaciones" textWrap="true" />
                 
@@ -38,8 +38,8 @@ export default {
     data(){
         return{
             reservation: {
-                dateOne: '',
-                dateTwo: '',
+                dateOne: new Date(),
+                dateTwo: new Date(),
                 step: 1,
                 status: true,
             }
@@ -78,6 +78,15 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+    .box-1{
+        background-image: url('~/assets/images/bg-1.png');
+        background-position: center top;
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
 
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
 </style>
