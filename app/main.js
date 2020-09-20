@@ -64,6 +64,7 @@ Vue.registerElement(
   () => require('@nota/nativescript-webview-ext').WebViewExt
 )
 Vue.registerElement('MapView', ()=> require('nativescript-google-maps-sdk').MapView)
+Vue.registerElement('MLKitBarcodeScanner', () => require('nativescript-plugin-firebase/mlkit/barcodescanning').MLKitBarcodeScanner)
 
 Vue.component('Navbar', Navbar)
 Vue.component('Menu', Menu)
