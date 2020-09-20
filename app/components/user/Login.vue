@@ -118,7 +118,7 @@ export default {
                             email: response.additionalUserInfo.profile.email,
                             terms: false,
                             photo: response.additionalUserInfo.profile.picture,
-                            registerDate: new Date(),
+                            completeProfile: false,
                         }
 
                         await firebase.firestore.collection('users').doc(user.uid).set(user)
@@ -142,12 +142,23 @@ export default {
                 if(response.exists){
                     let user = response.data()
 
-                    if(user.terms){
+                    if (user.role == 'Guardia') {
                         this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/home', { clearHistory: true })
+                        this.$navigator.navigate('/scaner', { clearHistory: true })
                     }else{
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/terms', { clearHistory: true })
+                        if (!user.completeProfile) {
+                            this.$store.commit('updateUser', user)
+                            this.$navigator.navigate('/complete-profile', { clearHistory: true })
+                        } else {
+                            if(user.terms){
+                                this.$store.commit('updateUser', user)
+                                this.$navigator.navigate('/home', { clearHistory: true })
+                            }else{
+                                this.$store.commit('updateUser', user)
+                                this.$navigator.navigate('/terms', { clearHistory: true })
+                            }
+                        }
+                        
                     }
                     
                 }

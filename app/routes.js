@@ -11,6 +11,8 @@ import HistoryPage from './components/user/HistoryPage'
 import PanicButtonPage from './components/pages/PanicButtonPage'
 import PanicButton2Page from './components/pages/PanicButton2Page'
 import TermsPage from './components/user/TermsPage'
+import ScanPage from './components/pages/guard/ScanPage'
+import CompleteProfilePage from './components/user/CompleteProfilePage'
 
 
 export const routes = {
@@ -64,5 +66,13 @@ export const routes = {
 
     '/terms': { 
         component: TermsPage,
+    },
+
+    '/scaner': { 
+        component: ScanPage,
+    },
+
+    '/complete-profile': { 
+        component: CompleteProfilePage,
     }
 }
