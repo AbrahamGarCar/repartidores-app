@@ -2,7 +2,7 @@
     <Page actionBarHidden="true">
         <GridLayout rows="*">
             <ScrollView row="0">
-                <WrapLayout>
+                <WrapLayout orientation="vertical">
 					<StackLayout>
 						<MapView
                           width="100%"
@@ -107,10 +107,18 @@ export default {
 
         putUbications(){            
             this.ubications.forEach((result) => {
+                let status = 'No disponible'
+                
+                if(result.status){
+                    status = 'No disponible'
+                }else{
+                    status = 'Disponible'
+                }
+
                 let marker = new Marker()
                 marker.position = Position.positionFromLatLng(result.ubication.latitude, result.ubication.longitude)
                 marker.title = result.name
-                marker.snippet = "Majalca places"
+                marker.snippet = status
                 marker.id = result.id
                 marker.userData = {index: 1}
                 this.mapView.addMarker(marker)

@@ -16,6 +16,11 @@
         <GridLayout class="box-1" rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
+                    <FlexboxLayout backgroundColor="red" v-if="reservation != null" justifyContent="center" alignItems="space-between" padding="10">
+                        <Label text="Parece que tienes una reservacion activa" textWrap="true" />
+                        <Button text="Eliminar" @tap="deleteReservation" />
+                        
+                    </FlexboxLayout>
                     <GridLayout :width="width" :height="height" padding="10">
                         <FlexboxLayout width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="transparent">
                             <Image src="~/assets/images/logo.png" width="150" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
@@ -34,13 +39,20 @@
                             <!-- <Label color="white" marginTop="10" textAlignment="center" text="Acambar - Senderismo - Rapel" fontSize="9" textWrap="true" /> -->
                         </FlexboxLayout>
                     </GridLayout>
-                    <GridLayout :width="width" :height="height" padding="10">
+
+                    <!-- Rservation -->
+                    <AbsoluteLayout :width="width" :height="height" padding="10">
                         <FlexboxLayout width="100%" height="100%" paddingLeft="15" justifyContent="center" alignItems="flex-start" flexDirection="column" class="bg-color" @tap="goToReservation">
                             <Label color="white" class="font-awesome" fontSize="45" text="" textWrap="true" />
                             <Label color="white" marginTop="10" textAlignment="center" text="Reservar" fontSize="12" textWrap="true" />
                             <Label color="white" marginTop="10" textAlignment="center" text="Realiza tu reservacion" fontSize="9" textWrap="true" />
                         </FlexboxLayout>
-                    </GridLayout>
+                        <FlexboxLayout v-if="reservation != null" top="5" left="5" width="20" height="20" borderRadius="50" backgroundColor="red" justifyContent="center" alignItems="center">
+                            <Label text="i" color="white" textWrap="true" />
+                        </FlexboxLayout>
+                    </AbsoluteLayout>
+                    <!-- Reservation -->
+
                     <GridLayout :width="width" :height="height" padding="10">
                         <FlexboxLayout width="100%" height="100%" paddingLeft="15" justifyContent="center" alignItems="flex-start" flexDirection="column" class="bg-color" @tap="goToActiveReservation">
                             <Label color="white" class="font-awesome" fontSize="45" text="" textWrap="true" />
@@ -99,12 +111,14 @@ export default {
             height: '',
 
             reservation: null,
+            reservationId: null,
             news: null
         }
     },
 
     created(){
         this.getNews()
+        this.getReservation()
     },
 
     filters: {
@@ -156,7 +170,8 @@ export default {
             }
         },
 
-        async goToReservation(){
+        async getReservation(){
+            this.reservation = null
             try {
                 let response = await firebase.firestore.collection('reservations')
                                                         .where('user', '==', this.user.uid)
@@ -166,33 +181,48 @@ export default {
                                                             query.forEach(async doc => {
                                                                 if (doc.exists) {
                                                                     this.reservation = doc.data()
-
-                                                                    switch (this.reservation.step) {
-                                                                        case 1:
-                                                                            this.$navigator.navigate('/ubications')
-                                                                            break;
-                                                                        case 2:
-                                                                            this.$navigator.navigate('/information-payment')
-                                                                            break;
-                                                                        case 3:
-                                                                            this.$navigator.navigate('/paypal')
-                                                                            break;
-                                                                        case 4:
-                                                                            this.$navigator.navigate('/qr')
-                                                                            break;
-                                                                    
-                                                                        default:
-                                                                            this.$navigator.navigate('/reservation')
-                                                                            break;
-                                                                    }
-                                                                }else{
-                                                                    this.$navigator.navigate('/reservation')
+                                                                    this.reservationId = doc.id
                                                                 }
                                                             })
                                                         })
+            } catch (error) {
+                console.log(error)
+            }
+        },
 
+        async deleteReservation(){
+            try {
+                let response = await firebase.firestore.collection('reservations')
+                                                        .doc(this.reservationId)
+                                                        .delete()
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        goToReservation(){
+            try {
                 if (this.reservation == null) {
                     this.$navigator.navigate('/reservation')
+                }else{
+                    switch (this.reservation.step) {
+                        case 1:
+                            this.$navigator.navigate('/ubications')
+                            break;
+                        case 2:
+                            this.$navigator.navigate('/information-payment')
+                            break;
+                        case 3:
+                            this.$navigator.navigate('/paypal')
+                            break;
+                        case 4:
+                            this.$navigator.navigate('/qr')
+                            break;
+                    
+                        default:
+                            this.$navigator.navigate('/reservation')
+                            break;
+                    }
                 }
             } catch (e) {
                 console.log(e)

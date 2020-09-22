@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>809034328621-f667a588kgtoh3iun0mh0pabsth7pqfl.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.809034328621-f667a588kgtoh3iun0mh0pabsth7pqfl</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>809034328621-f2rcrde6jmgt42g15gp9jahkgp4bjeh7.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCr1f-Pt86hst-hS8jYNhKSEKvWRH2R9BM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>809034328621</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.partnergrammer.majalca</string>
+	<key>PROJECT_ID</key>
+	<string>majalca-58d71</string>
+	<key>STORAGE_BUCKET</key>
+	<string>majalca-58d71.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:809034328621:ios:8556bcf44cd693dbd326a4</string>
+	<key>DATABASE_URL</key>
+	<string>https://majalca-58d71.firebaseio.com</string>
+</dict>
+</plist>

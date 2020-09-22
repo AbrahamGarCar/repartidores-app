@@ -3,6 +3,9 @@ import Vue from 'nativescript-vue'
 import ModalLogin from './components/modals/ModalLogin'
 import VueDevtools from 'nativescript-vue-devtools'
 
+//iOS or Android
+import { isAndroid, isIOS } from "tns-core-modules/ui/page";
+
 //Vuelidate
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
@@ -20,6 +23,10 @@ if(TNS_ENV !== 'production') {
   Vue.use(VueDevtools)
 }
 import store from './store'
+
+if (isIOS) {
+  GMSServices.provideAPIKey("AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas");
+}
 
 // Prints Vue logs when --env.production is *NOT* set while building
 Vue.config.silent = (TNS_ENV === 'production')

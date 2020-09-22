@@ -33,6 +33,7 @@ export default {
         return{
             gotMessageData: null,
             reservationID: null,
+            reservation: null,
         }
     },
 
@@ -85,17 +86,30 @@ export default {
                                                             query.forEach(async doc => {
                                                                 console.log(doc)
                                                                 this.reservationID = doc.id
+                                                                this.reservation = doc.data()
                                                                 await firebase.firestore.collection('reservations')
                                                                                         .doc(doc.id)
                                                                                         .update({ step: 4, payment: true, status: false, process: 'PENDIENTE' })
                                                             })
                                                         })
-
-                this.goToQR()
+                this.updateLocation()                                               
+                // this.goToQR()
             } catch (e) {
                 console.log(e)
             }
         },
+
+        updateLocation(){
+            try{
+                let response = firebase.firestore.collection('ubications')
+                                                .doc(this.reservation.ubication)
+                                                .update({ status: true })
+
+                this.goToQR()
+            }catch(e){
+                console.log(e)
+            }
+        }
 
         goToQR(){
             this.$navigator.navigate('/qr', { props: { id: this.reservationID } })

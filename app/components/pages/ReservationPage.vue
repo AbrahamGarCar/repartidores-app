@@ -72,7 +72,7 @@ export default {
         },
 
         goToUbications(){
-            this.$navigator.navigate('/ubications') 
+            this.$navigator.navigate('/ubications', { clearHistory: true }) 
         }
     }
 }

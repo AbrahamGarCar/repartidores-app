@@ -199,7 +199,7 @@ export default {
     },
 
     validations: {
-        user: {
+        profile: {
             telephone: {
                 required,
             },
@@ -319,29 +319,29 @@ export default {
                 return
             }
 
-            if(this.$v.user.$invalid){
+            if(this.$v.profile.$invalid){
 
-                if(!this.$v.user.telephone.required){
+                if(!this.$v.profile.telephone.required){
                     Toast.makeText("Telefono obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.direction.required){
+                if(!this.$v.profile.direction.required){
                     Toast.makeText("Telefono obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.birthdate.required){
+                if(!this.$v.profile.birthdate.required){
                     Toast.makeText("Fecha de nacimiento obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.INE.required){
+                if(!this.$v.profile.INE.required){
                     Toast.makeText("INE obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.origin.required){
+                if(!this.$v.profile.origin.required){
                     Toast.makeText("De donde nos visita obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.reason.required){
+                if(!this.$v.profile.reason.required){
                     Toast.makeText("Motivo obligatorio.", "long").show()
                 }
                 return
