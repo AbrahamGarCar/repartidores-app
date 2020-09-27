@@ -9,7 +9,7 @@
                             <Label :text="user.name" horizontalAlignment="center" marginTop="20" fontSize="25" fontWeight="bold" textWrap="true" />
                         </StackLayout>
 
-                        <StackLayout row="1" col="0">
+                        <StackLayout row="1" col="0" v-if="reservation != null">
                             <StackLayout marginTop="20">
                                 <Image src="" @loaded="generateQR($event)" horizontalAlignment="center" verticalAlignment="center"></Image>
 
@@ -67,6 +67,14 @@
                                 </StackLayout>
                             </StackLayout>
                         </StackLayout>
+
+                        <FlexboxLayout row="1" col="0" v-else justifyContent="center" alignItems="center" flexDirection="column">
+                            <Label fontSize="22" text="Parece que no tienen ninguna reservacion en este momento." textWrap="true" />
+
+                            <StackLayout marginTop="40">
+                                <Button width="100%" backgroundColor="black" color="white" text="Regresar al inicio" @tap="finishReservation" />
+                            </StackLayout>
+                        </FlexboxLayout>
                     </GridLayout>
                     
                 </WrapLayout>

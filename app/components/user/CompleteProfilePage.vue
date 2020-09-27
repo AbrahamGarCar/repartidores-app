@@ -22,20 +22,29 @@
                             <Label text="Bienvenido" fontSize="30" textWrap="true" />
                         </FlexboxLayout>
 
-                        <StackLayout row="1" col="0">
+                        <StackLayout row="1" col="0" v-if="window == 1">
                             <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                                 <StackLayout marginTop="10" width="90%">
                                     <TextField v-model="profile.telephone" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Numero celular" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="profile.direction" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Direccion" text="" />
+                                    <TextField color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion" v-model="profile.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="profile.birthdate" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Fecha de nacimiento" text="" />
+                                    <ListView height="100" for="item in places">
+                                        <v-template>
+                                            <Label :text="item.description" @tap="getPlace(item.placeId)" />
+                                        </v-template>
+                                    </ListView>
                                 </StackLayout>
+
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="profile.INE" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Numero de INE" text="" />
+                                    <FlexboxLayout justifyContent="center" alignItems="center">
+                                        <Label text="Fecha de nacimiento" fontSize="18" textWrap="true" />
+                                    </FlexboxLayout>
+                                    <DatePicker v-model="profile.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
                                 </StackLayout>
+                                
 
                                 <StackLayout marginTop="10" width="90%" borderWidth="0 0 1 0" borderColor="black" />
 
@@ -43,53 +52,106 @@
                                     <Label color="black" fontSize="15" text="¿Es la primera ves que nos visita?" textWrap="true" />
                                     <FlexboxLayout justifyContent="flex-start" alignItems="center">
                                         <Switch v-model="profile.firstTime" />
+                                        <Label color="black" :text="changeText" textWrap="true" />
+                                        
                                     </FlexboxLayout>
                                 </StackLayout>
+                                <!-- Select pleaces -->
                                 <StackLayout marginTop="10" width="90%">
-                                    <Label color="black" fontSize="15" text="¿De donde nos visita?" textWrap="true" />
-                                    <TextField v-model="profile.origin" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <Label color="black" fontSize="15" text="¿Motivo de la visita?" textWrap="true" />
-                                    <TextField v-model="profile.reason" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10">
-                                    <WrapLayout orientation="horizontal" marginTop="5" marginBottom="10">
-                                        <GridLayout id="grid" :width="width" :height="height" padding="5">
-                                            <FlexboxLayout v-if="photoOne == null" @tap="selectOptionPhoto(1)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
-                                                <Label class="font-awesome" fontSize="19" text="" textWrap="true" />
-                                            </FlexboxLayout>
-                                            <FlexboxLayout v-else @tap="selectOptionPhoto(1)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
-                                                <Image :src="photoOne" stretch="aspectFill" />
-                                            </FlexboxLayout>
-                                        </GridLayout>
-                                        <GridLayout :width="width" :height="height" padding="5">
-                                            <FlexboxLayout v-if="photoTwo == null" @tap="selectOptionPhoto(2)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
-                                                <Label class="font-awesome" fontSize="19" text="" textWrap="true" />
-                                            </FlexboxLayout>
-                                            <FlexboxLayout v-else @tap="selectOptionPhoto(2)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
-                                                <Image :src="photoTwo" stretch="aspectFill" />
-                                            </FlexboxLayout>
-                                        </GridLayout>
-                                    </WrapLayout>
+                                    <StackLayout marginTop="5">
+                                            <Label color="" text="¿De donde visita?" textWrap="true" marginBottom="-10" marginLeft="5" fontSize="18" />
+                                            <GridLayout backgroundColor="#F3F3F3" color="black" borderWidth="1" borderColor="black" padding="10" rows="auto" columns="*" marginTop="10">
+                                                <DropDown ref="dd"
+                                                    width="100%"
+                                                    fontSize="17"
+                                                    itemsPadding="10"
+                                                    itemsTextAlignment="center"
+                                                    :items="pleacesItems"
+                                                    color="black"
+                                                    v-model="user.origin"
+                                                    @selectedIndexChanged="selectPleace"
+                                                    row="0"
+                                                    col="0" />
+                                            </GridLayout>
+                                        </StackLayout>
                                 </StackLayout>
 
-                                <StackLayout>
-                                    <Label text="Foto frente:" textWrap="true" />
-                                    <Label :text="photoOne" textWrap="true" />
-                                    
-                                </StackLayout>
-                                <StackLayout>
-                                    <Label text="Foto reverso:" textWrap="true" />
-                                    <Label :text="photoTwo" textWrap="true" />
-                                    
+                                <!-- Select reason -->
+                                <StackLayout marginTop="10" width="90%">
+                                    <StackLayout marginTop="5">
+                                            <Label color="" text="¿Motivo de la visita?" textWrap="true" marginBottom="-10" marginLeft="5" fontSize="18" />
+                                            <GridLayout backgroundColor="#F3F3F3" color="black" borderWidth="1" borderColor="black" padding="10" rows="auto" columns="*" marginTop="10">
+                                                <DropDown ref="dd"
+                                                    width="100%"
+                                                    fontSize="17"
+                                                    itemsPadding="10"
+                                                    itemsTextAlignment="center"
+                                                    :items="reasonsItems"
+                                                    color="black"
+                                                    v-model="user.reason"
+                                                    @selectedIndexChanged="selectReason"
+                                                    row="0"
+                                                    col="0" />
+                                            </GridLayout>
+                                        </StackLayout>
                                 </StackLayout>
                                 
 
                                 <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <Button text="Registrarme" @tap="createUser" />
+                                    <Button width="100%" text="Continuar" @tap="askPermissions" />
                                 </FlexboxLayout>
 
+                            </FlexboxLayout>
+                        </StackLayout>
+
+                        <StackLayout row="1" col="0" v-if="window == 2">
+                            <StackLayout>
+                                <Label textAlignment="center" text="Para finalizar tu registro necesitaras tomar una foto de tu INE" textWrap="true" />
+                                <Label textAlignment="center" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
+                                
+                            </StackLayout>
+
+                            <StackLayout marginTop="10" width="90%">
+                                <TextField v-model="profile.INE" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Numero de INE" text="" />
+                            </StackLayout>
+
+                            <StackLayout marginTop="10">
+                                <WrapLayout orientation="horizontal" marginTop="5" marginBottom="10">
+                                    <GridLayout id="grid" :width="width" :height="height" padding="5">
+                                        <FlexboxLayout v-if="photoOne == null" @tap="selectOptionPhoto(1)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
+                                            <Label class="font-awesome" fontSize="19" text="" textWrap="true" />
+                                        </FlexboxLayout>
+                                        <FlexboxLayout v-else @tap="selectOptionPhoto(1)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
+                                            <Image :src="photoOne" stretch="aspectFill" />
+                                        </FlexboxLayout>
+                                    </GridLayout>
+                                    <GridLayout :width="width" :height="height" padding="5">
+                                        <FlexboxLayout v-if="photoTwo == null" @tap="selectOptionPhoto(2)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
+                                            <Label class="font-awesome" fontSize="19" text="" textWrap="true" />
+                                        </FlexboxLayout>
+                                        <FlexboxLayout v-else @tap="selectOptionPhoto(2)" class="input-photo" width="100%" height="100%" justifyContent="center" alignItems="center" flexDirection="column" backgroundColor="#F3F3F3">
+                                            <Image :src="photoTwo" stretch="aspectFill" />
+                                        </FlexboxLayout>
+                                    </GridLayout>
+                                </WrapLayout>
+                            </StackLayout>
+
+                            <StackLayout>
+                                <Label text="Foto frente:" textWrap="true" />
+                                <Label :text="photoOne" textWrap="true" />
+                                
+                            </StackLayout>
+                            <StackLayout>
+                                <Label text="Foto reverso:" textWrap="true" />
+                                <Label :text="photoTwo" textWrap="true" />
+                                
+                            </StackLayout>
+
+                            <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                                <Button width="100%" text="Regresar" @tap="window = 1" />
+                                <Button width="100%" text="Registrarme" @tap="createUser" />
+
+                                <Label marginTop="10" color="white" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
                             </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
@@ -156,11 +218,25 @@ const options = {
     // }
 };
 
+import { GooglePlacesAutocomplete } from 'nativescript-google-places-autocomplete'
+    
+const API_KEY = "AIzaSyC2Xvq1EqHlyPOw0WVb30DfpccC9duRHmM"
+const googlePlacesAutocomplete = new GooglePlacesAutocomplete(API_KEY)
+
 export default {
     name: 'Register',
 
     data(){
         return{
+            direction: '',
+            places: [],
+            place: null,
+            showResult: false,
+
+            city: '',
+            state: '',
+            country: '',
+
             width: 0,
             height: '',
 
@@ -179,23 +255,51 @@ export default {
                 completeProfile: true,
             },
 
+            reasonsItems: [
+                'Primer motivo',
+                'Segundo motivo',
+                'Tercer motivo',
+            ],
+
+            pleacesItems: [
+                'Opcion 1',
+                'Opcion 2',
+                'Opcion 3',
+            ],
+
             controlPhotos: 1,
 
             pathPhotos: [],
 
             photoOne: null,
             photoTwo: null,
+
+            window: 1
         }
     },
 
     mounted() {
-        this.askPermissions()
+        this.window = 1
+        // this.askPermissions()
     },
 
     computed: {
         ...mapState([
             'user'
-        ])
+        ]),
+
+        changeText(){
+            if (this.profile.firstTime) {
+                return 'Si'
+            } else {
+                return 'No'
+            }
+            return 'Si'
+        },
+
+        maxDate(){
+            return new Date();
+        }
     },
 
     validations: {
@@ -221,9 +325,51 @@ export default {
         }
     },
 
+    watch: {
+        'profile.direction': function (newVal, oldVal){
+            this.showResult = true
+            this.getPlaces()
+        },
+    },
+
     methods: {
+        getPlaces(){
+            console.log('Entra places')
+            googlePlacesAutocomplete.search(this.profile.direction)
+            .then((places) => {
+                console.log(places)
+                this.places = places
+            }, (error => {
+                console.log(error)
+            }));
+        },
+
+        getPlace(args){
+            this.showResult = false
+            googlePlacesAutocomplete.getPlaceById(args).then((place) => {
+                console.log(place)
+                this.place = place
+                this.profile.direction = this.place.formattedAddress
+                place.data.result.address_components.forEach(element => {
+                    if (element.types.includes('locality')){
+                        this.city = element.long_name
+                    }
+                    if (element.types.includes('administrative_area_level_1')){
+                       this.state = element.long_name
+                    }
+                    if (element.types.includes('country')){
+                       this.country = element.long_name
+                    }
+                });
+            }, error => {
+                console.log(error)
+            })      
+        },
+
         //Permisos
         askPermissions(){
+            this.window = 2
+            
             camera.requestPermissions().then(
                 function success() {
                     console.log('Permisos aceptados')
@@ -234,6 +380,18 @@ export default {
                     this.permissions = false
                 }
             );
+        },
+
+        selectReason(args){
+            console.log(`index seleccionado: ${args.newIndex}`)
+            console.log(this.reasonsItems[args.newIndex])
+            this.profile.reason = this.reasonsItems[args.newIndex]
+        },
+
+        selectPleace(args){
+            console.log(`index seleccionado: ${args.newIndex}`)
+            console.log(this.pleacesItems[args.newIndex])
+            this.profile.origin = this.pleacesItems[args.newIndex]
         },
 
         async onNavigatedTo(args){

@@ -3,8 +3,9 @@
         <GridLayout rows="*">
             <ScrollView row="0">
                 <WrapLayout orientation="vertical">
-					<StackLayout>
+					<StackLayout padding="10">
 						<MapView
+                          borderRadius="10"
                           width="100%"
                           height="590"
                           :zoom="zoom"
@@ -16,7 +17,9 @@
                         />
 					</StackLayout>
 
-                    <StackLayout v-if="ubication != null">
+
+
+                    <StackLayout v-if="ubication != null" padding="10">
                         <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="0">
                             <Image :src="ubication.image" stretch="aspectFill" />
                         </FlexboxLayout>
@@ -31,9 +34,18 @@
                         </StackLayout>
 
                         <StackLayout row="2" col="0">
-                            <Button text="Reservar" @tap="reservation" />
+                            <FlexboxLayout marginTop="5" justifyContent="center" alignItems="center">
+                                <Label color="black" text="Paso 3 de 4" textWrap="true" />
+                            </FlexboxLayout>
+                            <Button text="Regresar al inicio" @tap="goToHome" />
+                            <Button v-if="!ubication.status" text="Reservar" @tap="reservation" />
                         </StackLayout>
                     </StackLayout>
+
+                    <FlexboxLayout justifyContent="center" alignItems="center" v-else>
+                      <Label text="Para comenzar selecciona una área" textAlignment="center" fontSize="22" fontWeight="bold" textWrap="true" />
+                      
+                    </FlexboxLayout>
                 </WrapLayout>
                     
             </ScrollView>
@@ -127,8 +139,11 @@ export default {
 
         getUbication(args){
             console.log(args.marker.id)
-
-            this.ubication = this.ubications.find(element => element.id == args.marker.id)
+            
+            if (!args.marker.status) {
+                this.ubication = this.ubications.find(element => element.id == args.marker.id)
+            }
+            
             
             // this.$showModal(UbicationModalVue, {
             //     props:{
@@ -159,6 +174,10 @@ export default {
 
         goToInformation(){
             this.$navigator.navigate('/information-payment')
+        },
+
+        goToHome(){
+            this.$navigator.navigate('/home', { clearHistory: true })
         }
     }
 }

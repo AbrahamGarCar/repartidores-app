@@ -1,8 +1,11 @@
 <template>
     <Page actionBarHidden="true" navigatedTo="onNavigatedTo">
-        <GridLayout class="box-1" rows="*, 60" columns="*">
+        <GridLayout class="box-1" rows="*, 100" columns="*">
             <WebViewExt row="0" col="0" ref="webview" src="https://paypal-majalca.herokuapp.com" @webAlert="changeTitle" />
             <StackLayout row="1" col="0">
+                <FlexboxLayout marginTop="10" justifyContent="center" alignItems="center">
+                    <Label color="white" text="Paso 4 de 4" textWrap="true" />
+                </FlexboxLayout>
                 <Button width="100%" backgroundColor="black" color="white" text="Continuar" @tap="changeTitle" />
             </StackLayout>
         </GridLayout>
@@ -109,10 +112,14 @@ export default {
             }catch(e){
                 console.log(e)
             }
-        }
+        },
 
         goToQR(){
-            this.$navigator.navigate('/qr', { props: { id: this.reservationID } })
+            this.$navigator.navigate('/qr', { clearHistory: true, props: { id: this.reservationID } })
+        },
+
+        goToHome(){
+            this.$navigator.navigate('/home', { clearHistory: true })
         }
     }
 }

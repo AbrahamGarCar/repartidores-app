@@ -2,20 +2,19 @@
     <Page actionBarHidden="true">
         <GridLayout class="box-1" rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
-                <WrapLayout orientation="horizontal" marginTop="5" id="grid">
+                <WrapLayout orientation="horizontal" padding="10" id="grid">
                     <GridLayout rows="60, *" columns="*">
                         <FlexboxLayout col="0" row="0" justifyContent="center" alignItems="center" flexDirection="column">
-                            <Label text="Nombre del area" textWrap="true" />
                             <Label fontSize="20" text="Reservacion" textWrap="true" />
                             
                         </FlexboxLayout>
 
-                        <StackLayout row="1" col="0">
-                            <Label text="Visitantes" textWrap="true" />
+                        <StackLayout marginTop="20" row="1" col="0">
+                            <Label text="Cantidad de visitantes" textWrap="true" />
                             <StackLayout marginTop="15">
                                 <GridLayout rows="*" columns="3*, *">
                                     <TextField row="0" col="0" class="input-info" text="" v-model="people" />
-                                    <FlexboxLayout @tap="addPerson" row="0" col="1" width="100%" height="35" justifyContent="center" alignItems="center" backgroundColor="#2988D2" color="white">
+                                    <FlexboxLayout @tap="addPerson" row="0" col="1" width="100%" height="35" justifyContent="center" alignItems="center" backgroundColor="#80916B" color="white">
                                         <Label class="font-awesome" text="" textWrap="true" />
                                     </FlexboxLayout>
                                 </GridLayout>
@@ -44,11 +43,11 @@
 
                             <!-- separator -->
 
-                            <Label text="Vehiculos" textWrap="true" />
+                            <Label text="Vehículos a ingresar" textWrap="true" />
                             <StackLayout marginTop="15">
                                 <GridLayout rows="*" columns="3*, *">
                                     <TextField row="0" col="0" class="input-info" text="" v-model="car" />
-                                    <FlexboxLayout @tap="addCar" row="0" col="1" width="100%" height="35" justifyContent="center" alignItems="center" backgroundColor="#2988D2" color="white">
+                                    <FlexboxLayout @tap="addCar" row="0" col="1" width="100%" height="35" justifyContent="center" alignItems="center" backgroundColor="#80916B" color="white">
                                         <Label class="font-awesome" text="" textWrap="true" />
                                     </FlexboxLayout>
                                 </GridLayout>
@@ -77,7 +76,7 @@
 
                             <!-- separator -->
 
-                            <StackLayout marginTop="10" width="90%">
+                            <!-- <StackLayout marginTop="10" width="90%">
                                 <TextField v-model="questions.question1" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="¿De donde nos visita?" text="" />
                             </StackLayout>
                             <StackLayout marginTop="10" width="90%">
@@ -85,8 +84,12 @@
                             </StackLayout>
                             <StackLayout marginTop="10" width="90%">
                                 <TextField v-model="questions.question3" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Actividad" text="" />
-                            </StackLayout>
+                            </StackLayout> -->
+                            <FlexboxLayout marginTop="40" justifyContent="center" alignItems="center">
+                                <Label color="white" text="Paso 3 de 4" textWrap="true" />
+                            </FlexboxLayout>
 
+                            <Button text="Regresar al inicio" @tap="goToHome" />
                             <Button backgroundColor="black" color="white" text="Hacer pago" @tap="makePayment" />
                         </StackLayout>
                     </GridLayout>
@@ -137,6 +140,10 @@ export default {
             required,
         },
 
+        persons: {
+            required,
+        },
+
         car: {
             required,
         },
@@ -172,7 +179,11 @@ export default {
         },
 
         async makePayment(){
-            console.log('olis')
+            if(!this.$v.persons.required){
+                Toast.makeText("Ingresa una persona como minimo.", "long").show()
+                return
+            }
+
             try {
                 let response = await firebase.firestore.collection('reservations')
                                                         .where('user', '==', this.user.uid)
@@ -194,8 +205,12 @@ export default {
         },
 
         goToPaypal(){
-            this.$navigator.navigate('/paypal')
+            this.$navigator.navigate('/paypal', { clearHistory: true })
         },
+
+        goToHome(){
+            this.$navigator.navigate('/home', { clearHistory: true })
+        }
     }
 }
 </script>

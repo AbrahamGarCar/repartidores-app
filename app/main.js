@@ -72,6 +72,7 @@ Vue.registerElement(
 )
 Vue.registerElement('MapView', ()=> require('nativescript-google-maps-sdk').MapView)
 Vue.registerElement('MLKitBarcodeScanner', () => require('nativescript-plugin-firebase/mlkit/barcodescanning').MLKitBarcodeScanner)
+Vue.registerElement('DropDown', () => require('nativescript-drop-down/drop-down').DropDown)
 
 Vue.component('Navbar', Navbar)
 Vue.component('Menu', Menu)
@@ -94,13 +95,18 @@ new Vue({
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/scaner', { clearHistory: true })
                     }else{
-                        if(user.terms){
-                            this.$store.commit('updateUser', user)
-                            this.$navigator.navigate('/home', { clearHistory: true })
-                        }else{
-                            this.$store.commit('updateUser', user)
-                            this.$navigator.navigate('/terms', { clearHistory: true })
-                        }
+                      if (!user.completeProfile) {
+                          this.$store.commit('updateUser', user)
+                          this.$navigator.navigate('/complete-profile', { clearHistory: true })
+                      } else {
+                          if(user.terms){
+                              this.$store.commit('updateUser', user)
+                              this.$navigator.navigate('/home', { clearHistory: true })
+                          }else{
+                              this.$store.commit('updateUser', user)
+                              this.$navigator.navigate('/terms', { clearHistory: true })
+                          }
+                      }
                     }
                     
                 }

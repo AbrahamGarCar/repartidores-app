@@ -16,8 +16,8 @@
         <GridLayout class="box-1" rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
-                    <FlexboxLayout backgroundColor="red" v-if="reservation != null" justifyContent="center" alignItems="space-between" padding="10">
-                        <Label text="Parece que tienes una reservacion activa" textWrap="true" />
+                    <FlexboxLayout width="100%" backgroundColor="red" v-if="reservation != null" justifyContent="center" alignItems="center" flexDirection="column" padding="10">
+                        <Label text="Parece que tienes una reservacion en proceso" textWrap="true" />
                         <Button text="Eliminar" @tap="deleteReservation" />
                         
                     </FlexboxLayout>
@@ -83,7 +83,7 @@
                     </StackLayout>
 
                     <FlexboxLayout padding="10" justifyContent="flex-end" alignItems="center" width="100%">
-                        <Button color="white" borderWidth="1" borderColor="black" width="200" height="50" class="font-awesome bg-color" text=" Cerrar sesion" @tap="singOut" />
+                        <Button color="white" width="200" height="50" class="font-awesome bg-color" text=" Cerrar sesion" @tap="singOut" />
         
                     </FlexboxLayout>
                 </WrapLayout>
@@ -195,6 +195,8 @@ export default {
                 let response = await firebase.firestore.collection('reservations')
                                                         .doc(this.reservationId)
                                                         .delete()
+
+                this.reservation = null
             } catch (error) {
                 console.log(error)
             }

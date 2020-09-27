@@ -1,6 +1,6 @@
 <template>
     <Page actionBarHidden="true">
-        <GridLayout class="box-1" rows="60, *, *, 60" columns="*">
+        <GridLayout class="box-1" rows="60, *, *, 80" columns="*">
             <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center">
                 <Label color="black" fontSize="22" text="Reservaciones" textWrap="true" />
                 
@@ -17,9 +17,12 @@
                 </FlexboxLayout>
                 <DatePicker v-model="reservation.dateTwo" :minDate="minDate" />
             </StackLayout>
+            
             <StackLayout row="3" col="0">
+                <FlexboxLayout justifyContent="center" alignItems="center">
+                    <Label color="white" text="Paso 1 de 4" textWrap="true" />
+                </FlexboxLayout>
                 <Button color="black" text="Hacer reservacion" @tap="makeReservation" />
-                
             </StackLayout>
         </GridLayout>
     </Page>
