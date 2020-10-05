@@ -1,54 +1,60 @@
+<style>
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
+</style>
+
 <template>
     <Page actionBarHidden="true">
-        <GridLayout rows="*">
-            <ScrollView row="0">
-                <WrapLayout orientation="vertical">
-					<StackLayout padding="10">
-						<MapView
-                          borderRadius="10"
-                          width="100%"
-                          height="590"
-                          :zoom="zoom"
-                          :latitude="origin.latitude"
-                          :longitude="origin.longitude"
-                          v-if="allowExecution"
-                          @mapReady="mapReady"
-                          @markerSelect="getUbication($event)"
-                        />
-					</StackLayout>
-
-
-
-                    <StackLayout v-if="ubication != null" padding="10">
-                        <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="0">
-                            <Image :src="ubication.image" stretch="aspectFill" />
-                        </FlexboxLayout>
-
-                        <StackLayout row="1" col="0">
-                            <Label fontSize="20" fontWeight="bold" color="black" :text="ubication.name" textWrap="true" />
-                            <Label fontSize="17" color="black" :text="ubication.description" textWrap="true" />
-                            
-                            <Label v-if="!ubication.status" fontSize="17" fontWeight="bold" color="black" text="Disponible" textWrap="true" />
-                            <Label v-else fontSize="17" fontWeight="bold" color="black" text="No disponible" textWrap="true" />
-                            
-                        </StackLayout>
-
-                        <StackLayout row="2" col="0">
-                            <FlexboxLayout marginTop="5" justifyContent="center" alignItems="center">
-                                <Label color="black" text="Paso 3 de 4" textWrap="true" />
+        <GridLayout rows="*, *" columns="*">
+            <StackLayout row="0" col="0">
+                <StackLayout>
+                    <MapView
+                    borderRadius="10"
+                    width="100%"
+                    height="590"
+                    :zoom="zoom"
+                    :latitude="origin.latitude"
+                    :longitude="origin.longitude"
+                    v-if="allowExecution"
+                    @mapReady="mapReady"
+                    @markerSelect="getUbication($event)"
+                    />
+                </StackLayout>
+            </StackLayout>
+            <StackLayout row="1" col="0">
+                <ScrollView col="0" row="0">
+                    <WrapLayout orientation="vertical" width="100%" paddingBottom="20">
+                        <StackLayout v-if="ubication != null" padding="10">
+                            <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="0">
+                                <Image :src="ubication.image" stretch="aspectFill" />
                             </FlexboxLayout>
-                            <Button text="Regresar al inicio" @tap="goToHome" />
-                            <Button v-if="!ubication.status" text="Reservar" @tap="reservation" />
-                        </StackLayout>
-                    </StackLayout>
 
-                    <FlexboxLayout justifyContent="center" alignItems="center" v-else>
-                      <Label text="Para comenzar selecciona una área" textAlignment="center" fontSize="22" fontWeight="bold" textWrap="true" />
-                      
-                    </FlexboxLayout>
-                </WrapLayout>
-                    
-            </ScrollView>
+                            <StackLayout row="1" col="0">
+                                <Label fontSize="20" fontWeight="bold" color="black" :text="ubication.name" textWrap="true" />
+                                <Label fontSize="17" color="black" :text="ubication.description" textWrap="true" />
+                                
+                                <Label v-if="!ubication.status" fontSize="17" fontWeight="bold" color="black" text="Disponible" textWrap="true" />
+                                <Label v-else fontSize="17" fontWeight="bold" color="black" text="No disponible" textWrap="true" />
+                                
+                            </StackLayout>
+
+                            <StackLayout row="2" col="0">
+                                <FlexboxLayout marginTop="5" justifyContent="center" alignItems="center">
+                                    <Label color="black" text="Paso 2 de 4" textWrap="true" />
+                                </FlexboxLayout>
+                                <Button class="bg-color" color="white" text="Regresar al inicio" @tap="goToHome" />
+                                <Button class="bg-color" color="white" v-if="!ubication.status" text="Reservar" @tap="reservation" />
+                            </StackLayout>
+                        </StackLayout>
+
+                        <FlexboxLayout justifyContent="center" alignItems="center" v-else>
+                        <Label text="Para comenzar selecciona una área" textAlignment="center" fontSize="22" fontWeight="bold" textWrap="true" />
+                        
+                        </FlexboxLayout>
+                    </WrapLayout>
+                </ScrollView>
+            </StackLayout>
         </GridLayout>
     </Page>
 </template>
@@ -182,7 +188,3 @@ export default {
     }
 }
 </script>
-
-<style>
-
-</style>

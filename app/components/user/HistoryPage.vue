@@ -16,7 +16,11 @@
         <GridLayout class="box-1" columns="*" rows="*" backgroundColor="#F3F3F3">
             <ScrollView col="0" row="0">
                 <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
-                    <StackLayout width="100%" v-if="reservations.length != 0">
+                    <FlexboxLayout marginTop="10" justifyContent="center" alignItems="center">
+                        <Label text="Historial de ubicaciones" fontSize="22" color="black" textWrap="true" />
+                      
+                    </FlexboxLayout>
+                    <StackLayout marginTop="20" width="100%" v-if="reservations.length != 0">
                         <FlexboxLayout width="100%" justifyContent="space-between" alignItems="center" v-for="(item, index) in reservations" :key="index">
                             <Label :text="item.dateOne | formatDate" textWrap="true" />
                             <Button class="bg-color" color="white" text="VER" @tap="goToQR(item.id)" />
@@ -24,7 +28,7 @@
                     </StackLayout>
                     
 
-                    <FlexboxLayout marginTop="40" v-else row="1" col="0" justifyContent="center" alignItems="center">
+                    <FlexboxLayout marginTop="20" v-else row="1" col="0" justifyContent="center" alignItems="center">
                         <Label textAlignment="center" fontSize="22" text="Tu historial esta limpio hasta este momento." textWrap="true" />
                     </FlexboxLayout>
 

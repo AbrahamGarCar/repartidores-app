@@ -10,7 +10,7 @@
                         </FlexboxLayout>
 
                         <StackLayout marginTop="20" row="1" col="0">
-                            <Label text="Cantidad de visitantes" textWrap="true" />
+                            <Label text="Agrega los nombres de quiénes nos visitan" textWrap="true" />
                             <StackLayout marginTop="15">
                                 <GridLayout rows="*" columns="3*, *">
                                     <TextField row="0" col="0" class="input-info" text="" v-model="people" />
@@ -125,7 +125,11 @@ export default {
                 question1: '',
                 question2: '',
                 question3: '',
-            }
+            },
+
+            gotMessageData: null,
+            reservationID: null,
+            reservation: null,
         }
     },
 
@@ -191,21 +195,46 @@ export default {
                                                         .get()
                                                         .then(query => {
                                                             query.forEach(async doc => {
-                                                                console.log(doc)
+                                                                this.reservationID = doc.id
+                                                                this.reservation = doc.data()
                                                                 await firebase.firestore.collection('reservations')
                                                                                         .doc(doc.id)
-                                                                                        .update({ persons: this.persons, cars: this.cars, questions: this.questions, step: 3 })
+                                                                                        .update({ persons: this.persons, cars: this.cars, questions: this.questions, step: 3, payment: true, status: false, process: 'PENDIENTE' })
                                                             })
                                                         })
 
-                this.goToPaypal()
+                this.updateLocation() 
             } catch (e) {
                 console.log(e)
             }
         },
 
-        goToPaypal(){
-            this.$navigator.navigate('/paypal', { clearHistory: true })
+        //Anexos
+
+        updateLocation(){
+            try{
+                let response = firebase.firestore.collection('ubications')
+                                                .doc(this.reservation.ubication)
+                                                .update({ status: true })
+
+                this.goToQR()
+            }catch(e){
+                console.log(e)
+            }
+        },
+
+        goToQR(){
+            this.$navigator.navigate('/qr', { clearHistory: true, props: { id: this.reservationID } })
+        },
+
+        //Fin de anexos
+
+        // goToPaypal(){
+        //     this.$navigator.navigate('/paypal', { clearHistory: true })
+        // },
+
+        goToQR(){
+            this.$navigator.navigate('/qr', { clearHistory: true, props: { id: this.reservationID } })
         },
 
         goToHome(){

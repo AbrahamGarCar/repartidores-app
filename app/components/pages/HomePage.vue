@@ -16,9 +16,9 @@
         <GridLayout class="box-1" rows="*" columns="*">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
-                    <FlexboxLayout width="100%" backgroundColor="red" v-if="reservation != null" justifyContent="center" alignItems="center" flexDirection="column" padding="10">
-                        <Label text="Parece que tienes una reservacion en proceso" textWrap="true" />
-                        <Button text="Eliminar" @tap="deleteReservation" />
+                    <FlexboxLayout width="100%" class="bg-color" v-if="reservation != null" justifyContent="center" alignItems="center" flexDirection="column" padding="10">
+                        <Label text="Parece que tienes una reservacion en proceso" color="white" textWrap="true" />
+                        <Button class="bg-color" color="white" text="Eliminar" @tap="deleteReservation" />
                         
                     </FlexboxLayout>
                     <GridLayout :width="width" :height="height" padding="10">

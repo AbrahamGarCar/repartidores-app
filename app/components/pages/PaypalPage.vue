@@ -6,7 +6,7 @@
                 <FlexboxLayout marginTop="10" justifyContent="center" alignItems="center">
                     <Label color="white" text="Paso 4 de 4" textWrap="true" />
                 </FlexboxLayout>
-                <Button width="100%" backgroundColor="black" color="white" text="Continuar" @tap="changeTitle" />
+                <Button width="100%" class="bg-color" color="white" text="Continuar" @tap="changeTitle" />
             </StackLayout>
         </GridLayout>
     </Page>

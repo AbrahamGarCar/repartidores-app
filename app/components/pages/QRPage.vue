@@ -1,5 +1,25 @@
 <template>
-    <Page actionBarHidden="true">
+    <Page actionBarHidden="false">
+        <ActionBar icon="" backgroundColor="#283D23" padding="0" margin="0">
+            <!-- <GridLayout rows="20" columns="*, *" padding="0" margin="0">
+                <FlexboxLayout padding="0" margin="0" row="0" col="0" justifyContent="flex-start" alignItems="center">
+                    <Image src="~/assets/images/logo.png" width="50" height="50" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+                </FlexboxLayout>
+                <FlexboxLayout justifyContent="flex-end" alignItems="center">
+                  
+                </FlexboxLayout>
+            </GridLayout> -->
+            <FlexboxLayout width="100%">
+                <FlexboxLayout width="50%" justifyContent="flex-start" alignItems="center">
+                    <Image src="~/assets/images/logo.png" width="40" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+                </FlexboxLayout>
+                <StackLayout width="50%">
+                    <Label :text="`Fecha de compra: ${formatDateComputed}`" fontSize="11" textWrap="true" />
+                    <Label :text="`Total: $${'150'}`" fontSize="11" textWrap="true" />
+                    
+                </StackLayout>
+            </FlexboxLayout>
+        </ActionBar>
         <GridLayout backgroundColor="white" columns="*" rows="*">
             <ScrollView col="0" row="0">
                 <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
@@ -58,7 +78,7 @@
                                 </GridLayout>
 
                                 <StackLayout marginTop="20">
-                                    <Button width="100%" backgroundColor="black" color="white" text="Finalizar" @tap="finishReservation" />
+                                    <Button width="100%" class="bg-color" color="white" text="Finalizar" @tap="finishReservation" />
                                 </StackLayout>
 
                                 <StackLayout marginTop="30">
@@ -127,7 +147,16 @@ export default {
     computed: {
         ...mapState([
             'user'
-        ])
+        ]),
+
+        formatDateComputed(){
+            if (this.reservation != null) {
+                return moment(this.reservation.dateOne).format('l');
+            }else{
+                return ''
+            }
+            
+        }
     },
 
     methods: {

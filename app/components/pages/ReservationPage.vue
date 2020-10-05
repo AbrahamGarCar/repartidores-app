@@ -7,15 +7,19 @@
             </FlexboxLayout>
             <StackLayout row="1" col="0">
                 <FlexboxLayout justifyContent="center" alignItems="center">
-                    <Label text="Fecha numero 1" textWrap="true" />
+                    <Label text="Fecha y hora de ingreso" textWrap="true" />
                 </FlexboxLayout>
-                <DatePicker v-model="reservation.dateOne" :minDate="minDate" />
+                <!-- <DatePicker v-model="reservation.dateOne" :minDate="minDate" /> -->
+                <DateTimePickerFields @dateChange="onDateTimeChange1" :minDate="minDate"
+                        hintDate="Fecha" hintTime="Hora"></DateTimePickerFields>
             </StackLayout>
             <StackLayout row="2" col="0">
                 <FlexboxLayout justifyContent="center" alignItems="center">
-                    <Label text="Fecha numero 1" textWrap="true" />
+                    <Label text="Fecha y hora de salida" textWrap="true" />
                 </FlexboxLayout>
-                <DatePicker v-model="reservation.dateTwo" :minDate="minDate" />
+                <!-- <DatePicker v-model="reservation.dateTwo" :minDate="minDate" /> -->
+                <DateTimePickerFields @dateChange="onDateTimeChange2" :minDate="minDate"
+                        hintDate="Fecha" hintTime="Hora"></DateTimePickerFields>
             </StackLayout>
             
             <StackLayout row="3" col="0">
@@ -35,14 +39,20 @@ const firebase = require("nativescript-plugin-firebase")
 //Vuex
 import { mapState } from 'vuex'
 
+//Vuelidate
+import { required, maxLength } from 'vuelidate/lib/validators'
+
+//Toast
+import * as Toast from 'nativescript-toast'
+
 export default {
     name: 'Reservation',
 
     data(){
         return{
             reservation: {
-                dateOne: new Date(),
-                dateTwo: new Date(),
+                dateOne: '',
+                dateTwo: '',
                 step: 1,
                 status: true,
             }
@@ -59,8 +69,30 @@ export default {
         }
     },
 
+    validations: {
+        reservation: {
+            dateOne: {
+                required,
+            },
+
+            dateTwo: {
+                required
+            }
+        }
+    },
+
     methods: {
         async makeReservation(){
+            if(!this.$v.reservation.dateOne.required){
+                Toast.makeText("Selecciona una fecha de entrada.", "long").show()
+                return
+            }
+
+            if(!this.$v.reservation.dateTwo.required){
+                Toast.makeText("Selecciona una fecha de salida.", "long").show()
+                return
+            }
+
             try {
                 let reservation         = this.reservation
                     reservation.date    = new Date()
@@ -72,6 +104,16 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+        },
+
+        onDateTimeChange1(args){
+            console.log(args.value)
+            this.reservation.dateOne = args.value
+        },
+
+        onDateTimeChange2(args){
+            console.log(args.value)
+            this.reservation.dateTwo = args.value
         },
 
         goToUbications(){

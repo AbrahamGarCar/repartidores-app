@@ -3,6 +3,9 @@ import Vue from 'nativescript-vue'
 import ModalLogin from './components/modals/ModalLogin'
 import VueDevtools from 'nativescript-vue-devtools'
 
+import DateTimePicker from "nativescript-datetimepicker/vue";
+Vue.use(DateTimePicker);
+
 //iOS or Android
 import { isAndroid, isIOS } from "tns-core-modules/ui/page";
 

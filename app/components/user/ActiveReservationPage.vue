@@ -1,5 +1,25 @@
 <template>
-    <Page actionBarHidden="true">
+    <Page actionBarHidden="false">
+        <ActionBar icon="" backgroundColor="#283D23" padding="0" margin="0">
+            <!-- <GridLayout rows="20" columns="*, *" padding="0" margin="0">
+                <FlexboxLayout padding="0" margin="0" row="0" col="0" justifyContent="flex-start" alignItems="center">
+                    <Image src="~/assets/images/logo.png" width="50" height="50" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+                </FlexboxLayout>
+                <FlexboxLayout justifyContent="flex-end" alignItems="center">
+                  
+                </FlexboxLayout>
+            </GridLayout> -->
+            <FlexboxLayout width="100%">
+                <FlexboxLayout width="50%" justifyContent="flex-start" alignItems="center">
+                    <Image src="~/assets/images/logo.png" width="40" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+                </FlexboxLayout>
+                <StackLayout width="50%">
+                    <Label :text="`Fecha de compra: ${formatDateComputed}`" fontSize="11" textWrap="true" />
+                    <Label :text="`Total: $${'150'}`" fontSize="11" textWrap="true" />
+                    
+                </StackLayout>
+            </FlexboxLayout>
+        </ActionBar>
         <GridLayout columns="*" rows="*" backgroundColor="#F3F3F3">
             <ScrollView col="0" row="0">
                 <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
@@ -9,7 +29,7 @@
                             <Label :text="user.name" horizontalAlignment="center" marginTop="20" fontSize="25" fontWeight="bold" textWrap="true" />
                         </StackLayout>
 
-                        <StackLayout row="1" col="0" v-if="reservation != null">
+                        <StackLayout row="1" col="0">
                             <StackLayout marginTop="20">
                                 <Image src="" @loaded="generateQR($event)" horizontalAlignment="center" verticalAlignment="center"></Image>
 
@@ -58,7 +78,7 @@
                                 </GridLayout>
 
                                 <StackLayout marginTop="20">
-                                    <Button width="100%" backgroundColor="black" color="white" text="Finalizar" @tap="finishReservation" />
+                                    <Button width="100%" class="bg-color" color="white" text="Finalizar" @tap="finishReservation" />
                                 </StackLayout>
 
                                 <StackLayout marginTop="30">
@@ -68,11 +88,11 @@
                             </StackLayout>
                         </StackLayout>
 
-                        <FlexboxLayout row="1" col="0" v-else justifyContent="center" alignItems="center" flexDirection="column">
+                        <FlexboxLayout v-if="reservation == null" row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                             <Label fontSize="22" text="Parece que no tienen ninguna reservacion en este momento." textWrap="true" />
 
                             <StackLayout marginTop="40">
-                                <Button width="100%" backgroundColor="black" color="white" text="Regresar al inicio" @tap="finishReservation" />
+                                <Button width="100%" class="bg-color" color="white" text="Regresar al inicio" @tap="finishReservation" />
                             </StackLayout>
                         </FlexboxLayout>
                     </GridLayout>
@@ -133,7 +153,16 @@ export default {
     computed: {
         ...mapState([
             'user'
-        ])
+        ]),
+
+        formatDateComputed(){
+            if (this.reservation != null) {
+                return moment(this.reservation.dateOne).format('l');
+            }else{
+                return ''
+            }
+            
+        }
     },
 
     methods: {
@@ -192,5 +221,7 @@ export default {
 </script>
 
 <style>
-
+    .bg-color{
+        background-color: rgba(128, 145, 107, 0.7);
+    }
 </style>
