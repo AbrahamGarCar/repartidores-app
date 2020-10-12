@@ -13,40 +13,22 @@
 
 <template>
     <Page actionBarHidden="true" @navigatedTo="onNavigatedTo($event)">
-        <GridLayout class="box-1" rows="*" columns="*">
+        <GridLayout rows="*" columns="*" backgroundColor="#F2CBC2">
             <ScrollView row="0" col="0" width="100%">
                 <WrapLayout orientation="horizontal" marginTop="5" id="grid">
                     <GridLayout rows="*, 2*" columns="*">
                         <FlexboxLayout row="0" col="0" justifyContent="flex-end" alignItems="center" flexDirection="column">
                             <Image src="~/assets/images/logo.png" width="150" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
-                            <Label text="Bienvenido" fontSize="30" textWrap="true" />
+                            <Label text="Bienvenido" color="black" fontSize="30" textWrap="true" />
                         </FlexboxLayout>
 
                         <StackLayout row="1" col="0" v-if="window == 1">
                             <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.name" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Nombre" text="" />
+                                    <TextField v-model="profile.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.lastName" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Apellido paterno" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.secondLastName" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Apellido materno" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.email" color="black" keyboardType="email" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Correo electronico" text="" />
-                                </StackLayout>
-                                <StackLayout width="90%" marginTop="10">
-                                    <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderWidth="1" borderColor="black" padding="5" fontSize="16" hint="Contraseña" text="" />
-                                </StackLayout>
-                                <StackLayout width="90%" marginTop="10">
-                                    <TextField color="black" secure="true" borderWidth="1" borderColor="black" padding="5" fontSize="16" hint="Repetir contraseña" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.telephone" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Numero celular" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion" v-model="user.direction" />
+                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion" v-model="profile.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <ListView height="100" for="item in places">
@@ -58,79 +40,27 @@
 
                                 <StackLayout marginTop="10" width="90%">
                                     <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Label text="Fecha de nacimiento" fontSize="18" textWrap="true" />
+                                        <Label color="black" text="Fecha de nacimiento" fontSize="18" textWrap="true" />
                                     </FlexboxLayout>
-                                    <DatePicker v-model="user.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
-                                </StackLayout>
-
-                                <StackLayout marginTop="10" width="90%" borderWidth="0 0 1 0" borderColor="black" />
-
-                                <StackLayout marginTop="10" width="90%">
-                                    <Label color="black" fontSize="15" text="¿Es la primera ves que nos visita?" textWrap="true" />
-                                    <FlexboxLayout justifyContent="flex-start" alignItems="center">
-                                        <Switch v-model="user.firstTime" />
-                                        <Label :text="changeText" color="black" textWrap="true" />
-                                        
-                                    </FlexboxLayout>
-                                </StackLayout>
-
-                                <!-- Select pleaces -->
-                                <StackLayout marginTop="10" width="90%">
-                                    <StackLayout marginTop="5">
-                                            <Label color="" text="¿De donde visita?" textWrap="true" marginBottom="-10" marginLeft="5" fontSize="18" />
-                                            <GridLayout backgroundColor="#F3F3F3" color="black" borderWidth="1" borderColor="black" padding="10" rows="auto" columns="*" marginTop="10">
-                                                <DropDown ref="dd"
-                                                    width="100%"
-                                                    fontSize="17"
-                                                    itemsPadding="10"
-                                                    itemsTextAlignment="center"
-                                                    :items="pleacesItems"
-                                                    color="black"
-                                                    v-model="user.origin"
-                                                    @selectedIndexChanged="selectPleace"
-                                                    row="0"
-                                                    col="0" />
-                                            </GridLayout>
-                                        </StackLayout>
-                                </StackLayout>
-
-                                <!-- Select reason -->
-                                <StackLayout marginTop="10" width="90%">
-                                    <StackLayout marginTop="5">
-                                            <Label color="" text="¿Motivo de la visita?" textWrap="true" marginBottom="-10" marginLeft="5" fontSize="18" />
-                                            <GridLayout backgroundColor="#F3F3F3" color="black" borderWidth="1" borderColor="black" padding="10" rows="auto" columns="*" marginTop="10">
-                                                <DropDown ref="dd"
-                                                    width="100%"
-                                                    fontSize="17"
-                                                    itemsPadding="10"
-                                                    itemsTextAlignment="center"
-                                                    :items="reasonsItems"
-                                                    color="black"
-                                                    v-model="user.reason"
-                                                    @selectedIndexChanged="selectReason"
-                                                    row="0"
-                                                    col="0" />
-                                            </GridLayout>
-                                        </StackLayout>
+                                    <DatePicker v-model="profile.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
                                 </StackLayout>
                                 
 
+                                <StackLayout marginTop="10" width="90%" borderWidth="0 0 1 0" borderColor="white" />
+
+ 
                                 <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <Button width="100%" text="Continuar" @tap="askPermissions" />
+                                    <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" borderRadius="10" text="Continuar" color="white" @tap="askPermissions" />
                                 </FlexboxLayout>
 
                             </FlexboxLayout>
                         </StackLayout>
 
                         <StackLayout row="1" col="0" v-if="window == 2">
-                            <StackLayout>
-                                <Label textAlignment="center" text="Para finalizar tu registro necesitaras tomar una foto de tu INE" textWrap="true" />
-                                <Label textAlignment="center" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
+                            <StackLayout width="90%">
+                                <Label textAlignment="center" text="Ya por ultimo sube un par de fotos, una de perfil y una completa." textWrap="true" />
+                                <Label textAlignment="center" fontSize="12" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
                                 
-                            </StackLayout>
-
-                            <StackLayout marginTop="10" width="90%">
-                                <TextField v-model="user.INE" color="black" borderWidth="1" borderColor="black" padding="5 5 5 5" fontSize="16" hint="Numero de INE" text="" />
                             </StackLayout>
 
                             <StackLayout marginTop="10">
@@ -154,7 +84,7 @@
                                 </WrapLayout>
                             </StackLayout>
 
-                            <StackLayout>
+                            <!-- <StackLayout>
                                 <Label text="Foto frente:" textWrap="true" />
                                 <Label :text="photoOne" textWrap="true" />
                                 
@@ -163,13 +93,13 @@
                                 <Label text="Foto reverso:" textWrap="true" />
                                 <Label :text="photoTwo" textWrap="true" />
                                 
-                            </StackLayout>
+                            </StackLayout> -->
 
                             <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
-                                <Button width="100%" text="Regresar" @tap="window = 1" />
-                                <Button width="100%" text="Registrarme" @tap="createUser" />
+                                <Button width="100%" fontSize="16" height="40" backgroundColor="#022873" color="white" borderRadius="10" text="Regresar" @tap="window = 1" />
+                                <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Registrarme" @tap="createUser" />
 
-                                <Label marginTop="10" color="white" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
+                                <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
                             </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
@@ -182,6 +112,9 @@
 <script>
 //Firebase
 const firebase = require("nativescript-plugin-firebase")
+
+//Vuex
+import { mapState } from 'vuex'
 
 //Vuelidate
 import { required, email, minLength } from 'vuelidate/lib/validators'
@@ -197,7 +130,6 @@ const camera = require("nativescript-camera")
 const imageModule = require("tns-core-modules/ui/image")
 
 //Gallery
-//GALLERY
 const imagePicker = require("nativescript-imagepicker")
 const context = imagePicker.create({ mode: "single" })
 
@@ -258,19 +190,10 @@ export default {
 
             uid: '',
 
-            user: {
-                name: '',
-                lastName: '',
-                secondLastName: '',
-                email: '',
-                password: '',
+            profile: {
                 telephone: '',
                 direction: '',
                 birthdate: '',
-                INE: '',
-                firstTime: true,
-                origin: '',
-                reason: '',
                 role: 'Usuario',
                 registerDate: new Date(),
                 completeProfile: true,
@@ -295,21 +218,27 @@ export default {
             photoOne: null,
             photoTwo: null,
 
-            window: 1,
+            window: 1
         }
     },
 
     mounted() {
+        this.window = 1
         // this.askPermissions()
     },
 
     computed: {
+        ...mapState([
+            'user'
+        ]),
+
         changeText(){
-            if (this.user.firstTime) {
+            if (this.profile.firstTime) {
                 return 'Si'
             } else {
                 return 'No'
             }
+            return 'Si'
         },
 
         maxDate(){
@@ -318,24 +247,7 @@ export default {
     },
 
     validations: {
-        user: {
-            name: {
-                required,
-            },
-            lastName: {
-                required,
-            },
-            secondLastName: {
-                required,
-            },
-            email: {
-                required,
-                email,
-            },
-            password: {
-                required,
-                minLength: minLength(6)
-            },
+        profile: {
             telephone: {
                 required,
             },
@@ -345,20 +257,11 @@ export default {
             birthdate: {
                 required,
             },
-            INE: {
-                required,
-            },
-            origin: {
-                required,
-            },
-            reason: {
-                required,
-            },
         }
     },
 
     watch: {
-        'user.direction': function (newVal, oldVal){
+        'profile.direction': function (newVal, oldVal){
             this.showResult = true
             this.getPlaces()
         },
@@ -367,7 +270,7 @@ export default {
     methods: {
         getPlaces(){
             console.log('Entra places')
-            googlePlacesAutocomplete.search(this.user.direction)
+            googlePlacesAutocomplete.search(this.profile.direction)
             .then((places) => {
                 console.log(places)
                 this.places = places
@@ -381,7 +284,8 @@ export default {
             googlePlacesAutocomplete.getPlaceById(args).then((place) => {
                 console.log(place)
                 this.place = place
-                this.user.direction = this.place.formattedAddress
+                this.places = []
+                this.profile.direction = this.place.formattedAddress
                 place.data.result.address_components.forEach(element => {
                     if (element.types.includes('locality')){
                         this.city = element.long_name
@@ -393,7 +297,6 @@ export default {
                        this.country = element.long_name
                     }
                 });
-
             }, error => {
                 console.log(error)
             })      
@@ -402,7 +305,7 @@ export default {
         //Permisos
         askPermissions(){
             this.window = 2
-
+            
             camera.requestPermissions().then(
                 function success() {
                     console.log('Permisos aceptados')
@@ -418,13 +321,13 @@ export default {
         selectReason(args){
             console.log(`index seleccionado: ${args.newIndex}`)
             console.log(this.reasonsItems[args.newIndex])
-            this.user.reason = this.reasonsItems[args.newIndex]
+            this.profile.reason = this.reasonsItems[args.newIndex]
         },
 
         selectPleace(args){
             console.log(`index seleccionado: ${args.newIndex}`)
             console.log(this.pleacesItems[args.newIndex])
-            this.user.origin = this.pleacesItems[args.newIndex]
+            this.profile.origin = this.pleacesItems[args.newIndex]
         },
 
         async onNavigatedTo(args){
@@ -510,57 +413,18 @@ export default {
                 return
             }
 
-            if(this.$v.user.$invalid){
-                if(!this.$v.user.name.required){
-                    Toast.makeText("Nombre obligatorio.", "long").show()
-                }
+            if(this.$v.profile.$invalid){
 
-                if(!this.$v.user.email.required){
-                    Toast.makeText("Email obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.email.email){
-                    Toast.makeText("Ingresa un email valido.", "long").show()
-                }
-
-                if(!this.$v.user.password.required){
-                    Toast.makeText("Contraseña obligatoria.", "long").show()
-                }
-
-                if(!this.$v.user.password.minLength){
-                    Toast.makeText("Contraseña minimo 6 caracteres.", "long").show()
-                }
-
-                if(!this.$v.user.lastName.required){
-                    Toast.makeText("Apellido obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.secondLastName.required){
-                    Toast.makeText("Apellido obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.telephone.required){
+                if(!this.$v.profile.telephone.required){
                     Toast.makeText("Telefono obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.direction.required){
+                if(!this.$v.profile.direction.required){
                     Toast.makeText("Telefono obligatorio.", "long").show()
                 }
 
-                if(!this.$v.user.birthdate.required){
+                if(!this.$v.profile.birthdate.required){
                     Toast.makeText("Fecha de nacimiento obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.INE.required){
-                    Toast.makeText("INE obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.origin.required){
-                    Toast.makeText("De donde nos visita obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.reason.required){
-                    Toast.makeText("Motivo obligatorio.", "long").show()
                 }
                 return
             }
@@ -568,26 +432,13 @@ export default {
             try {
                 loader.show(options)
 
-                let response = await firebase.createUser({
-                    email: this.user.email,
-                    password: this.user.password
-                })
+                let response = await firebase.firestore.collection('users')
+                                                    .doc(this.user.uid)
+                                                    .update(this.profile)
 
-                if(response){
+                this.uid = this.user.uid
 
-                    let user = this.user
-                        user.uid = response.uid
-                        user.terms = false
-
-                    if(response.additionalUserInfo.isNewUser){
-                        await firebase.firestore.collection('users').doc(user.uid).set(user)
-                    }
-                    
-                    this.uid = response.uid
-
-                    this.controlUploadPhotos()
-
-                }
+                this.controlUploadPhotos()
             } catch(e) {
                 loader.hide()
                 console.log(e);
