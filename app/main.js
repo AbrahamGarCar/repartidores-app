@@ -1,7 +1,13 @@
 import Vue from 'nativescript-vue'
+import App from './components/auth/Login'
 
 import ModalLogin from './components/modals/ModalLogin'
 import VueDevtools from 'nativescript-vue-devtools'
+
+import { TextJustify } from "nativescript-text-justify";
+
+import NSVueShadow from 'nativescript-vue-shadow'
+Vue.use(NSVueShadow)
 
 import DateTimePicker from "nativescript-datetimepicker/vue";
 Vue.use(DateTimePicker);
@@ -44,10 +50,13 @@ firebase.init({
 
   onPushTokenReceivedCallback: (token) => {
       console.log('[Firebase] onPushTokenReceivedCallback:', { token })
+      store.commit('updateToken', token)
 
       firebase.getCurrentUser()
               .then((user) => {
-                console.log(user)
+                store.dispatch('updateUserToken', {
+                    user: user.uid,
+                  })
               })
           .catch(error => console.log("Trouble in paradise: " + error));
   },
@@ -69,13 +78,20 @@ Vue.registerElement(
   'RadSideDrawer',
   () => require('nativescript-ui-sidedrawer').RadSideDrawer
 )
-Vue.registerElement(
-  'WebViewExt',
-  () => require('@nota/nativescript-webview-ext').WebViewExt
-)
 Vue.registerElement('MapView', ()=> require('nativescript-google-maps-sdk').MapView)
 Vue.registerElement('MLKitBarcodeScanner', () => require('nativescript-plugin-firebase/mlkit/barcodescanning').MLKitBarcodeScanner)
 Vue.registerElement('DropDown', () => require('nativescript-drop-down/drop-down').DropDown)
+Vue.registerElement('TextJustify', () => require('nativescript-text-justify').TextJustify)
+Vue.registerElement(
+  'CheckBox',
+  () => require('@nstudio/nativescript-checkbox').CheckBox,
+  {
+    model: {
+      prop: 'checked',
+      event: 'checkedChange'
+    }
+  }
+);
 
 Vue.component('Navbar', Navbar)
 Vue.component('Menu', Menu)
@@ -94,7 +110,7 @@ new Vue({
                 if(response.exists){
                     let user = response.data()
 
-                    if (user.role == 'Guardia') {
+                    if (user.role == 'Admin') {
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/scaner', { clearHistory: true })
                     }else{
@@ -116,5 +132,5 @@ new Vue({
             })
         .catch(error => console.log("Trouble in paradise: " + error));
 },
-  render: h => h('Navigator', { attrs: { defaultRoute: '/login' } })
+render: h => h('Navigator', { attrs: { defaultRoute: '/login' } })
 }).$start()
