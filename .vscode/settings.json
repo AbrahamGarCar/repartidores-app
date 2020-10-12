@@ -1,12 +1,12 @@
 {
     "NativescriptExtend.fileAssociations": [
         {
-            "systemId": "/Users/iopromotor/Desktop/Nativescript/majalca-mobile/schema/tns.xsd",
+            "systemId": "/Users/iopromotor/Desktop/Nativescript/repartidores-app/schema/tns.xsd",
             "pattern": "**/**/*.xml"
         },
         {
             "systemId": "http://www.w3.org/2001/XMLSchema.xsd",
-            "pattern": "/Users/iopromotor/Desktop/Nativescript/majalca-mobile/schema/tns.xsd"
+            "pattern": "/Users/iopromotor/Desktop/Nativescript/repartidores-app/schema/tns.xsd"
         }
     ],
     "files.exclude": {

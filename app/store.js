@@ -47,6 +47,7 @@ export default new Vuex.Store({
     actions: {
         async updateUserToken({context, state}, payload){
             try {
+                console.log('Updateeeeeeeeed')
                 let response = await firebase.firestore.collection('users')
                                                         .doc(payload.user)
                                                         .update({ token: state.token })
