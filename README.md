@@ -1,4 +1,4 @@
-# majalca app
+# Repartidores app
 
 > Repartidores app
 
