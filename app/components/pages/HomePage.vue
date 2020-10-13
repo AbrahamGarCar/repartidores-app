@@ -71,7 +71,7 @@
                 </FlexboxLayout>
 
                 <!-- Notifications -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100">
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
                     <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
                 </FlexboxLayout>
                     <!-- Notifications number -->
@@ -89,6 +89,31 @@
                         <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
                             <StackLayout>
                                 <TextView class="details" margin="0" editable="false" :text="journeyDetails"/>
+
+                                <StackLayout v-if="order != null" marginTop="10" backgroundColor="white" padding="10" width="100%" borderRadius="5">
+                                    <Label fontSize="22" :text="order.name" textWrap="true" />
+                                    <Label textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Desde: " />
+                                            <Span :text="order.directionOrigin" />
+                                        </FormattedString>
+                                    </Label>
+                                    <FlexboxLayout justifyContent="center" alignItems="center">
+                                        <Label margin="10 0" color="black" fontSize="20" class="font-awesome" text="" textWrap="true" />
+                                        
+                                    </FlexboxLayout>
+                                    <Label textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Hasta: " />
+                                            <Span :text="order.directionDestination" />
+                                        </FormattedString>
+                                    </Label>
+
+                                    <FlexboxLayout justifyContent="center" alignItems="center">
+                                        <Button v-if="flag == 1" marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
+                                        <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
+                                    </FlexboxLayout>
+                                </StackLayout>
                             </StackLayout>
                         </WrapLayout>
                     </ScrollView>
@@ -174,8 +199,8 @@ export default {
                 longitude: -106.145014 
             },
             destination: { 
-                latitude: 28.7281124, 
-                longitude: -106.1194358
+                latitude: 0, 
+                longitude: 0
             },
             journeyDetails: 'Journey: Not started yet!',
             allowExecution: false,
@@ -185,6 +210,9 @@ export default {
             marker: null,
             ubication: null,
             APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
+
+            order: null,
+            flag: 1,
         }
     },
 
@@ -196,7 +224,7 @@ export default {
     ],
 
     created(){
-        this.setDestination()
+        this.getOrder()
 
          /* dont run the android permissions routine for iOS */
         if (platformModule.isIOS) {
@@ -281,8 +309,19 @@ export default {
 
         setDestination(){
             try {
-                this.destination.latitude = '28.6941922'
-                this.destination.longitude = '-106.1209962'  
+                if (this.flag == 1) {
+                    this.destination.latitude = this.order.origin.latitude
+                    this.destination.longitude = this.order.origin.longitude
+                } else {
+
+                    this.clearRoute()
+
+                    this.destination.latitude = this.order.destination.latitude
+                    this.destination.longitude = this.order.destination.longitude
+
+                    this.startJourney()
+                }
+                  
             } catch(e) {
                 // statements
                 console.log(e);
@@ -366,6 +405,95 @@ export default {
             this.journeyDetails = "Destination Reached.";
         },
 
+        async getOrder(){
+            try {
+                let response = await firebase.firestore.collection('orders')
+                                                    .where('status', '==', 'ACEPTADA')
+                                                    .where('deliveryMan', '==', this.user.uid)
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
+
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
+
+                                                            this.order = order
+
+                                                            if (this.order != null) {
+                                                                this.setDestination()
+                                                            }
+                                                        })
+                                                    })
+
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        startDelivery(){
+            try {
+                console.log(this.order)
+
+                confirm({
+                    title: "Comenzar entrega",
+                    message: "¿Queres comebzar la entrega?",
+                    okButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then(async result => {
+                    if (result) {
+                        let response = await firebase.firestore.collection('orders')
+                                                    .doc(this.order.id)
+                                                    .update({ status: 'EN CAMINO '})
+
+                        this.flag = 2
+                        this.setDestination()
+                    }
+                });                
+
+            } catch (error) {
+                
+            }
+        },
+
+        async updateOrderStatus(){
+            try {
+                console.log(this.order)
+
+                confirm({
+                    title: "Finalizar pedido",
+                    message: "¿Queres finalizar este pedido?",
+                    okButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then(async result => {
+                    if (result) {
+                        let response = await firebase.firestore.collection('orders')
+                                                    .doc(this.order.id)
+                                                    .update({ status: 'FINALIZADO '})
+
+                        this.flag = 1
+                        
+                        this.order = null
+
+                        this.destination.latitude = 0
+                        this.destination.longitude = 0
+
+                        this.clearRoute()
+                    }
+                });                
+            
+
+
+            } catch (error) {
+                
+            }
+        },
+
         navigatingTo(args){
             const page = args.object.page
             const box = page.getViewById('box-2')
@@ -421,6 +549,18 @@ export default {
             transition: 
                 {
                     name: 'slideTop', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
+        goToOrders(){
+            this.$navigator.navigate('/orders', 
+            {
+            transition: 
+                {
+                    name: 'slideRight', 
                     duration: 500, 
                     curve: 'linear'
                 }
