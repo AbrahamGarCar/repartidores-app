@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "468473832934-oflnt6t3hgoj7lq8bl74nqq3bd28ne8k.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.log3d.repartidores",
+            "certificate_hash": "d58eb87df3125c6f6b645cd512508f572ea175d3"
+          }
+        },
+        {
           "client_id": "468473832934-424qqn93vhp7i42rolalcpb0pa5t0rs0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

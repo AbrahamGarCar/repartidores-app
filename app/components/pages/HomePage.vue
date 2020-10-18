@@ -71,7 +71,7 @@
                 </FlexboxLayout>
 
                 <!-- Notifications -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100">
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
                     <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
                 </FlexboxLayout>
                     <!-- Notifications number -->
@@ -421,6 +421,18 @@ export default {
             transition: 
                 {
                     name: 'slideTop', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
+        goToOrders(){
+            this.$navigator.navigate('/orders', 
+            {
+            transition: 
+                {
+                    name: 'slideRight', 
                     duration: 500, 
                     curve: 'linear'
                 }
