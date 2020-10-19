@@ -66,9 +66,9 @@
                 </StackLayout>
 
                 <!-- Profile -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" left="5" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToProfile">
+                <!-- <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" left="5" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToProfile">
                     <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
-                </FlexboxLayout>
+                </FlexboxLayout> -->
 
                 <!-- Notifications -->
                 <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
@@ -88,7 +88,42 @@
                     <ScrollView row="1" col="0" backgroundColor="white">
                         <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
                             <StackLayout>
-                                <TextView class="details" margin="0" editable="false" :text="journeyDetails"/>
+
+                                <GridLayout rows="*" columns="*, *, *, *" marginTop="20">
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="0" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5" @tap="goToProfile">
+                                            <Label text="" class="font-awesome" fontSize="25" color="white" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="1" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5">
+                                            <Label color="white" class="font-awesome" fontSize="25" text="" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="2" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5">
+                                            <Label color="white" class="font-awesome" fontSize="22" text="3" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="3" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5">
+                                            <Label color="white" class="font-awesome" fontSize="22" text="4" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                </GridLayout>
+
+                                <StackLayout v-if="journeyDetails.length > 0">
+                                    <Label :text="journeyDetails" textWrap="true" />
+                                    
+                                </StackLayout>
+                                <FlexboxLayout v-else justifyContent="center" alignItems="center">
+                                    <Label fontSize="22" text="No hay ningun viaje en curso" textWrap="true" />
+                                    
+                                </FlexboxLayout>
 
                                 <StackLayout v-if="order != null" marginTop="10" backgroundColor="white" padding="10" width="100%" borderRadius="5">
                                     <Label fontSize="22" :text="order.name" textWrap="true" />
@@ -193,6 +228,7 @@ export default {
         return{
             width: 0,
             height: '',
+            height2: '',
 
             origin: { 
                 latitude: 28.7186667, 
@@ -202,7 +238,7 @@ export default {
                 latitude: 0, 
                 longitude: 0
             },
-            journeyDetails: 'Journey: Not started yet!',
+            journeyDetails: [],
             allowExecution: false,
             journeyStarted: false,
             mapView: null,
@@ -498,12 +534,15 @@ export default {
             const page = args.object.page
             const box = page.getViewById('box-2')
             const grid = page.getViewById('grid')
-            const pulse = page.getViewById('pulse-special')
+
+            const binnie = page.getViewById('binnie')
 
             setTimeout(() => {
                 console.log('Este es el tamaño: ' + grid.getActualSize().width)
                 this.width = grid.getActualSize().width
                 this.height = grid.getActualSize().width
+
+                this.height2 = binnie.getActualSize().width
             }, 500)   
 
             box.animate({

@@ -128,8 +128,10 @@ const DistanceMatrixAPIHelper = {
                 this.endJourney();
                 return;
             }
-            this.journeyDetails = "Tu destino esta a " + this.distance + " de distancia \n";
-            this.journeyDetails += "Tiempo aproximando de llegada: " + this.duration;
+            this.journeyDetails = [
+                this.distance,
+                this.duration
+            ];
         }
     }
 };
