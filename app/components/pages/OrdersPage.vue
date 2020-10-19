@@ -16,7 +16,7 @@
                             <Label text="" textWrap="true" />
                         </FlexboxLayout>
 
-                        <StackLayout row="1" col="0" padding="10" marginTop="-60">
+                        <StackLayout row="1" col="0" padding="10" marginTop="-55">
                             <StackLayout v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" width="100%" borderRadius="5">
                                 <Label fontSize="22" :text="item.name" textWrap="true" />
                                 <Label textWrap="true">
