@@ -1,6 +1,6 @@
-# majalca app
+# Repartidores app
 
-> App majalca
+> Repartidores app
 
 ## Usage
 
