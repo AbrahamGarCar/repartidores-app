@@ -65,10 +65,10 @@
                     />
                 </StackLayout>
 
-                <!-- Profile -->
-                <!-- <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" left="5" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToProfile">
-                    <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
-                </FlexboxLayout> -->
+                <!-- Ubication -->
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" left="5" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="updateUbication">
+                    <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
+                </FlexboxLayout>
 
                 <!-- Notifications -->
                 <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
@@ -116,8 +116,9 @@
                                     </FlexboxLayout>
                                 </GridLayout>
 
-                                <StackLayout v-if="journeyDetails.length > 0">
-                                    <Label :text="journeyDetails" textWrap="true" />
+                                <StackLayout v-if="order != null">
+                                    <Label :text="`El destino esta a ${journeyDetails[0]}`" textWrap="true" />
+                                    <Label :text="`Tiempo aproximado de llegada ${journeyDetails[1]}`" textWrap="true" />
                                     
                                 </StackLayout>
                                 <FlexboxLayout v-else justifyContent="center" alignItems="center">
@@ -145,7 +146,7 @@
                                     </Label>
 
                                     <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Button v-if="flag == 1" marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
+                                        <Button v-if="order.flag == 1" marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
                                         <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
                                     </FlexboxLayout>
                                 </StackLayout>
@@ -242,13 +243,13 @@ export default {
             allowExecution: false,
             journeyStarted: false,
             mapView: null,
-            zoom: 17,
+            zoom: 14,
             marker: null,
             ubication: null,
             APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
 
             order: null,
-            flag: 1,
+            flag: 2,
         }
     },
 
@@ -299,6 +300,23 @@ export default {
     },
 
     methods: {
+        async updateUbication(){
+            try {
+
+                let response = await firebase.firestore.collection('users')
+                                                        .doc(this.user.uid)
+                                                        .update({ _geoloc: { lat: this.origin.latitude, lng: this.origin.longitude } })
+                                                        .then(() => {
+                                                            alert('Ubicacion actualizada')
+                                                            .then(() => {
+                                                                console.log("Alert dialog closed.");
+                                                            });
+                                                        })
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
         //Geolocalizacion
         getLocation(){
             geolocation.getCurrentLocation({
@@ -344,18 +362,22 @@ export default {
         },
 
         setDestination(){
+            console.log(1)
             try {
-                if (this.flag == 1) {
-                    this.destination.latitude = this.order.origin.latitude
-                    this.destination.longitude = this.order.origin.longitude
-                } else {
+                if (this.order != null) {
+                    if (this.order.flag == 1) {
 
-                    this.clearRoute()
+                        this.destination.latitude = this.order.origin.latitude
+                        this.destination.longitude = this.order.origin.longitude
 
-                    this.destination.latitude = this.order.destination.latitude
-                    this.destination.longitude = this.order.destination.longitude
+                        this.startJourney();
+                    } else {
 
-                    this.startJourney()
+                        this.destination.latitude = this.order.destination.latitude
+                        this.destination.longitude = this.order.destination.longitude
+                        // this.clearRoute()
+                        this.startJourney();
+                    }
                 }
                   
             } catch(e) {
@@ -366,6 +388,7 @@ export default {
 
         //Actions MAP
         mapReady(args) {
+            console.log(2)
             /* get the mapView instance */
             this.mapView = args.object;
             this.mapView.settings.scrollGesturesEnabled = true
@@ -379,7 +402,7 @@ export default {
             this.addMarkerToMap(this.myLocationMarker, false);
             /* set map origin coordinates to present device location */
             this.fetchMyLocation();
-            this.startJourney();
+            this.startJourney()
         },
 
         locationSelected(args) {
@@ -409,6 +432,7 @@ export default {
         },
 
         startJourney() {
+            console.log(3)
             /* hide my location indicator and button */
             this.enableMyLocationButton(false);
             /* un-hide my location marker */
@@ -429,11 +453,12 @@ export default {
 
         endJourney() {
             /* stop watching for location changes */
-            this.clearWatch();
+            // this.clearWatch();
+            this.mapView.removeAllMarkers();
             /* remove the route drawn on map */
             this.clearRoute();
             /* hide my location marker  */
-            this.myLocationMarker.visible = false;
+            this.myLocationMarker.visible = true;
             /* bring back my location button on screen */
             this.enableMyLocationButton(true);
             /* update journey details */
@@ -462,6 +487,7 @@ export default {
                                                             this.order = order
 
                                                             if (this.order != null) {
+                                                                console.log(0)
                                                                 this.setDestination()
                                                             }
                                                         })
@@ -478,16 +504,19 @@ export default {
 
                 confirm({
                     title: "Comenzar entrega",
-                    message: "¿Queres comebzar la entrega?",
+                    message: "¿Queres comenzar la entrega?",
                     okButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
                 }).then(async result => {
                     if (result) {
                         let response = await firebase.firestore.collection('orders')
                                                     .doc(this.order.id)
-                                                    .update({ status: 'EN CAMINO '})
+                                                    .update({ flag: 2})
 
-                        this.flag = 2
+                        this.clearRoute()
+
+                        this.order.flag = 2
+
                         this.setDestination()
                     }
                 });                
@@ -512,13 +541,13 @@ export default {
                                                     .doc(this.order.id)
                                                     .update({ status: 'FINALIZADO '})
 
-                        this.flag = 1
-                        
+
                         this.order = null
 
                         this.destination.latitude = 0
                         this.destination.longitude = 0
 
+                        this.endJourney()
                         this.clearRoute()
                     }
                 });                

@@ -216,6 +216,11 @@ export default {
                 role: 'Usuario',
                 registerDate: new Date(),
                 completeProfile: true,
+                available: true,
+                _geoloc: {
+                    lat: 0,
+                    lng: 0,
+                }
             },
 
             reasonsItems: [

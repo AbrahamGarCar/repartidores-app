@@ -86,7 +86,9 @@ export default {
             try {
                 console.log('dale')
                 let response = await firebase.firestore.collection('orders')
-                                                    
+                                                    .where('listDeliveryMen', 'array-contains', this.user.uid)
+                                                    .where('level', '==', 2)
+                                                    .where('status', '==', 'PENDIENTE')
                                                     .get()
                                                     .then(query => {
                                                         query.forEach(doc => {
@@ -125,7 +127,7 @@ export default {
                     if (result) {
                         let response = await firebase.firestore.collection('orders')
                                                     .doc(order.id)
-                                                    .update({ status: 'ACEPTADA', deliveryMan: this.user.uid })
+                                                    .update({ status: 'ACEPTADA', deliveryMan: this.user.uid, flag: 1 })
 
                         this.goToHome()
                     }

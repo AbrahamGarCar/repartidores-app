@@ -14,8 +14,8 @@
 <template>
     <Page actionBarHidden="true">
         <GridLayout rows="*, 2*" columns="*" backgroundColor="#F2CBC2">
-            <FlexboxLayout row="0" col="0" justifyContent="flex-end" alignItems="center" flexDirection="column">
-                <Image src="~/assets/images/logo.png" width="150" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+            <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center" flexDirection="column">
+                <Image src="~/assets/images/logo.png" width="200" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
                 
                 <Label color="black" text="Bienvenido" fontSize="30" textWrap="true" />
             </FlexboxLayout>
