@@ -536,12 +536,12 @@ export default {
         },
 
         startDelivery(){
-            const options = {
+            // const options = {
 
-            };
-            this.$showBottomSheet(OptionSheet, options)
+            // };
+            // this.$showBottomSheet(OptionSheet, options)
 
-            return
+            // return
             try {
                 console.log(this.order)
 
