@@ -89,10 +89,10 @@ export default {
                                                     .where('listDeliveryMen', 'array-contains', this.user.uid)
                                                     .where('level', '==', 2)
                                                     .where('status', '==', 'PENDIENTE')
-                                                    .get()
-                                                    .then(query => {
+                                                    .onSnapshot(query => {
+                                                        this.orders = []
                                                         query.forEach(doc => {
-                                                            
+
                                                             let order = doc.data()
 
                                                             Object.defineProperty(order, 'id', {
@@ -106,7 +106,9 @@ export default {
 
                                                             console.log(this.orders)
                                                         })
+                                                        
                                                     })
+                this.$store.commit('updateOrders', this.orders)
 
                 console.log('dalee 2')
             } catch (error) {

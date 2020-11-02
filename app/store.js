@@ -10,6 +10,9 @@ export default new Vuex.Store({
     state: {
         user: null,
         token: null,
+
+        orders: [],
+
         ubication: { 
             latitude: 0, 
             longitude: 0 
@@ -41,6 +44,10 @@ export default new Vuex.Store({
 
         updateToken(state, payload){
             state.token = payload
+        },
+
+        updateOrders(state, payload){
+            state.orders = payload
         },
     },
     

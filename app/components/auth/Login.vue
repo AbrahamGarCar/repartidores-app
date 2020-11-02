@@ -147,6 +147,10 @@ export default {
                 if(response.exists){
                     let user = response.data()
 
+                    this.$store.dispatch('updateUserToken', {
+                        user: uid,
+                    })
+
                     if (user.role == 'Guardia') {
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/scaner', { clearHistory: true })

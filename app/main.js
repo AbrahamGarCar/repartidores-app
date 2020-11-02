@@ -6,6 +6,12 @@ import VueDevtools from 'nativescript-vue-devtools'
 
 import { TextJustify } from "nativescript-text-justify";
 
+import {install} from 'nativescript-material-bottomsheet';
+install();
+
+import BottomSheetPlugin from 'nativescript-material-bottomsheet/vue';
+Vue.use(BottomSheetPlugin);
+
 import NSVueShadow from 'nativescript-vue-shadow'
 Vue.use(NSVueShadow)
 
@@ -57,6 +63,7 @@ firebase.init({
 
       firebase.getCurrentUser()
               .then((user) => {
+                console.log('Actualzando token')
                 store.dispatch('updateUserToken', {
                     user: user.uid,
                   })
@@ -88,12 +95,6 @@ firebase.init({
               title: "Entendido",
               launch: true
             },
-            {
-              id: "no",
-              type: "button",
-              title: "Cancelar",
-              launch: false
-            }
           ]
         }])
 

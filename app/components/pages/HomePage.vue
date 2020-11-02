@@ -76,7 +76,7 @@
                 </FlexboxLayout>
                     <!-- Notifications number -->
                     <FlexboxLayout v-shadow="13" justifyContent="center" alignItems="center" top="50" :left="width - 25" width="20" height="20" backgroundColor="red" borderRadius="100">
-                        <Label text="2" class="font-awesome" fontSize="10" color="white" textWrap="true" />
+                        <Label :text="orders.length" class="font-awesome" fontSize="10" color="white" textWrap="true" />
                     </FlexboxLayout>
             </AbsoluteLayout>
             
@@ -222,6 +222,8 @@ const options = {
     // }
 };
 
+import OptionSheet from '../pages/bottom-sheet/OptionSheet'
+
 export default {
     name: 'Home',
 
@@ -282,6 +284,7 @@ export default {
 
     mounted(){
         this.getLocation()
+        this.getOrders()
     },
 
     filters: {
@@ -294,12 +297,46 @@ export default {
 
     computed: {
         ...mapState([
-                'user'
+                'user',
+                'orders',
             ]),
 
     },
 
     methods: {
+        async getOrders(){
+            try {
+                console.log('dale')
+                let response = await firebase.firestore.collection('orders')
+                                                    .where('listDeliveryMen', 'array-contains', this.user.uid)
+                                                    .where('level', '==', 2)
+                                                    .where('status', '==', 'PENDIENTE')
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
+
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
+
+                                                            this.orders.push(order)
+
+                                                            console.log(this.orders)
+                                                        })
+                                                    })
+
+                this.$store.commit('updateOrders', this.orders)
+                console.log('dalee 2')
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        
         async updateUbication(){
             try {
 
@@ -499,6 +536,12 @@ export default {
         },
 
         startDelivery(){
+            const options = {
+
+            };
+            this.$showBottomSheet(OptionSheet, options)
+
+            return
             try {
                 console.log(this.order)
 
