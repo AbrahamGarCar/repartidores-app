@@ -89,6 +89,7 @@
                         <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
                             <StackLayout>
 
+                                <!-- Perfil, historial, configuracion etc... -->
                                 <GridLayout rows="*" columns="*, *, *, *" marginTop="20">
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="0" width="100%" :height="height2" justifyContent="center" alignItems="center">
                                         <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5" @tap="goToProfile">
@@ -116,16 +117,26 @@
                                     </FlexboxLayout>
                                 </GridLayout>
 
-                                <StackLayout v-if="order != null">
-                                    <Label :text="`El destino esta a ${journeyDetails[0]}`" textWrap="true" />
-                                    <Label :text="`Tiempo aproximado de llegada ${journeyDetails[1]}`" textWrap="true" />
-                                    
+                                <!-- Informacion de longitud y tiempos de llegada -->
+                                <StackLayout padding="10" v-if="order != null" marginTop="10">
+                                    <Label fontSize="18" textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="El destino esta a " />
+                                            <Span :text="journeyDetails[0]" />
+                                        </FormattedString>
+                                    </Label>
+                                    <Label fontSize="18" textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Tiempo aproximado de llegada " />
+                                            <Span :text="journeyDetails[1]" />
+                                        </FormattedString>
+                                    </Label>
                                 </StackLayout>
                                 <FlexboxLayout v-else justifyContent="center" alignItems="center">
                                     <Label fontSize="22" text="No hay ningun viaje en curso" textWrap="true" />
-                                    
                                 </FlexboxLayout>
 
+                                <!-- Informacion de la orden, destino, aceptar y cancelar -->
                                 <StackLayout v-if="order != null" marginTop="10" backgroundColor="white" padding="10" width="100%" borderRadius="5">
                                     <Label fontSize="22" :text="order.name" textWrap="true" />
                                     <Label textWrap="true">
@@ -146,7 +157,15 @@
                                     </Label>
 
                                     <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Button v-if="order.flag == 1" marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
+                                        <GridLayout v-if="order.flag == 1" rows="50" columns="*, 10, 50" marginTop="10">
+                                            <StackLayout row="0" col="0">
+                                                <Button width="100%" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
+                                            </StackLayout>
+                                            <Label row="0" col="1" textWrap="true" />
+                                            <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="2">
+                                                <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="red" color="white" text="" @tap="cancelOrder" />
+                                            </FlexboxLayout>
+                                        </GridLayout>
                                         <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
                                     </FlexboxLayout>
                                 </StackLayout>
@@ -196,6 +215,8 @@ import MapsHelper from "../../MapsHelper.js"
 const LoadingIndicator = require('@nstudio/nativescript-loading-indicator').LoadingIndicator;
 const Mode = require('@nstudio/nativescript-loading-indicator').Mode;
 const loader = new LoadingIndicator();
+
+const dialogs = require('tns-core-modules/ui/dialogs')
 
 const options = {
     message: 'Cargando...',
@@ -599,6 +620,63 @@ export default {
 
             } catch (error) {
                 
+            }
+        },
+
+        cancelOrder(){
+            prompt({
+                title: "Cancelar entrega",
+                message: "¿Realmente quieres cancelar esta entrega? Escribe el motivo.",
+                okButtonText: "Si",
+                cancelButtonText: "No",
+                defaultText: "Motivo: ",
+                inputType: dialogs.inputType.text
+            }).then(result => {
+                if (result) {
+                    this.cancelOrderUpdate(result.text)
+                }
+            });
+        },
+
+        async cancelOrderUpdate(txt = 'Sin motivo'){
+            try {
+                let orderID = this.order.id
+
+                let response = await firebase.firestore.collection('orders')
+                                                .doc(this.order.id)
+                                                .update({ status: 'PENDIENTE', deliveryMan: null, flag: 0 })
+                                                .then(query => {
+                                                    this.order = null
+
+                                                    this.destination.latitude = 0
+                                                    this.destination.longitude = 0
+
+                                                    this.endJourney()
+                                                    this.clearRoute()
+                                                })
+
+                this.makeReportCancelation(txt, orderID)
+                                            
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async makeReportCancelation(txt = 'Sin motivo', orderID){
+            try {
+                let response = await firebase.firestore.collection('cancelations')
+                                                .add({ user: this.user.uid, order: orderID, reason: txt })
+                                                .then(query => {
+                                                    alert({
+                                                        title: "Orden cancelada",
+                                                        message: "Se ha cancelado la orden",
+                                                        okButtonText: "Entendido"
+                                                    }).then(() => {
+                                                        console.log("Alert dialog closed");
+                                                    });
+                                                })
+            } catch (error) {
+                console.log(error)
             }
         },
 
