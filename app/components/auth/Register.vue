@@ -25,28 +25,28 @@
                         <StackLayout row="1" col="0" v-if="window == 1">
                             <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.name" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Nombre" text="" />
+                                    <TextField v-model="user.name" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Nombre*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.lastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido paterno" text="" />
+                                    <TextField v-model="user.lastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido paterno*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.secondLastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido materno" text="" />
+                                    <TextField v-model="user.secondLastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido materno*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electronico" text="" />
+                                    <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electronico*" text="" />
                                 </StackLayout>
                                 <StackLayout width="90%" marginTop="10">
-                                    <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña" text="" />
+                                    <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña*" text="" />
                                 </StackLayout>
                                 <StackLayout width="90%" marginTop="10">
-                                    <TextField color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Repetir contraseña" text="" />
+                                    <TextField color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Repetir contraseña*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular" text="" />
+                                    <TextField v-model="user.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion" v-model="user.direction" />
+                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion*" v-model="user.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <ListView height="100" for="item in places">
@@ -58,7 +58,7 @@
 
                                 <StackLayout marginTop="10" width="90%">
                                     <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Label text="Fecha de nacimiento" color="black" fontSize="18" textWrap="true" />
+                                        <Label text="Fecha de nacimiento*" color="black" fontSize="18" textWrap="true" />
                                     </FlexboxLayout>
                                     <DatePicker v-model="user.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
                                 </StackLayout>

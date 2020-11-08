@@ -50,8 +50,8 @@
 <template>
     <Page actionBarHidden="true" @loaded="navigatingTo($event)">
         <GridLayout ~mainContent columns="*" rows="*" backgroundColor="#F3F3F3">
-            <AbsoluteLayout row="0" col="0">
-                <StackLayout id="grid" class="box-1" top="0" left="0" width="100%" height="100%">
+            <AbsoluteLayout row="0" col="0" id="grid">
+                <StackLayout class="box-1" top="0" left="0" width="100%" height="100%">
                     <MapView
                         borderRadius="10"
                         width="100%"
@@ -66,23 +66,23 @@
                 </StackLayout>
 
                 <!-- Ubication -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" left="5" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="updateUbication">
-                    <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="15" left="15" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="updateUbication">
+                    <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
                 </FlexboxLayout>
 
                 <!-- Notifications -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="15" :left="width - 75" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
                     <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
                 </FlexboxLayout>
                     <!-- Notifications number -->
-                    <FlexboxLayout v-shadow="13" justifyContent="center" alignItems="center" top="50" :left="width - 25" width="20" height="20" backgroundColor="red" borderRadius="100">
+                    <FlexboxLayout v-shadow="13" justifyContent="center" alignItems="center" top="60" :left="width - 35" width="20" height="20" backgroundColor="red" borderRadius="100">
                         <Label :text="orders.length" class="font-awesome" fontSize="10" color="white" textWrap="true" />
                     </FlexboxLayout>
             </AbsoluteLayout>
             
             <StackLayout id="box-2" ref="box2" class="box-2" row="0" col="0" backgroundColor="#F2CBC2">
                 <GridLayout rows="50, *" columns="*">
-                    <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="0"  @swipe="swipeBox2">
+                    <FlexboxLayout id="swiper" justifyContent="center" alignItems="center" row="0" col="0"  @swipe="swipeBox2">
                         <Label class="font-awesome" text="" color="#F24464" fontSize="25" textWrap="true" />
                     </FlexboxLayout>
                     <ScrollView row="1" col="0" backgroundColor="white">
@@ -98,7 +98,7 @@
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="1" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5" @tap="goToHistory">
                                             <Label color="white" class="font-awesome" fontSize="25" text="" textWrap="true" />
                                         </FlexboxLayout>
                                         
@@ -132,7 +132,8 @@
                                         </FormattedString>
                                     </Label>
                                 </StackLayout>
-                                <FlexboxLayout v-else justifyContent="center" alignItems="center">
+                                <FlexboxLayout v-else justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Image src="~/assets/images/no-order.png" width="100%" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
                                     <Label fontSize="22" text="No hay ningun viaje en curso" textWrap="true" />
                                 </FlexboxLayout>
 
@@ -325,6 +326,65 @@ export default {
     },
 
     methods: {
+        navigatingTo(args){
+            const page = args.object.page
+            const box = page.getViewById('box-2')
+            const swiper = page.getViewById('swiper')
+
+            const grid = page.getViewById('grid')
+
+            const binnie = page.getViewById('binnie')
+
+            setTimeout(() => {
+                console.log('Este es el tamaño: ' + grid.getActualSize().height)
+                console.log('Este es el tamaño 2: ' + platformModule.screen.mainScreen.heightDIPs)
+                console.log('Este es el tamaño 3: ' + platformModule.screen.mainScreen.heightPixels)
+                console.log('Tamaño swiper: ' + swiper.getActualSize().height)
+                this.width = grid.getActualSize().width
+                this.height = grid.getActualSize().width
+
+                this.height2 = binnie.getActualSize().width
+
+                box.animate({
+                    translate: {
+                        x: 0,
+                        y: grid.getActualSize().height - swiper.getActualSize().height
+                    },
+                    curve: AnimationCurve.easeIn,
+                    duration: 100,
+                })
+            }, 500)   
+        },
+        
+        swipeBox2(args){
+            const page = args.object.page
+            const box = page.getViewById('box-2')
+            const grid = page.getViewById('grid')
+            const swiper = page.getViewById('swiper')
+
+            if (args.direction == 4) {
+                box.animate({
+                    translate: {
+                        x: 0,
+                        y: 0
+                    },
+                    curve: AnimationCurve.easeIn,
+                    duration: 400,
+                })
+            }
+
+            if (args.direction == 8) {
+                box.animate({
+                    translate: {
+                        x: 0,
+                        y: grid.getActualSize().height - swiper.getActualSize().height
+                    },
+                    curve: AnimationCurve.easeIn,
+                    duration: 400,
+                })
+            }
+        },
+
         async getOrders(){
             try {
                 console.log('dale')
@@ -351,7 +411,6 @@ export default {
                                                         })
                                                     })
 
-                this.$store.commit('updateOrders', this.orders)
                 console.log('dalee 2')
             } catch (error) {
                 console.log(error)
@@ -365,9 +424,12 @@ export default {
                                                         .doc(this.user.uid)
                                                         .update({ _geoloc: { lat: this.origin.latitude, lng: this.origin.longitude } })
                                                         .then(() => {
-                                                            alert('Ubicacion actualizada')
-                                                            .then(() => {
-                                                                console.log("Alert dialog closed.");
+                                                            alert({
+                                                                title: "Aviso",
+                                                                message: "Ubicacion actualizada",
+                                                                okButtonText: "Entendido"
+                                                            }).then(() => {
+                                                                console.log("Alert dialog closed");
                                                             });
                                                         })
             } catch (error) {
@@ -603,7 +665,7 @@ export default {
                     if (result) {
                         let response = await firebase.firestore.collection('orders')
                                                     .doc(this.order.id)
-                                                    .update({ status: 'FINALIZADO '})
+                                                    .update({ status: 'FINALIZADO'})
 
 
                         this.order = null
@@ -632,7 +694,9 @@ export default {
                 defaultText: "Motivo: ",
                 inputType: dialogs.inputType.text
             }).then(result => {
-                if (result) {
+                console.log(result.result)
+                if (result.result) {
+                    
                     this.cancelOrderUpdate(result.text)
                 }
             });
@@ -640,11 +704,13 @@ export default {
 
         async cancelOrderUpdate(txt = 'Sin motivo'){
             try {
+                let newList = this.order.listDeliveryMen.filter(document => document != this.user.uid)
+
                 let orderID = this.order.id
 
                 let response = await firebase.firestore.collection('orders')
                                                 .doc(this.order.id)
-                                                .update({ status: 'PENDIENTE', deliveryMan: null, flag: 0 })
+                                                .update({ status: 'PENDIENTE', deliveryMan: null, flag: 0, listDeliveryMen: newList })
                                                 .then(query => {
                                                     this.order = null
 
@@ -656,7 +722,7 @@ export default {
                                                 })
 
                 this.makeReportCancelation(txt, orderID)
-                                            
+                this.getUsersNotification(newList)                        
             } catch (error) {
                 console.log(error)
             }
@@ -667,6 +733,7 @@ export default {
                 let response = await firebase.firestore.collection('cancelations')
                                                 .add({ user: this.user.uid, order: orderID, reason: txt })
                                                 .then(query => {
+
                                                     alert({
                                                         title: "Orden cancelada",
                                                         message: "Se ha cancelado la orden",
@@ -680,60 +747,60 @@ export default {
             }
         },
 
-        navigatingTo(args){
-            const page = args.object.page
-            const box = page.getViewById('box-2')
-            const grid = page.getViewById('grid')
+        async getUsersNotification(list){
+            try {
+                let arrayUsers = []
+                let response = await firebase.firestore.collection('users')
+                                        .where('uid', 'in', list)
+                                        .get()
+                                        .then(query => {
+                                            query.forEach(doc => {
+                                                arrayUsers.push(doc.data())
+                                            })
+                                        })
 
-            const binnie = page.getViewById('binnie')
+                console.log(arrayUsers)
 
-            setTimeout(() => {
-                console.log('Este es el tamaño: ' + grid.getActualSize().width)
-                this.width = grid.getActualSize().width
-                this.height = grid.getActualSize().width
-
-                this.height2 = binnie.getActualSize().width
-            }, 500)   
-
-            box.animate({
-                translate: {
-                    x: 0,
-                    y: platformModule.screen.mainScreen.heightDIPs - 74
-                },
-                curve: AnimationCurve.easeIn,
-                duration: 100,
-            })
-
-        },
-        
-        swipeBox2(args){
-            const page = args.object.page
-            const box = page.getViewById('box-2')
-            if (args.direction == 4) {
-                box.animate({
-                    translate: {
-                        x: 0,
-                        y: 0
-                    },
-                    curve: AnimationCurve.easeIn,
-                    duration: 400,
-                })
+                this.createNotifications(arrayUsers)
+            } catch (error) {
+                console.log(error)
             }
+        },
 
-            if (args.direction == 8) {
-                box.animate({
-                    translate: {
-                        x: 0,
-                        y: platformModule.screen.mainScreen.heightDIPs - 74
-                    },
-                    curve: AnimationCurve.easeIn,
-                    duration: 400,
+        async createNotifications(users){
+            try {
+                let notificationCollection = firebase.firestore.collection('notifications')
+
+                // Begin a new batch
+                let batch = firebase.firestore.batch()
+
+                // Set each document, as part of the batch
+                users.forEach(document => {
+                    let ref = notificationCollection.doc(document.token);
+                    batch.set(ref, { title: 'Nueva orden', content: 'Hay una nueva orden disponible' })
                 })
+
+                // Commit the entire batch
+                return batch.commit();
+            } catch (error) {
+                console.log(error)
             }
         },
 
         goToProfile(){
             this.$navigator.navigate('/profile', 
+            {
+            transition: 
+                {
+                    name: 'slideTop', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
+        goToHistory(){
+            this.$navigator.navigate('/history', 
             {
             transition: 
                 {

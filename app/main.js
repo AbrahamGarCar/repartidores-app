@@ -67,6 +67,9 @@ firebase.init({
                 store.dispatch('updateUserToken', {
                     user: user.uid,
                   })
+                store.dispatch('getPhotos', {
+                    user: user.uid,
+                  })
               })
           .catch(error => console.log("Trouble in paradise: " + error));
   },

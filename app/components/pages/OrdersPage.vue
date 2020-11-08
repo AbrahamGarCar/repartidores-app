@@ -38,7 +38,8 @@
 
                                 <FlexboxLayout justifyContent="center" alignItems="center">
                                     
-                                    <Button marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
+                                    <Button v-if="order == null" marginTop="10" backgroundColor="#F2CBC2" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
+                                    <Button v-else marginTop="10" backgroundColor="#F2CBC2" color="white" text="Orden en progreso" disabled />
                                     
                                 </FlexboxLayout>
                             </StackLayout>
@@ -68,10 +69,13 @@ export default {
     data(){
         return{
             orders: [],
+
+            order: null,
         }
     },
 
     mounted() {
+        this.getOrder()
         this.getOrders()
     },
 
@@ -111,6 +115,33 @@ export default {
                 this.$store.commit('updateOrders', this.orders)
 
                 console.log('dalee 2')
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async getOrder(){
+            try {
+                let response = await firebase.firestore.collection('orders')
+                                                    .where('status', '==', 'ACEPTADA')
+                                                    .where('deliveryMan', '==', this.user.uid)
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
+
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
+
+                                                            this.order = order
+                                                        })
+                                                    })
+
             } catch (error) {
                 console.log(error)
             }

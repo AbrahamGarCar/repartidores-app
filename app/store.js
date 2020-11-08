@@ -11,6 +11,8 @@ export default new Vuex.Store({
         user: null,
         token: null,
 
+        photos: [],
+
         orders: [],
 
         ubication: { 
@@ -22,19 +24,6 @@ export default new Vuex.Store({
     mutations: {
         updateUser(state, payload){
             state.user = payload
-        },
-        updateEditUser(state, payload){
-            state.user.range = (payload.range * 1000)
-            state.user.name = payload.name
-            state.user.email = payload.email
-        },
-
-        updateUserPhoto(state, payload){
-            state.user.photo = payload
-        },
-
-        updateServiceProvider(state, payload){
-            state.user.serviceProvider = payload
         },
 
         updateUbication(state, payload){
@@ -49,6 +38,10 @@ export default new Vuex.Store({
         updateOrders(state, payload){
             state.orders = payload
         },
+
+        updatePhotos(state, payload){
+            state.photos = payload
+        }
     },
     
     actions: {
@@ -61,6 +54,25 @@ export default new Vuex.Store({
             } catch (error) {
                 console.log(error)
             }
-        }
+        },
+
+        async getPhotos({commit, state}, payload){
+            try {
+                let photos = []
+                let response = await firebase.firestore.collection('user_photos')
+                                                        .where('user', '==', payload.user)
+                                                        .get()
+                                                        .then(query => {
+                                                            query.forEach(doc => {
+                                                                console.log(doc.data())
+                                                                photos.push(doc.data().photo)
+                                                            })
+                                                        })
+                                                        
+                commit('updatePhotos', photos)
+            } catch (error) {
+                console.log(error)
+            }
+        },
     }
 });
