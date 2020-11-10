@@ -654,6 +654,14 @@ export default {
                 if(response.exists){
                     let user = response.data()
 
+                    this.$store.dispatch('updateUserToken', {
+                        user: user.uid,
+                    })
+
+                    this.$store.dispatch('getPhotos', {
+                        user: user.uid,
+                    })
+
                     if(user.terms){
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/home', { clearHistory: true })

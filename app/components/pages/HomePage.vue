@@ -730,8 +730,10 @@ export default {
 
         async makeReportCancelation(txt = 'Sin motivo', orderID){
             try {
-                let response = await firebase.firestore.collection('cancelations')
-                                                .add({ user: this.user.uid, order: orderID, reason: txt })
+                let response = await firebase.firestore.collection('cancellations')
+                                                .doc(this.user.uid)
+                                                .collection('orders')
+                                                .add({ order: orderID, reason: txt })
                                                 .then(query => {
 
                                                     alert({

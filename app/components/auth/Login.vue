@@ -35,7 +35,7 @@
                         <Label v-else @tap="showPassword" marginRight="5" text="" color="black" class="font-awesome" fontSize="13" textWrap="true" />
                     </FlexboxLayout>
                     <StackLayout width="90%" marginTop="10" paddingBottom="10">
-                        <Button fontSize="16" height="40" backgroundColor="#F24464" text="Iniciar sesion" borderRadius="10" color="white" tap="" />
+                        <Button fontSize="16" height="40" backgroundColor="#F24464" text="Iniciar sesion" borderRadius="10" color="white" @tap="loginEmail" />
                     </StackLayout>
 
                     <StackLayout width="90%" borderWidth="0 0 1 0" borderColor="white" />
@@ -62,6 +62,15 @@
 //Firebase
 const firebase = require("nativescript-plugin-firebase")
 
+//Modal
+import ModalLogin from '../modals/ModalLogin'
+
+//Vuelidate
+import { required, email, minLength } from 'vuelidate/lib/validators'
+
+//Toast
+import * as Toast from 'nativescript-toast'
+
 export default {
     name: 'Login',
 
@@ -73,6 +82,18 @@ export default {
             },
 
             showPw: false,
+        }
+    },
+
+    validations: {
+        user: {
+            email: {
+                required,
+                email,
+            },
+            password: {
+                required,
+            },
         }
     },
 
@@ -130,12 +151,52 @@ export default {
                         // this.getUserWelcome()
                         
                     }
-
+                    this.$showModal(ModalLogin)
                     this.getUser(response.uid)
                 }
             }
             catch(e){
                 console.log(e)
+            }
+        },
+
+        async loginEmail(){
+            if(this.$v.user.$invalid){
+                if(!this.$v.user.email.email){
+                    Toast.makeText("Ingresa un email valido.", "long").show()
+                }
+                if(!this.$v.user.password.required){
+                    Toast.makeText("Ingresa tu contraseña.", "long").show()
+                }
+                return
+            }
+            try {
+                // statements
+                let response = await firebase.login({
+                    type: firebase.LoginType.PASSWORD,
+                    passwordOptions: {
+                        email: this.user.email,
+                        password: this.user.password
+                    }
+                })
+                if(response){
+                    this.$showModal(ModalLogin)
+                    
+                    this.getUser(response.uid)
+                }
+            } catch(e) {
+                console.log(e)
+                // statements
+                if(e == 'Logging in the user failed. com.google.firebase.auth.FirebaseAuthInvalidUserException: There is no user record corresponding to this identifier. The user may have been deleted.'){
+                    console.log('USUARIO NO EXISTE')
+                    Toast.makeText("El usuario no existe.", "long").show()
+                }else if(e == 'Logging in the user failed. com.google.firebase.FirebaseTooManyRequestsException: We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts. Please try again later. ]'){
+                    console.log('INTENTA MAS TARDE')
+                    Toast.makeText("Intenta mas tarde.", "long").show()
+                }else{
+                    console.log('CONTRASEÑA INCORRECTA')
+                    Toast.makeText("Contraseña incorrecta.", "long").show()
+                }
             }
         },
 
@@ -148,6 +209,10 @@ export default {
                     let user = response.data()
 
                     this.$store.dispatch('updateUserToken', {
+                        user: uid,
+                    })
+
+                    this.$store.dispatch('getPhotos', {
                         user: uid,
                     })
 
