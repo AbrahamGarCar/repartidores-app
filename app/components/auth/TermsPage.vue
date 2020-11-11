@@ -92,7 +92,7 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
 
         async goToHome(){
             try {
-                await firebase.firestore.collection('cancellations').doc(this.user.uid).set({ name: this.user.name, ordersCount: 0 })
+                await firebase.firestore.collection('information_user').doc(this.user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
                 let response = await firebase.firestore.collection('users')
                                             .doc(this.user.uid)
                                             .update({ terms: true })

@@ -28,18 +28,23 @@
                         <FlexboxLayout justifyContent="space-between" alignItems="center" flexDirection="column" width="100%" height="100%" row="0" col="0" backgroundColor="white" borderRadius="15">
                             <FlexboxLayout width="100%" justifyContent="center" alignItems="center" flexDirection="column">
                                 <Image marginTop="15" borderRadius="100" width="80" height="80" :src="photos[0]" stretch="aspectFill" />
-                                
-                                <Label :text="user.name" fontSize="18" color="black" fontWeight="bold" textWrap="true" />
+                                <Label fontSize="18" color="black" fontWeight="bold" textWrap="true">
+                                    <FormattedString>
+                                        <Span :text="user.name + ' '" />
+                                        <Span v-if="user.lastName" :text="user.lastName" />
+                                    </FormattedString>
+                                </Label>
+                                <!-- <Label :text="user.name + ' ' + user.lastName" fontSize="18" color="black" fontWeight="bold" textWrap="true" /> -->
                             </FlexboxLayout>
 
                             <GridLayout rows="100" columns="*, *">
                                 <FlexboxLayout justifyContent="center" alignItems="center" flexDirection="column" row="0" col="0">
-                                    <Label color="black" fontWeight="bold" fontSize="20" text="10" textWrap="true" />
+                                    <Label v-if="infoUser != null" color="black" fontWeight="bold" fontSize="20" :text="infoUser.deliveredCount" textWrap="true" />
                                     <Label color="black" text="Entregadas" textWrap="true" />
                                     
                                 </FlexboxLayout>
                                 <FlexboxLayout justifyContent="center" alignItems="center" flexDirection="column" row="0" col="1">
-                                    <Label color="black" fontWeight="bold" fontSize="20" text="2" textWrap="true" />
+                                    <Label v-if="infoUser != null" color="black" fontWeight="bold" fontSize="20" :text="infoUser.cancellationsCount" textWrap="true" />
                                     <Label color="black" text="Canceladas" textWrap="true" />
                                     
                                 </FlexboxLayout>
@@ -58,6 +63,7 @@
 </template>
 
 <script>
+import { query } from 'nativescript-plugin-firebase'
 //Firebase
 const firebase = require("nativescript-plugin-firebase")
 
@@ -69,12 +75,12 @@ export default {
 
     data(){
         return{
-
+            infoUser: null,
         }
     },
 
     created() {
-        
+        this.getCancellations()
     },
 
     computed: {
@@ -89,6 +95,21 @@ export default {
         navigatingTo(args){
             const page = args.object.page
             
+        },
+
+        async getCancellations(){
+            try {
+                let response = await firebase.firestore.collection('information_user')
+                                                        .doc(this.user.uid)
+                                                        .get()
+
+                if (response) {
+                    this.infoUser = response.data()
+                }
+                                                        
+            } catch (error) {
+                console.log(error)
+            }
         },
 
         async getPhotos(){

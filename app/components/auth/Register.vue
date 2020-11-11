@@ -100,6 +100,17 @@
                                 </WrapLayout>
                             </StackLayout>
 
+                            <GridLayout rows="*" columns="*, *" marginTop="-10">
+                                <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Label text="Foto de perfil" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+                                <FlexboxLayout row="0" col="1" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Label text="Foto completa" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+                            </GridLayout>
+
                             <!-- <StackLayout>
                                 <Label text="Foto frente:" textWrap="true" />
                                 <Label :text="photoOne" textWrap="true" />

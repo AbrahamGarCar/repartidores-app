@@ -25,10 +25,10 @@
                         <StackLayout row="1" col="0" v-if="window == 1">
                             <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="profile.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular" text="" />
+                                    <TextField v-model="profile.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion" v-model="profile.direction" />
+                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion*" v-model="profile.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <ListView height="100" for="item in places">
@@ -40,7 +40,7 @@
 
                                 <StackLayout marginTop="10" width="90%">
                                     <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Label color="black" text="Fecha de nacimiento" fontSize="18" textWrap="true" />
+                                        <Label color="black" text="Fecha de nacimiento*" fontSize="18" textWrap="true" />
                                     </FlexboxLayout>
                                     <DatePicker v-model="profile.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
                                 </StackLayout>
@@ -83,6 +83,17 @@
                                     </GridLayout>
                                 </WrapLayout>
                             </StackLayout>
+
+                            <GridLayout rows="*" columns="*, *" marginTop="-10">
+                                <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Label text="Foto de perfil" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+                                <FlexboxLayout row="0" col="1" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Label text="Foto completa" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+                            </GridLayout>
 
                             <!-- <StackLayout>
                                 <Label text="Foto frente:" textWrap="true" />
@@ -576,6 +587,14 @@ export default {
 
                 if(response.exists){
                     let user = response.data()
+
+                    this.$store.dispatch('updateUserToken', {
+                        user: user.uid,
+                    })
+
+                    this.$store.dispatch('getPhotos', {
+                        user: user.uid,
+                    })
 
                     if(user.terms){
                         this.$store.commit('updateUser', user)

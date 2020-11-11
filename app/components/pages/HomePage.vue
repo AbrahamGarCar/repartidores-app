@@ -61,7 +61,6 @@
                         :longitude="origin.longitude"
                         v-if="allowExecution"
                         @mapReady="mapReady"
-                        @markerSelect="locationSelected($event)"
                     />
                 </StackLayout>
 
@@ -80,10 +79,10 @@
                     </FlexboxLayout>
             </AbsoluteLayout>
             
-            <StackLayout id="box-2" ref="box2" class="box-2" row="0" col="0" backgroundColor="#F2CBC2">
+            <StackLayout v-shadow="20" id="box-2" ref="box2" class="box-2" row="0" col="0" backgroundColor="#F2CBC2">
                 <GridLayout rows="50, *" columns="*">
                     <FlexboxLayout id="swiper" justifyContent="center" alignItems="center" row="0" col="0"  @swipe="swipeBox2">
-                        <Label class="font-awesome" text="" color="#F24464" fontSize="25" textWrap="true" />
+                        <Label class="font-awesome" text="" color="#BF3952" fontSize="25" textWrap="true" />
                     </FlexboxLayout>
                     <ScrollView row="1" col="0" backgroundColor="white">
                         <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
@@ -92,25 +91,25 @@
                                 <!-- Perfil, historial, configuracion etc... -->
                                 <GridLayout rows="*" columns="*, *, *, *" marginTop="20">
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="0" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5" @tap="goToProfile">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToProfile">
                                             <Label text="" class="font-awesome" fontSize="25" color="white" textWrap="true" />
                                         </FlexboxLayout>
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="1" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5" @tap="goToHistory">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToHistory">
                                             <Label color="white" class="font-awesome" fontSize="25" text="" textWrap="true" />
                                         </FlexboxLayout>
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="2" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5">
                                             <Label color="white" class="font-awesome" fontSize="22" text="3" textWrap="true" />
                                         </FlexboxLayout>
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="3" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#F22E3E" borderRadius="5">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5">
                                             <Label color="white" class="font-awesome" fontSize="22" text="4" textWrap="true" />
                                         </FlexboxLayout>
                                         
@@ -156,19 +155,16 @@
                                             <Span :text="order.directionDestination" />
                                         </FormattedString>
                                     </Label>
-
-                                    <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <GridLayout v-if="order.flag == 1" rows="50" columns="*, 10, 50" marginTop="10">
-                                            <StackLayout row="0" col="0">
-                                                <Button width="100%" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
-                                            </StackLayout>
-                                            <Label row="0" col="1" textWrap="true" />
-                                            <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="2">
-                                                <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="red" color="white" text="" @tap="cancelOrder" />
-                                            </FlexboxLayout>
-                                        </GridLayout>
-                                        <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
-                                    </FlexboxLayout>
+                                    <GridLayout v-if="order.flag == 1" rows="50" columns="*, 10, 50" marginTop="10">
+                                        <StackLayout row="0" col="0">
+                                            <Button width="100%" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
+                                        </StackLayout>
+                                        <Label row="0" col="1" textWrap="true" />
+                                        <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="2">
+                                            <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="red" color="white" text="" @tap="cancelOrder" />
+                                        </FlexboxLayout>
+                                    </GridLayout>
+                                    <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
                                 </StackLayout>
                             </StackLayout>
                         </WrapLayout>
@@ -218,6 +214,9 @@ const Mode = require('@nstudio/nativescript-loading-indicator').Mode;
 const loader = new LoadingIndicator();
 
 const dialogs = require('tns-core-modules/ui/dialogs')
+
+import { Image } from "ui/image";
+import { ImageSource } from "image-source";
 
 const options = {
     message: 'Cargando...',
@@ -667,7 +666,11 @@ export default {
                                                     .doc(this.order.id)
                                                     .update({ status: 'FINALIZADO'})
 
-
+                        let delivered = await firebase.firestore.collection('information_user')
+                                                    .doc(this.user.uid)
+                                                    .collection('delivered')
+                                                    .doc(this.order.id)
+                                                    .set({ order: this.order.id })
                         this.order = null
 
                         this.destination.latitude = 0
@@ -730,7 +733,7 @@ export default {
 
         async makeReportCancelation(txt = 'Sin motivo', orderID){
             try {
-                let response = await firebase.firestore.collection('cancellations')
+                let response = await firebase.firestore.collection('information_user')
                                                 .doc(this.user.uid)
                                                 .collection('orders')
                                                 .add({ order: orderID, reason: txt })

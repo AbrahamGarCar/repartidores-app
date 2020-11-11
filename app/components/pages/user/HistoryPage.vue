@@ -6,16 +6,16 @@
     <Page actionBarHidden="true">
         <GridLayout rows="*" columns="*">
             <ScrollView row="0" col="0" backgroundColor="white">
-                <WrapLayout orientation="vertical" width="100%" paddingBottom="20">
-                    <GridLayout rows="120, *" columns="*">
+                <WrapLayout orientation="vertical" width="100%">
+                    <GridLayout rows="120, *" columns="*" height="100%">
                         <FlexboxLayout class="gradient" row="0" col="0" justifyContent="space-between" alignItems="flex-start" padding="10" borderRadius="0 0 20 20">
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
                             <Label fontSize="22" color="white" marginTop="2" text="Historial" textWrap="true" />
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
                         </FlexboxLayout>
 
-                        <StackLayout row="1" col="0" padding="10" marginTop="-55">
-                            <StackLayout v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" width="100%" borderRadius="5">
+                        <StackLayout row="1" col="0" marginTop="-55">
+                            <StackLayout marginBottom="35" v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" width="95%" borderRadius="5">
                                 <Label fontSize="22" :text="item.name" textWrap="true" />
                                 <Label textWrap="true">
                                     <FormattedString>
