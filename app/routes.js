@@ -6,6 +6,7 @@ import TermsPage from './components/auth/TermsPage'
 import CompleteProfilePage from './components/auth/CompleteProfilePage'
 import ProfilePage from './components/pages/user/ProfilePage'
 import OrdersPage from './components/pages/OrdersPage'
+import ConfigurationPage from './components/pages/user/ConfigurationPage'
 
 
 export const routes = {
@@ -39,6 +40,10 @@ export const routes = {
 
     '/history': { 
         component: HistoryPage,
+    },
+
+    '/configuration': { 
+        component: ConfigurationPage,
     },
 
     '/orders': { 

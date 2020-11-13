@@ -103,14 +103,14 @@
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="2" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5">
-                                            <Label color="white" class="font-awesome" fontSize="22" text="3" textWrap="true" />
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToPhone">
+                                            <Label color="white" class="font-awesome" fontSize="22" text="" textWrap="true" />
                                         </FlexboxLayout>
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout id="binnie" padding="5" row="0" col="3" width="100%" :height="height2" justifyContent="center" alignItems="center">
-                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5">
-                                            <Label color="white" class="font-awesome" fontSize="22" text="4" textWrap="true" />
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToConfiguration">
+                                            <Label color="white" class="font-awesome" fontSize="22" text="" textWrap="true" />
                                         </FlexboxLayout>
                                         
                                     </FlexboxLayout>
@@ -818,6 +818,18 @@ export default {
 
         goToOrders(){
             this.$navigator.navigate('/orders', 
+            {
+            transition: 
+                {
+                    name: 'slideRight', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
+        goToConfiguration(){
+            this.$navigator.navigate('/configuration', 
             {
             transition: 
                 {
