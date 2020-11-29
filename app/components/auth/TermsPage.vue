@@ -96,7 +96,7 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
                                             .doc(this.user.uid)
                                             .update({ terms: true })
 
-                this.$navigator.navigate('/contract')
+                this.$navigator.navigate('/contract', { clearHistory: true })
             } catch (error) {
                 console.log(error)
             }

@@ -229,6 +229,10 @@ export default {
                 completeProfile: true,
                 active: false,
                 INE: false,
+                contract: false,
+                planActivate: new Date(),
+                planDeactivate: new Date(),
+                plan: null,
                 _geoloc: {
                     lat: 0,
                     lng: 0,
@@ -675,16 +679,8 @@ export default {
                         user: user.uid,
                     })
 
-                    if (user.INE) {
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/home', { clearHistory: true })
-                    }else{
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/ine', { clearHistory: true })
-                    }
+                    this.$navigator.navigate('/ine', { clearHistory: true })
 
-                     
-                    
                 }
             } catch (error) {
                 loader.hide()

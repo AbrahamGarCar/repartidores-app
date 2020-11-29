@@ -205,15 +205,8 @@ export default {
                 telephone: '',
                 direction: '',
                 birthdate: '',
-                role: 'user',
-                registerDate: new Date(),
                 completeProfile: true,
-                active: false,
-                INE: false,
-                _geoloc: {
-                    lat: 0,
-                    lng: 0,
-                }
+                
             },
 
             reasonsItems: [
@@ -452,6 +445,11 @@ export default {
                 let response = await firebase.firestore.collection('users')
                                                     .doc(this.user.uid)
                                                     .update(this.profile)
+                                                    .then(async response => {
+                                                        await firebase.firestore.collection('information_user').doc(this.user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
+                                                    })
+
+                
 
                 this.uid = this.user.uid
 
@@ -588,7 +586,6 @@ export default {
             loader.hide()
             try {
 
-                this.$showModal(ModalLogin)
                 let response = await firebase.firestore.collection('users').doc(this.uid).get()
 
                 if(response.exists){
@@ -602,21 +599,7 @@ export default {
                         user: user.uid,
                     })
 
-                    if (user.INE) {
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/home', { clearHistory: true })
-                    }else{
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/ine', { clearHistory: true })
-                    }
-
-                    // if(user.terms){
-                    //     this.$store.commit('updateUser', user)
-                    //     this.$navigator.navigate('/home', { clearHistory: true })
-                    // }else{
-                    //     this.$store.commit('updateUser', user)
-                    //     this.$navigator.navigate('/terms', { clearHistory: true })
-                    // }  
+                    this.$navigator.navigate('/ine', { clearHistory: true }) 
                     
                 }
             } catch (error) {

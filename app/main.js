@@ -148,28 +148,36 @@ new Vue({
                 if(response.exists){
                     let user = response.data()
 
-                    if (user.role == 'Admin') {
+                    if (user.role == 'admin') {
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/scaner', { clearHistory: true })
                     } else {
                       if (!user.completeProfile) {
                           this.$store.commit('updateUser', user)
                           this.$navigator.navigate('/complete-profile', { clearHistory: true })
+
+                          return
                       } 
                       
                       if (!user.INE) {
                           this.$store.commit('updateUser', user)
                           this.$navigator.navigate('/ine', { clearHistory: true })
+
+                          return
                       }
                       
                       if (!user.terms) {
                           this.$store.commit('updateUser', user)
                           this.$navigator.navigate('/terms', { clearHistory: true })
+
+                          return
                       }
                       
                       if (!user.contract) {
                           this.$store.commit('updateUser', user)
                           this.$navigator.navigate('/contract', { clearHistory: true })
+
+                          return
                       } 
 
                       this.$store.commit('updateUser', user)

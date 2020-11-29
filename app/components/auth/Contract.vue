@@ -284,7 +284,7 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
                                             .doc(this.user.uid)
                                             .update({ contract: true })
 
-                this.$navigator.navigate('/home')
+                this.$navigator.navigate('/home', { clearHistory: true })
             } catch (error) {
                 console.log(error)
             }

@@ -143,15 +143,26 @@ export default {
                             name: response.displayName,
                             email: response.additionalUserInfo.profile.email,
                             terms: false,
+                            role: 'user',
                             photo: response.additionalUserInfo.profile.picture,
                             completeProfile: false,
+                            registerDate: new Date(),
+                            active: false,
+                            INE: false,
+                            contract: false,
+                            planActivate: new Date(),
+                            planDeactivate: new Date(),
+                            plan: null,
+                            _geoloc: {
+                                lat: 0,
+                                lng: 0,
+                            }
                         }
 
                         await firebase.firestore.collection('users').doc(user.uid).set(user)
                         // this.getUserWelcome()
                         
                     }
-                    this.$showModal(ModalLogin)
                     this.getUser(response.uid)
                 }
             }
@@ -180,8 +191,6 @@ export default {
                     }
                 })
                 if(response){
-                    this.$showModal(ModalLogin)
-                    
                     this.getUser(response.uid)
                 }
             } catch(e) {
@@ -216,23 +225,42 @@ export default {
                         user: uid,
                     })
 
-                    if (user.role == 'Guardia') {
+                    if (user.role == 'admin') {
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/scaner', { clearHistory: true })
-                    }else{
+                    } else {
                         if (!user.completeProfile) {
                             this.$store.commit('updateUser', user)
                             this.$navigator.navigate('/complete-profile', { clearHistory: true })
-                        } else {
-                            if(user.terms){
-                                this.$store.commit('updateUser', user)
-                                this.$navigator.navigate('/home', { clearHistory: true })
-                            }else{
-                                this.$store.commit('updateUser', user)
-                                this.$navigator.navigate('/terms', { clearHistory: true })
-                            }
+
+                            return
+                        } 
+                        
+                        if (!user.INE) {
+                            this.$store.commit('updateUser', user)
+                            this.$navigator.navigate('/ine', { clearHistory: true })
+
+                            return
                         }
                         
+                        if (!user.terms) {
+                            this.$store.commit('updateUser', user)
+                            this.$navigator.navigate('/terms', { clearHistory: true })
+
+                            return
+                        }
+                        
+                        if (!user.contract) {
+                            this.$store.commit('updateUser', user)
+                            this.$navigator.navigate('/contract', { clearHistory: true })
+
+                            return
+                        } 
+
+                        this.$showModal(ModalLogin)
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/home', { clearHistory: true })
+                      
                     }
                     
                 }
