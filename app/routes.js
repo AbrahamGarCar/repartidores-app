@@ -1,5 +1,7 @@
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
+import INE from './components/auth/INE'
+import ContractPage from './components/auth/Contract'
 import HomePage from './components/pages/HomePage'
 import HistoryPage from './components/pages/user/HistoryPage'
 import TermsPage from './components/auth/TermsPage'
@@ -19,9 +21,17 @@ export const routes = {
     '/register': {
         component: Register,
     },
+
+    '/ine': {
+        component: INE,
+    },
     
     '/terms': { 
         component: TermsPage,
+    },
+
+    '/contract': { 
+        component: ContractPage,
     },
 
     '/complete-profile': { 

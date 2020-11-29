@@ -92,12 +92,11 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
 
         async goToHome(){
             try {
-                await firebase.firestore.collection('information_user').doc(this.user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
                 let response = await firebase.firestore.collection('users')
                                             .doc(this.user.uid)
                                             .update({ terms: true })
 
-                this.$navigator.navigate('/home')
+                this.$navigator.navigate('/contract')
             } catch (error) {
                 console.log(error)
             }

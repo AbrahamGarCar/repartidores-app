@@ -12,14 +12,17 @@
 
                         <StackLayout row="1" col="0" marginTop="-60">
                             <FlexboxLayout width="100%" justifyContent="center" alignItems="center">
-                                <StackLayout width="150" height="150" borderRadius="100" @tap="selectOptionPhoto(1)" v-shadow="20">
+                                <!-- <StackLayout width="150" height="150" borderRadius="100" @tap="selectOptionPhoto(1)" v-shadow="20">
+                                    <Image borderRadius="100" :src="photos[0]" stretch="aspectFill" />
+                                </StackLayout> -->
+                                <StackLayout width="150" height="150" borderRadius="100" v-shadow="20">
                                     <Image borderRadius="100" :src="photos[0]" stretch="aspectFill" />
                                 </StackLayout>
                             </FlexboxLayout>
                             
                             <StackLayout>
                                 <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <StackLayout marginTop="10" width="90%">
+                                    <!-- <StackLayout marginTop="10" width="90%">
                                         <TextField v-model="userEdit.name" color="black" borderRadius="10" backgroundColor="white" borderColor="black" borderWidth="1" padding="5 5 5 5" fontSize="16" hint="Nombre*" text="" />
                                     </StackLayout>
                                     <StackLayout marginTop="10" width="90%">
@@ -27,11 +30,15 @@
                                     </StackLayout>
                                     <StackLayout marginTop="10" width="90%">
                                         <TextField v-model="userEdit.secondLastName" color="black" borderRadius="10" backgroundColor="white" borderColor="black" borderWidth="1" padding="5 5 5 5" fontSize="16" hint="Apellido materno*" text="" />
+                                    </StackLayout> -->
+                                    
+                                    <StackLayout marginTop="15">
+                                        <Label text="Telefono" textWrap="true" />
                                     </StackLayout>
                                     <StackLayout marginTop="10" width="90%">
                                         <TextField v-model="userEdit.telephone" color="black" borderRadius="10" backgroundColor="white" borderColor="black" borderWidth="1" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                     </StackLayout>
-                                    <StackLayout marginTop="10" width="90%">
+                                    <!-- <StackLayout marginTop="10" width="90%">
                                         <TextField color="black" borderRadius="10" backgroundColor="white" borderColor="black" borderWidth="1" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion*" v-model="userEdit.direction" />
                                     </StackLayout>
                                     <StackLayout marginTop="10" width="90%">
@@ -40,14 +47,14 @@
                                                 <Label :text="item.description" @tap="getPlace(item.placeId)" />
                                             </v-template>
                                         </ListView>
-                                    </StackLayout>
+                                    </StackLayout> -->
 
-                                    <StackLayout marginTop="10" width="90%">
+                                    <!-- <StackLayout marginTop="10" width="90%">
                                         <FlexboxLayout justifyContent="center" alignItems="center">
                                             <Label text="Fecha de nacimiento*" color="black" fontSize="18" textWrap="true" />
                                         </FlexboxLayout>
                                         <DatePicker v-model="userEdit.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
-                                    </StackLayout>
+                                    </StackLayout> -->
 
                                     <StackLayout marginTop="10" width="90%" borderWidth="0 0 1 0" borderColor="white" />
 

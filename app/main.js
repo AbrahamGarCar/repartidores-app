@@ -119,6 +119,7 @@ Vue.registerElement('MapView', ()=> require('nativescript-google-maps-sdk').MapV
 Vue.registerElement('MLKitBarcodeScanner', () => require('nativescript-plugin-firebase/mlkit/barcodescanning').MLKitBarcodeScanner)
 Vue.registerElement('DropDown', () => require('nativescript-drop-down/drop-down').DropDown)
 Vue.registerElement('TextJustify', () => require('nativescript-text-justify').TextJustify)
+Vue.registerElement('DrawingPad', () => require('nativescript-drawingpad').DrawingPad)
 Vue.registerElement(
   'CheckBox',
   () => require('@nstudio/nativescript-checkbox').CheckBox,
@@ -150,19 +151,30 @@ new Vue({
                     if (user.role == 'Admin') {
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/scaner', { clearHistory: true })
-                    }else{
+                    } else {
                       if (!user.completeProfile) {
                           this.$store.commit('updateUser', user)
                           this.$navigator.navigate('/complete-profile', { clearHistory: true })
-                      } else {
-                          if(user.terms){
-                              this.$store.commit('updateUser', user)
-                              this.$navigator.navigate('/home', { clearHistory: true })
-                          }else{
-                              this.$store.commit('updateUser', user)
-                              this.$navigator.navigate('/terms', { clearHistory: true })
-                          }
+                      } 
+                      
+                      if (!user.INE) {
+                          this.$store.commit('updateUser', user)
+                          this.$navigator.navigate('/ine', { clearHistory: true })
                       }
+                      
+                      if (!user.terms) {
+                          this.$store.commit('updateUser', user)
+                          this.$navigator.navigate('/terms', { clearHistory: true })
+                      }
+                      
+                      if (!user.contract) {
+                          this.$store.commit('updateUser', user)
+                          this.$navigator.navigate('/contract', { clearHistory: true })
+                      } 
+
+                      this.$store.commit('updateUser', user)
+                      this.$navigator.navigate('/home', { clearHistory: true })
+                      
                     }
                     
                 }

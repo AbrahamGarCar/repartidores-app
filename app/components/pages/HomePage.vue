@@ -11,7 +11,6 @@
     }
 
     .box-1{
-        background-image: url('~/assets/images/waves.png');
         background-position: center;
         background-size: cover;
     }
@@ -512,13 +511,24 @@ export default {
             this.mapView = args.object;
             this.mapView.settings.scrollGesturesEnabled = true
             this.mapView.settings.zoomGesturesEnabled = true
+
+            let imgMarker = "~/assets/images/marker3.png"
+
+            const imageSource = ImageSource.fromFileSync(imgMarker);
+            
+
+            const icon2 = new Image();
+            icon2.imageSource = imageSource;
+            icon2.width = 10;
+            icon2.height = 10;
+            
             
             /* turn on my location button on map */
             this.enableMyLocationButton(true);
             /* add destination marker to map */
-            this.addMarkerToMap(this.destinationMarker, true);
+            this.addMarkerToMap(this.destinationMarker, true, icon2);
             /* add my location marker to map (which will point to our location when journey starts) - visibility hidden  */
-            this.addMarkerToMap(this.myLocationMarker, false);
+            this.addMarkerToMap(this.myLocationMarker, false, icon2);
             /* set map origin coordinates to present device location */
             this.fetchMyLocation();
             this.startJourney()
@@ -562,11 +572,22 @@ export default {
             /* start watching for location changes and update the map and journey details accordingly */
             this.watchLocationAndUpdateJourney();
 
+            let imgMarker = "~/assets/images/marker3.png"
+
+            const imageSource = ImageSource.fromFileSync(imgMarker);
+            
+
+            const icon2 = new Image();
+            icon2.imageSource = imageSource;
+            icon2.width = 10;
+            icon2.height = 10;
+
             const marker = new Marker()
             marker.position = Position.positionFromLatLng(this.destination.latitude, this.destination.longitude)
             marker.title = 'Destino'
             marker.snippet = "Este es el destino"
             marker.userData = {index: 1};
+
             (this.mapView).addMarker(marker);
         },
 

@@ -205,9 +205,15 @@ export default {
                 telephone: '',
                 direction: '',
                 birthdate: '',
-                role: 'Usuario',
+                role: 'user',
                 registerDate: new Date(),
                 completeProfile: true,
+                active: false,
+                INE: false,
+                _geoloc: {
+                    lat: 0,
+                    lng: 0,
+                }
             },
 
             reasonsItems: [
@@ -596,13 +602,21 @@ export default {
                         user: user.uid,
                     })
 
-                    if(user.terms){
+                    if (user.INE) {
                         this.$store.commit('updateUser', user)
                         this.$navigator.navigate('/home', { clearHistory: true })
                     }else{
                         this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/terms', { clearHistory: true })
-                    }  
+                        this.$navigator.navigate('/ine', { clearHistory: true })
+                    }
+
+                    // if(user.terms){
+                    //     this.$store.commit('updateUser', user)
+                    //     this.$navigator.navigate('/home', { clearHistory: true })
+                    // }else{
+                    //     this.$store.commit('updateUser', user)
+                    //     this.$navigator.navigate('/terms', { clearHistory: true })
+                    // }  
                     
                 }
             } catch (error) {
