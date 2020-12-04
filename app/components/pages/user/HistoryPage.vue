@@ -5,8 +5,8 @@
 <template>
     <Page actionBarHidden="true">
         <GridLayout rows="*" columns="*">
-            <ScrollView row="0" col="0" backgroundColor="white">
-                <WrapLayout orientation="vertical" width="100%">
+            <ScrollView row="0" col="0" backgroundColor="white" @scroll="onScroll($event)" scrollBarIndicatorVisible="false">
+                <WrapLayout @layoutChanged="onLayoutChanged($event)" orientation="vertical" width="100%">
                     <GridLayout rows="120, *" columns="*" height="100%">
                         <FlexboxLayout class="gradient" row="0" col="0" justifyContent="space-between" alignItems="flex-start" padding="10" borderRadius="0 0 20 20">
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
@@ -34,6 +34,10 @@
                                     </FormattedString>
                                 </Label>
                             </StackLayout>
+
+                            <FlexboxLayout width="100%" height="100" justifyContent="center" alignItems="center">
+                                <ActivityIndicator :busy="busy" />
+                            </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
                 </WrapLayout>
@@ -64,6 +68,11 @@ export default {
     data(){
         return{
             orders: [],
+            last: null,
+
+            lastItemY: 0,
+            bussy: false,
+            i: 1,
         }
     },
 
@@ -87,13 +96,18 @@ export default {
 
     methods: {
         async getOrders(){
+            this.busy = true
+
             try {
                 console.log('dale')
                 let response = await firebase.firestore.collection('orders')
                                                     .where('status', '==', 'FINALIZADO')
                                                     .where('deliveryMan', '==', this.user.uid)
+                                                    .limit(4)
                                                     .get()
                                                     .then(query => {
+                                                        this.last = query.docs[query.docs.length - 1];
+
                                                         query.forEach(doc => {
 
                                                             let order = doc.data()
@@ -116,6 +130,54 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+            finally{
+                this.busy = false
+            }
+        },
+
+        async nextOrders(){
+            this.busy = true
+            try {
+                if (this.last == undefined) {
+                    return
+                }
+                let response = await firebase.firestore.collection('orders')
+                                                        .where('status', '==', 'FINALIZADO')
+                                                        .where('deliveryMan', '==', this.user.uid)
+                                                        .limit(4)
+                                                        .startAfter(this.last)
+                                                        .get()
+                                                        .then(query => {
+                                                            this.last = query.docs[query.docs.length - 1];
+                                                            query.forEach(doc => {
+                                                                this.orders.push(doc.data())
+                                                            })
+                                                        })
+            } catch(e) {
+                console.log(e);
+            }
+            finally{
+                this.busy = false
+            }
+        },
+
+        onScroll: function (args) {
+            const scrollView = args.object
+            let verticalOffset = scrollView.getActualSize().height + scrollView.verticalOffset
+            if (verticalOffset >= this.lastItemY) {
+                if (!this.busy && this.i <= 100) {
+                    //loader.show(options)
+                    this.nextOrders()
+                }
+            }
+
+        },
+
+        onLayoutChanged(args){
+            const containerLyt = args.object
+            let length = containerLyt.getChildrenCount()
+            let lastItem = containerLyt.getChildAt(length - 1)
+            this.lastItemY = lastItem.getLocationRelativeTo(containerLyt).y
         },
 
         goToHome(){

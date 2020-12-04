@@ -112,7 +112,7 @@ export default {
                                                         })
                                                         
                                                     })
-                this.$store.commit('updateOrders', this.orders)
+                // this.$store.commit('updateOrders', this.orders)
 
                 console.log('dalee 2')
             } catch (error) {

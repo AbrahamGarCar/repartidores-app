@@ -264,6 +264,8 @@ export default {
             height: '',
             height2: '',
 
+            orders: [],
+
             origin: { 
                 latitude: 28.7186667, 
                 longitude: -106.145014 
@@ -329,7 +331,6 @@ export default {
     computed: {
         ...mapState([
                 'user',
-                'orders',
             ]),
 
     },
@@ -402,6 +403,8 @@ export default {
 
         async getOrders(){
             try {
+                this.orders = []
+
                 console.log('dale')
                 let response = await firebase.firestore.collection('orders')
                                                     .where('listDeliveryMen', 'array-contains', this.user.uid)
@@ -409,6 +412,8 @@ export default {
                                                     .where('status', '==', 'PENDIENTE')
                                                     .get()
                                                     .then(query => {
+                                                        this.orders = []
+                                                        
                                                         query.forEach(doc => {
                                                             
                                                             let order = doc.data()
@@ -674,7 +679,7 @@ export default {
                     if (result) {
                         let response = await firebase.firestore.collection('orders')
                                                     .doc(this.order.id)
-                                                    .update({ flag: 2})
+                                                    .update({ flag: 2, process: 3})
 
                         this.clearRoute()
 
@@ -702,7 +707,7 @@ export default {
                     if (result) {
                         let response = await firebase.firestore.collection('orders')
                                                     .doc(this.order.id)
-                                                    .update({ status: 'FINALIZADO'})
+                                                    .update({ status: 'FINALIZADO', process: 4})
 
                         let delivered = await firebase.firestore.collection('information_user')
                                                     .doc(this.user.uid)
