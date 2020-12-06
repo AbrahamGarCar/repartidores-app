@@ -75,6 +75,11 @@
                             <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
                                 <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Cargar fotos" @tap="createUser" />
                             </FlexboxLayout>
+
+                            <FlexboxLayout marginTop="15" justifyContent="center" alignItems="center">
+                                <Label fontSize="22" :text="`${percent}%`" textWrap="true" />
+                                
+                            </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
                 </WrapLayout>
@@ -161,6 +166,8 @@ export default {
 
             photoOne: null,
             photoTwo: null,
+
+            percent: 0,
         }
     },
 
@@ -339,10 +346,31 @@ export default {
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
                     console.log("Percentage complete: " + status.percentageCompleted);
+
+                    this.percent = status.percentageCompleted
                 },
                 metadata
               }).then((uploadedFile) => {
-                    this.getResizePath(fotoId)
+                    let arrayPhotos = []
+
+                    firebase.storage.getDownloadUrl({
+                        remoteFullPath: 'ine/' + fotoId + '.jpg'
+                    }).then(async (url) => {
+
+                        let data = {
+                            photo: url,
+                            user: this.uid
+                        }
+
+                        arrayPhotos.push(url)
+
+                        let response = await firebase.firestore.collection('ine_photos').add(data)
+                        this.controlUploadPhotos()
+                    }).catch(error => {
+                        console.log(error);
+                        loader.hide()
+                    })
+                    
                 },
                     (error) => {
                         loader.hide()

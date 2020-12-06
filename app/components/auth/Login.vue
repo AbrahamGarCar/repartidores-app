@@ -212,10 +212,14 @@ export default {
         //We get the user data from firebase
         async getUser(uid){
             try {
+                this.$showModal(ModalLogin)
+
                 let response = await firebase.firestore.collection('users').doc(uid).get()
 
                 if(response.exists){
                     let user = response.data()
+
+                    console.log(user);
 
                     this.$store.dispatch('updateUserToken', {
                         user: uid,
@@ -225,43 +229,36 @@ export default {
                         user: uid,
                     })
 
-                    if (user.role == 'admin') {
+                    if (!user.completeProfile) {
                         this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/scaner', { clearHistory: true })
-                    } else {
-                        if (!user.completeProfile) {
-                            this.$store.commit('updateUser', user)
-                            this.$navigator.navigate('/complete-profile', { clearHistory: true })
+                        this.$navigator.navigate('/complete-profile', { clearHistory: true })
 
-                            return
-                        } 
-                        
-                        if (!user.INE) {
-                            this.$store.commit('updateUser', user)
-                            this.$navigator.navigate('/ine', { clearHistory: true })
-
-                            return
-                        }
-                        
-                        if (!user.terms) {
-                            this.$store.commit('updateUser', user)
-                            this.$navigator.navigate('/terms', { clearHistory: true })
-
-                            return
-                        }
-                        
-                        if (!user.contract) {
-                            this.$store.commit('updateUser', user)
-                            this.$navigator.navigate('/contract', { clearHistory: true })
-
-                            return
-                        } 
-
-                        this.$showModal(ModalLogin)
+                        return
+                    } 
+                    
+                    if (!user.INE) {
                         this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/home', { clearHistory: true })
-                      
+                        this.$navigator.navigate('/ine', { clearHistory: true })
+
+                        return
                     }
+                    
+                    if (!user.terms) {
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/terms', { clearHistory: true })
+
+                        return
+                    }
+                    
+                    if (!user.contract) {
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/contract', { clearHistory: true })
+
+                        return
+                    } 
+
+                    this.$store.commit('updateUser', user)
+                    this.$navigator.navigate('/home', { clearHistory: true })
                     
                 }
             } catch (error) {

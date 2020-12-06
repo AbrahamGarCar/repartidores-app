@@ -232,7 +232,26 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
                 },
                 metadata
               }).then((uploadedFile) => {
-                    this.getResizePath(fotoId)
+                    let arrayPhotos = []
+
+                    firebase.storage.getDownloadUrl({
+                        remoteFullPath: 'signs/' + fotoId + '.jpg'
+                    }).then(async (url) => {
+
+                        let data = {
+                            photo: url,
+                            user: this.uid
+                        }
+
+                        arrayPhotos.push(url)
+
+                        let response = await firebase.firestore.collection('sign_photos').add(data)
+                        this.goToHome()
+                    }).catch(error => {
+                        console.log(error);
+                        loader.hide()
+                    })
+                    
                 },
                     (error) => {
                         loader.hide()

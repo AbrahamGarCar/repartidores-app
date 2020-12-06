@@ -112,6 +112,11 @@
 
                                 <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
                             </FlexboxLayout>
+
+                            <FlexboxLayout marginTop="15" justifyContent="center" alignItems="center">
+                                <Label fontSize="22" :text="`${percent}%`" textWrap="true" />
+                                
+                            </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
                 </WrapLayout>
@@ -228,7 +233,9 @@ export default {
             photoOne: null,
             photoTwo: null,
 
-            window: 1
+            window: 1,
+
+            percent: 0,
         }
     },
 
@@ -517,10 +524,31 @@ export default {
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
                     console.log("Percentage complete: " + status.percentageCompleted);
+
+                    this.percent = status.percentageCompleted
                 },
                 metadata
               }).then((uploadedFile) => {
-                    this.getResizePath(fotoId)
+                    let arrayPhotos = []
+
+                    firebase.storage.getDownloadUrl({
+                        remoteFullPath: 'users/' + fotoId + '.jpg'
+                    }).then(async (url) => {
+
+                        let data = {
+                            photo: url,
+                            user: this.uid
+                        }
+
+                        arrayPhotos.push(url)
+
+                        let response = await firebase.firestore.collection('user_photos').add(data)
+                        this.controlUploadPhotos()
+                    }).catch(error => {
+                        console.log(error);
+                        loader.hide()
+                    })
+                    
                 },
                     (error) => {
                         loader.hide()
