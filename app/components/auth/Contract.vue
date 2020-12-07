@@ -149,7 +149,7 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
 
                     confirm({
                         title: "¿Has terminado?",
-                        message: "Aceptas que has leido el contrato y estas de acuerdo.",
+                        message: "Aceptas que has leído el contrato y estas de acuerdo.",
                         okButtonText: "Aceptar",
                         cancelButtonText: "Cancelar"
                     }).then(async result => {

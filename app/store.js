@@ -65,9 +65,14 @@ export default new Vuex.Store({
                                                         .then(query => {
                                                             query.forEach(doc => {
                                                                 console.log(doc.data())
-                                                                photos.push(doc.data().photo)
+                                                                photos.push(doc.data())
                                                             })
                                                         })
+
+                if (photos.length != 0) {
+                    console.log('sort');
+                    photos.sort((a, b) => parseFloat(a.control) - parseFloat(b.control));
+                }
                                                         
                 commit('updatePhotos', photos)
             } catch (error) {

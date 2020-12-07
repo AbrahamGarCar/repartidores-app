@@ -13,9 +13,9 @@
 <template>
     <Page actionBarHidden="true" @loaded="navigatingTo($event)">
         <GridLayout rows="*" columns="*">
-            <AbsoluteLayout class="image-profile" ref="page" id="page" row="0" col="0" :backgrounImage="photos[1]">
+            <AbsoluteLayout class="image-profile" ref="page" id="page" row="0" col="0" :backgrounImage="photos[1].photo">
                 
-                <Image top="0" left="0" width="100%" height="100%" :src="photos[1]" stretch="aspectFill" />
+                <Image top="0" left="0" width="100%" height="100%" :src="photos[1].photo" stretch="aspectFill" />
                 <StackLayout top="0" left="0" width="100%" height="100%" class="filter" />
 
                 <!-- Ubication -->
@@ -27,11 +27,12 @@
                     <StackLayout row="1" col="0" padding="15">
                         <FlexboxLayout justifyContent="space-between" alignItems="center" flexDirection="column" width="100%" height="100%" row="0" col="0" backgroundColor="white" borderRadius="15">
                             <FlexboxLayout width="100%" justifyContent="center" alignItems="center" flexDirection="column">
-                                <Image marginTop="15" borderRadius="100" width="80" height="80" :src="photos[0]" stretch="aspectFill" />
+                                <Image marginTop="15" borderRadius="100" width="80" height="80" :src="photos[0].photo" stretch="aspectFill" />
                                 <Label fontSize="18" color="black" fontWeight="bold" textWrap="true">
                                     <FormattedString>
                                         <Span :text="user.name + ' '" />
-                                        <Span v-if="user.lastName" :text="user.lastName" />
+                                        <Span v-if="user.lastName" :text="user.lastName + ' '" />
+                                        <Span v-if="user.secondLastName" :text="user.secondLastName + ' '" />
                                     </FormattedString>
                                 </Label>
                                 <!-- <Label :text="user.name + ' ' + user.lastName" fontSize="18" color="black" fontWeight="bold" textWrap="true" /> -->
@@ -81,6 +82,8 @@ export default {
 
     created() {
         this.getCancellations()
+
+        this.orderPhotos()
     },
 
     computed: {
@@ -88,13 +91,16 @@ export default {
                 'user',
                 'photos'
             ]),
-
     },
 
     methods: {
         navigatingTo(args){
             const page = args.object.page
             
+        },
+
+        orderPhotos(){
+            console.log('Daleee: ', this.photos);
         },
 
         async getCancellations(){
@@ -125,6 +131,10 @@ export default {
                                                                 this.photos.push(doc.data().photo)
                                                             })
                                                         })
+
+                if (this.photos.length != 0) {
+                    console.log('tiene algo');
+                }
                 
             } catch (error) {
                 console.log(error)

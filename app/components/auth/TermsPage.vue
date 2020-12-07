@@ -18,7 +18,7 @@
                     </StackLayout>
                     
                     <FlexboxLayout marginBottom="10" width="90%" justifyContent="center" alignItems="flex-start">
-                        <check-box :checked="isChecked" @checkedChange="isChecked = $event.value"  text="He leido y acepto los terminos y condiciones" />
+                        <check-box :checked="isChecked" @checkedChange="isChecked = $event.value"  text="He leído y acepto los términos y condiciones" />
                         <!-- <Label marginTop="3" text="He leido y acepto los terminos y condiciones" textWrap="true" /> -->
                         
                     </FlexboxLayout>

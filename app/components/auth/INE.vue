@@ -24,7 +24,7 @@
 
                         <StackLayout row="1" col="0">
                             <StackLayout width="90%">
-                                <Label textAlignment="center" text="Ya casi estamos, solo requerimos una foto de tu INE por ambos lados" textWrap="true" />
+                                <Label textAlignment="center" text="Ya casi estamos, solo requerimos una foto de tu INE por ambos lados." textWrap="true" />
                                 <Label textAlignment="center" fontSize="12" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
                                 
                             </StackLayout>

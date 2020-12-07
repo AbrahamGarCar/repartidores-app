@@ -23,7 +23,7 @@
             <StackLayout row="1" col="0">
                 <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                     <StackLayout width="90%">
-                        <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electronico" text="" />
+                        <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electrónico" text="" />
                     </StackLayout>
                     <StackLayout width="90%" marginTop="10">
                         <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña" text="" />
@@ -40,10 +40,10 @@
 
                     <StackLayout width="90%" borderWidth="0 0 1 0" borderColor="white" />
 
-                    <Label color="black" marginTop="10" text="O inicia sesion con" textWrap="true" />
+                    <Label color="black" marginTop="10" text="O inicia sesión con" textWrap="true" />
 
                     <FlexboxLayout width="90%" marginTop="10" paddingBottom="10" justifyContent="center" alignItems="center">
-                        <FlexboxLayout marginRight="10" width="40" height="40" justifyContent="center" alignItems="center" borderRadius="100" backgroundColor="#1877F2">
+                        <FlexboxLayout marginRight="10" width="40" height="40" justifyContent="center" alignItems="center" borderRadius="100" backgroundColor="#1877F2" @tap="loginFacebook">
                             <Label fontSize="20" class="font-awesome-brands" color="white" text="" textWrap="true" />
                         </FlexboxLayout>
                         <FlexboxLayout marginLeft="10" width="40" height="40" justifyContent="center" alignItems="center" borderRadius="100" backgroundColor="#FF4131" @tap="loginGoogle">
@@ -51,7 +51,7 @@
                         </FlexboxLayout>
                     </FlexboxLayout>
 
-                    <Label color="black" marginTop="10" text="¿No tienes una cuenta? Registrate aqui." textWrap="true" @tap="goToRegister" />
+                    <Label color="black" marginTop="10" text="¿No tienes una cuenta? Regístrate aquí." textWrap="true" @tap="goToRegister" />
                 </FlexboxLayout>
             </StackLayout>
         </GridLayout>
@@ -125,6 +125,50 @@ export default {
                     curve: 'linear'
                 }
             })
+        },
+
+        async loginFacebook(){
+            try{
+                let response = await firebase.login({
+                    type: firebase.LoginType.FACEBOOK,
+                })
+
+                if(response){
+                    console.log(JSON.stringify(response.additionalUserInfo.isNewUser))
+
+                    if(response.additionalUserInfo.isNewUser){
+
+                        let user = {
+                            uid: response.uid,
+                            name: response.displayName,
+                            email: response.additionalUserInfo.profile.email,
+                            terms: false,
+                            role: 'user',
+                            photo: response.additionalUserInfo.profile.picture,
+                            completeProfile: false,
+                            registerDate: new Date(),
+                            active: false,
+                            INE: false,
+                            contract: false,
+                            planActivate: new Date(),
+                            planDeactivate: new Date(),
+                            plan: null,
+                            _geoloc: {
+                                lat: 0,
+                                lng: 0,
+                            }
+                        }
+
+                        await firebase.firestore.collection('users').doc(user.uid).set(user)
+                        // this.getUserWelcome()
+                        
+                    }
+                    this.getUser(response.uid)
+                }
+            }
+            catch(e){
+                console.log(e)
+            }
         },
 
         async loginGoogle(){

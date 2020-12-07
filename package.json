@@ -5,7 +5,7 @@
   "author": "Gerardo Lucero <34350583+gerardolucero1@users.noreply.github.com>",
   "license": "MIT",
   "nativescript": {
-    "id": "com.log3d.repartidores",
+    "id": "com.log3d.fassst",
     "templateVersion": "v2",
     "tns-android": {
       "version": "6.5.0"

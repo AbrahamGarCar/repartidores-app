@@ -28,7 +28,7 @@
                                     <TextField v-model="profile.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion*" v-model="profile.direction" />
+                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Dirección*" v-model="profile.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <ListView height="100" for="item in places">
@@ -58,7 +58,7 @@
 
                         <StackLayout row="1" col="0" v-if="window == 2">
                             <StackLayout width="90%">
-                                <Label textAlignment="center" text="Ya por ultimo sube un par de fotos, una de perfil y una completa." textWrap="true" />
+                                <Label textAlignment="center" text="Sube un par de fotos, una de perfil y una completa." textWrap="true" />
                                 <Label textAlignment="center" fontSize="12" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
                                 
                             </StackLayout>
@@ -537,7 +537,8 @@ export default {
 
                         let data = {
                             photo: url,
-                            user: this.uid
+                            user: this.uid,
+                            control: this.controlPhotos
                         }
 
                         arrayPhotos.push(url)

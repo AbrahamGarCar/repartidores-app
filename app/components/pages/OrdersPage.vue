@@ -38,7 +38,7 @@
 
                                 <FlexboxLayout justifyContent="center" alignItems="center">
                                     
-                                    <Button v-if="order == null" marginTop="10" backgroundColor="#F2CBC2" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
+                                    <Button v-if="order == null" marginTop="10" backgroundColor="#F24464" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
                                     <Button v-else marginTop="10" backgroundColor="#F2CBC2" color="white" text="Orden en progreso" disabled />
                                     
                                 </FlexboxLayout>
@@ -153,7 +153,7 @@ export default {
 
                 confirm({
                     title: "Aceptar pedido",
-                    message: "¿Queres aceptar este pedido?",
+                    message: "¿Quieres aceptar este pedido?",
                     okButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
                 }).then(async result => {

@@ -6,7 +6,7 @@
                     <GridLayout rows="120, *" columns="*" height="100%">
                         <FlexboxLayout class="gradient" row="0" col="0" justifyContent="space-between" alignItems="flex-start" padding="10" borderRadius="0 0 20 20">
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
-                            <Label fontSize="22" color="white" marginTop="2" text="Configuracion" textWrap="true" />
+                            <Label fontSize="22" color="white" marginTop="2" text="Configuración" textWrap="true" />
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
                         </FlexboxLayout>
 
@@ -33,7 +33,7 @@
                                     </StackLayout> -->
                                     
                                     <StackLayout marginTop="15">
-                                        <Label text="Telefono" textWrap="true" />
+                                        <Label text="Teléfono" textWrap="true" />
                                     </StackLayout>
                                     <StackLayout marginTop="10" width="90%">
                                         <TextField v-model="userEdit.telephone" color="black" borderRadius="10" backgroundColor="white" borderColor="black" borderWidth="1" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />

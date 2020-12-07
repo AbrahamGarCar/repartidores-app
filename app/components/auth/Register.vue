@@ -34,7 +34,7 @@
                                     <TextField v-model="user.secondLastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido materno*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electronico*" text="" />
+                                    <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electrónico*" text="" />
                                 </StackLayout>
                                 <StackLayout width="90%" marginTop="10">
                                     <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña*" text="" />
@@ -46,7 +46,7 @@
                                     <TextField v-model="user.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion*" v-model="user.direction" />
+                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Dirección*" v-model="user.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <ListView height="100" for="item in places">
@@ -74,7 +74,7 @@
 
                         <StackLayout row="1" col="0" v-if="window == 2">
                             <StackLayout width="90%">
-                                <Label textAlignment="center" text="Ya por ultimo sube un par de fotos, una de perfil y una completa." textWrap="true" />
+                                <Label textAlignment="center" text="Sube un par de fotos, una de perfil y una completa." textWrap="true" />
                                 <Label textAlignment="center" fontSize="12" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
                                 
                             </StackLayout>
@@ -126,7 +126,12 @@
                                 <Button width="100%" fontSize="16" height="40" backgroundColor="#022873" color="white" borderRadius="10" text="Regresar" @tap="window = 1" />
                                 <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Registrarme" @tap="createUser" />
 
-                                <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
+                                <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesión." textWrap="true" @tap="goToLogin" />
+                            </FlexboxLayout>
+
+                            <FlexboxLayout marginTop="15" justifyContent="center" alignItems="center">
+                                <Label fontSize="22" :text="`${percent}%`" textWrap="true" />
+                                
                             </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
@@ -259,6 +264,8 @@ export default {
             photoTwo: null,
 
             window: 1,
+
+            percent: 0,
         }
     },
 
@@ -596,10 +603,31 @@ export default {
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
                     console.log("Percentage complete: " + status.percentageCompleted);
+
+                    this.percent = status.percentageCompleted
                 },
                 metadata
               }).then((uploadedFile) => {
-                    this.getResizePath(fotoId)
+                    let arrayPhotos = []
+
+                    firebase.storage.getDownloadUrl({
+                        remoteFullPath: 'users/' + fotoId + '.jpg'
+                    }).then(async (url) => {
+
+                        let data = {
+                            photo: url,
+                            user: this.uid,
+                            control: this.controlPhotos
+                        }
+
+                        arrayPhotos.push(url)
+
+                        let response = await firebase.firestore.collection('user_photos').add(data)
+                        this.controlUploadPhotos()
+                    }).catch(error => {
+                        console.log(error);
+                        loader.hide()
+                    })
                 },
                     (error) => {
                         loader.hide()

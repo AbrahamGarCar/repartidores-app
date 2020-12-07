@@ -115,6 +115,11 @@
                                     </FlexboxLayout>
                                 </GridLayout>
 
+                                <FlexboxLayout v-if="order != null" justifyContent="center" alignItems="center" marginTop="15">
+                                    <Label fontSize="24" fontWeight="bold" :text="`#${order.orderNumber}`" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+
                                 <!-- Informacion de longitud y tiempos de llegada -->
                                 <StackLayout padding="10" v-if="order != null" marginTop="10">
                                     <Label fontSize="18" textWrap="true">
@@ -132,7 +137,7 @@
                                 </StackLayout>
                                 <FlexboxLayout v-else justifyContent="center" alignItems="center" flexDirection="column">
                                     <Image src="~/assets/images/no-order.png" width="100%" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
-                                    <Label fontSize="22" text="No hay ningun viaje en curso" textWrap="true" />
+                                    <Label fontSize="22" text="No hay ningún viaje en curso" textWrap="true" />
                                 </FlexboxLayout>
 
                                 <!-- Informacion de la orden, destino, aceptar y cancelar -->
@@ -165,6 +170,17 @@
                                     </GridLayout>
                                     <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
                                 </StackLayout>
+                                
+                                <StackLayout marginTop="15" borderWidth="1" borderColor="black" />
+
+                                <StackLayout v-if="order != null" marginTop="15" backgroundColor="white" padding="10" width="100%" borderRadius="5">
+                                    <Label textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Detalles: " />
+                                            <Span :text="order.details.reference" />
+                                        </FormattedString>
+                                    </Label>
+                                </StackLayout>
                             </StackLayout>
                         </WrapLayout>
                     </ScrollView>
@@ -173,7 +189,7 @@
         </GridLayout>
         <FlexboxLayout width="95%" height="100%" v-else justifyContent="center" alignItems="center" flexDirection="column">
             <Image src="~/assets/images/no-order.png" width="100%" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
-            <Label fontSize="22" textAlignment="center" text="Tu cuenta se encuentra suspendida, ponte en contacto al siguiente numero para mas informacion: " textWrap="true" />
+            <Label fontSize="22" textAlignment="center" text="Tu cuenta se encuentra suspendida, ponte en contacto al siguiente numero para mas información: " textWrap="true" />
             <Label fontSize="22" text="6141101086" textWrap="true" @tap="goToPhone" />
 
             <FlexboxLayout class="container" justifyContent="center" alignItems="center" width="100%" height="70" backgroundColor="#F2CBC2" borderRadius="15 15 15 15" @tap="logOut">
@@ -446,7 +462,7 @@ export default {
                                                         .then(() => {
                                                             alert({
                                                                 title: "Aviso",
-                                                                message: "Ubicacion actualizada",
+                                                                message: "Ubicación actualizada",
                                                                 okButtonText: "Entendido"
                                                             }).then(() => {
                                                                 console.log("Alert dialog closed");
@@ -672,7 +688,7 @@ export default {
 
                 confirm({
                     title: "Comenzar entrega",
-                    message: "¿Queres comenzar la entrega?",
+                    message: "¿Quieres comenzar la entrega?",
                     okButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
                 }).then(async result => {
@@ -699,8 +715,8 @@ export default {
                 console.log(this.order)
 
                 confirm({
-                    title: "Finalizar pedido",
-                    message: "¿Queres finalizar este pedido?",
+                    title: "Finalizar entrega",
+                    message: "¿Quieres finalizar este entrega?",
                     okButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
                 }).then(async result => {
@@ -885,9 +901,9 @@ export default {
 
         goToPhone(){
             console.log('Hola Mundo')
-            const phoneNumber = '200-48-10'
+            const phoneNumber = '614-126-5003'
 
-            TNSPhone.requestCallPermission('You should accept the permission to be able to make a direct phone call.')
+            TNSPhone.requestCallPermission('Debes aceptar los permisos para poder hacer llamadas.')
                 .then(() => TNSPhone.dial(phoneNumber, false))
                 .catch(() => TNSPhone.dial(phoneNumber, true))
         },
