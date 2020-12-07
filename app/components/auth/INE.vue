@@ -22,43 +22,9 @@
                             <Label text="Bienvenido" color="black" fontSize="30" textWrap="true" />
                         </FlexboxLayout>
 
-                        <StackLayout row="1" col="0" v-if="window == 1">
-                            <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
-                                <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="profile.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Dirección*" v-model="profile.direction" />
-                                </StackLayout>
-                                <StackLayout marginTop="10" width="90%">
-                                    <ListView height="100" for="item in places">
-                                        <v-template>
-                                            <Label :text="item.description" @tap="getPlace(item.placeId)" />
-                                        </v-template>
-                                    </ListView>
-                                </StackLayout>
-
-                                <StackLayout marginTop="10" width="90%">
-                                    <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Label color="black" text="Fecha de nacimiento*" fontSize="18" textWrap="true" />
-                                    </FlexboxLayout>
-                                    <DatePicker v-model="profile.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
-                                </StackLayout>
-                                
-
-                                <StackLayout marginTop="10" width="90%" borderWidth="0 0 1 0" borderColor="white" />
-
- 
-                                <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" borderRadius="10" text="Continuar" color="white" @tap="askPermissions" />
-                                </FlexboxLayout>
-
-                            </FlexboxLayout>
-                        </StackLayout>
-
-                        <StackLayout row="1" col="0" v-if="window == 2">
+                        <StackLayout row="1" col="0">
                             <StackLayout width="90%">
-                                <Label textAlignment="center" text="Sube un par de fotos, una de perfil y una completa." textWrap="true" />
+                                <Label textAlignment="center" text="Ya casi estamos, solo requerimos una foto de tu INE por ambos lados." textWrap="true" />
                                 <Label textAlignment="center" fontSize="12" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
                                 
                             </StackLayout>
@@ -86,11 +52,11 @@
 
                             <GridLayout rows="*" columns="*, *" marginTop="-10">
                                 <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <Label text="Foto de perfil" textWrap="true" />
+                                    <Label text="INE Frente" textWrap="true" />
                                     
                                 </FlexboxLayout>
                                 <FlexboxLayout row="0" col="1" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <Label text="Foto completa" textWrap="true" />
+                                    <Label text="INE Reverso" textWrap="true" />
                                     
                                 </FlexboxLayout>
                             </GridLayout>
@@ -107,10 +73,7 @@
                             </StackLayout> -->
 
                             <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
-                                <Button width="100%" fontSize="16" height="40" backgroundColor="#022873" color="white" borderRadius="10" text="Regresar" @tap="window = 1" />
-                                <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Registrarme" @tap="createUser" />
-
-                                <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
+                                <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Cargar fotos" @tap="createUser" />
                             </FlexboxLayout>
 
                             <FlexboxLayout marginTop="15" justifyContent="center" alignItems="center">
@@ -192,39 +155,10 @@ export default {
 
     data(){
         return{
-            direction: '',
-            places: [],
-            place: null,
-            showResult: false,
-
-            city: '',
-            state: '',
-            country: '',
-
             width: 0,
             height: '',
 
             uid: '',
-
-            profile: {
-                telephone: '',
-                direction: '',
-                birthdate: '',
-                completeProfile: true,
-                
-            },
-
-            reasonsItems: [
-                'Primer motivo',
-                'Segundo motivo',
-                'Tercer motivo',
-            ],
-
-            pleacesItems: [
-                'Opcion 1',
-                'Opcion 2',
-                'Opcion 3',
-            ],
 
             controlPhotos: 1,
 
@@ -233,91 +167,17 @@ export default {
             photoOne: null,
             photoTwo: null,
 
-            window: 1,
-
             percent: 0,
         }
-    },
-
-    mounted() {
-        this.window = 1
-        // this.askPermissions()
     },
 
     computed: {
         ...mapState([
             'user'
         ]),
-
-        changeText(){
-            if (this.profile.firstTime) {
-                return 'Si'
-            } else {
-                return 'No'
-            }
-            return 'Si'
-        },
-
-        maxDate(){
-            return new Date();
-        }
-    },
-
-    validations: {
-        profile: {
-            telephone: {
-                required,
-            },
-            direction: {
-                required,
-            },
-            birthdate: {
-                required,
-            },
-        }
-    },
-
-    watch: {
-        'profile.direction': function (newVal, oldVal){
-            this.showResult = true
-            this.getPlaces()
-        },
     },
 
     methods: {
-        getPlaces(){
-            console.log('Entra places')
-            googlePlacesAutocomplete.search(this.profile.direction)
-            .then((places) => {
-                console.log(places)
-                this.places = places
-            }, (error => {
-                console.log(error)
-            }));
-        },
-
-        getPlace(args){
-            this.showResult = false
-            googlePlacesAutocomplete.getPlaceById(args).then((place) => {
-                console.log(place)
-                this.place = place
-                this.places = []
-                this.profile.direction = this.place.formattedAddress
-                place.data.result.address_components.forEach(element => {
-                    if (element.types.includes('locality')){
-                        this.city = element.long_name
-                    }
-                    if (element.types.includes('administrative_area_level_1')){
-                       this.state = element.long_name
-                    }
-                    if (element.types.includes('country')){
-                       this.country = element.long_name
-                    }
-                });
-            }, error => {
-                console.log(error)
-            })      
-        },
 
         //Permisos
         askPermissions(){
@@ -335,18 +195,6 @@ export default {
             );
         },
 
-        selectReason(args){
-            console.log(`index seleccionado: ${args.newIndex}`)
-            console.log(this.reasonsItems[args.newIndex])
-            this.profile.reason = this.reasonsItems[args.newIndex]
-        },
-
-        selectPleace(args){
-            console.log(`index seleccionado: ${args.newIndex}`)
-            console.log(this.pleacesItems[args.newIndex])
-            this.profile.origin = this.pleacesItems[args.newIndex]
-        },
-
         async onNavigatedTo(args){
             const page = args.object.page
             const grid = page.getViewById('grid')
@@ -356,6 +204,30 @@ export default {
                 this.width = grid.getActualSize().width / 2
                 this.height = grid.getActualSize().width / 2
             }, 500)   
+        },
+
+        async createUser(){
+            if(this.photoOne == null & this.photoTwo == null){
+                alert({
+                    name: "Faltan fotos",
+                    message: "Debes cargar las dos foto para continuar",
+                    okButtonText: "Entendido"
+                }).then(() => {
+                    console.log("Alert dialog closed")
+                });
+
+                return
+            }
+
+            try {
+                loader.show(options)
+
+                this.uid = this.user.uid
+                this.controlUploadPhotos()
+            } catch(e) {
+                loader.hide()
+                console.log(e);
+            }
         },
 
         selectOptionPhoto(args){
@@ -417,56 +289,6 @@ export default {
                 })
         },
 
-        async createUser(){
-            if(this.photoOne == null & this.photoTwo == null){
-                alert({
-                    name: "Faltan fotos",
-                    message: "Debes cargar las dos foto para continuar",
-                    okButtonText: "Entendido"
-                }).then(() => {
-                    console.log("Alert dialog closed")
-                });
-
-                return
-            }
-
-            if(this.$v.profile.$invalid){
-
-                if(!this.$v.profile.telephone.required){
-                    Toast.makeText("Telefono obligatorio.", "long").show()
-                }
-
-                if(!this.$v.profile.direction.required){
-                    Toast.makeText("Telefono obligatorio.", "long").show()
-                }
-
-                if(!this.$v.profile.birthdate.required){
-                    Toast.makeText("Fecha de nacimiento obligatorio.", "long").show()
-                }
-                return
-            }
-
-            try {
-                loader.show(options)
-
-                let response = await firebase.firestore.collection('users')
-                                                    .doc(this.user.uid)
-                                                    .update(this.profile)
-                                                    .then(async response => {
-                                                        await firebase.firestore.collection('information_user').doc(this.user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
-                                                    })
-
-                
-
-                this.uid = this.user.uid
-
-                this.controlUploadPhotos()
-            } catch(e) {
-                loader.hide()
-                console.log(e);
-            }
-        },
-
         //Generar UUID
         generateUUID(){
             var h = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
@@ -519,7 +341,7 @@ export default {
 
                 let fotoId = this.generateUUID()
                 firebase.storage.uploadFile({
-                remoteFullPath: 'users/' + fotoId + '.jpg',
+                remoteFullPath: 'ine/' + fotoId + '.jpg',
                 localFullPath: args,
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
@@ -532,18 +354,17 @@ export default {
                     let arrayPhotos = []
 
                     firebase.storage.getDownloadUrl({
-                        remoteFullPath: 'users/' + fotoId + '.jpg'
+                        remoteFullPath: 'ine/' + fotoId + '.jpg'
                     }).then(async (url) => {
 
                         let data = {
                             photo: url,
-                            user: this.uid,
-                            control: this.controlPhotos
+                            user: this.uid
                         }
 
                         arrayPhotos.push(url)
 
-                        let response = await firebase.firestore.collection('user_photos').add(data)
+                        let response = await firebase.firestore.collection('ine_photos').add(data)
                         this.controlUploadPhotos()
                     }).catch(error => {
                         console.log(error);
@@ -571,7 +392,7 @@ export default {
                 let photoID = `${args}_600x600`
 
                 firebase.storage.getDownloadUrl({
-                    remoteFullPath: 'users/' + photoID + '.jpg'
+                    remoteFullPath: 'ine/' + photoID + '.jpg'
                 }).then(async (url) => {
 
                         let data = {
@@ -581,13 +402,13 @@ export default {
 
                         arrayPhotos.push(url)
 
-                        let response = await firebase.firestore.collection('user_photos').add(data)
+                        let response = await firebase.firestore.collection('ine_photos').add(data)
                         if(response){
 
                             photoID = `${args}_400x400`
 
                             firebase.storage.getDownloadUrl({
-                                remoteFullPath: 'users/' + photoID + '.jpg'
+                                remoteFullPath: 'ine/' + photoID + '.jpg'
                             }).then((url) => {
 
                                     arrayPhotos.push(url)
@@ -614,23 +435,11 @@ export default {
         async getUser(){
             loader.hide()
             try {
+                
+                let response = await firebase.firestore.collection('users').doc(this.uid).update({ INE: true })
 
-                let response = await firebase.firestore.collection('users').doc(this.uid).get()
+                this.$navigator.navigate('/terms', { clearHistory: true })
 
-                if(response.exists){
-                    let user = response.data()
-
-                    this.$store.dispatch('updateUserToken', {
-                        user: user.uid,
-                    })
-
-                    this.$store.dispatch('getPhotos', {
-                        user: user.uid,
-                    })
-
-                    this.$navigator.navigate('/ine', { clearHistory: true }) 
-                    
-                }
             } catch (error) {
                 loader.hide()
                 console.log(error)

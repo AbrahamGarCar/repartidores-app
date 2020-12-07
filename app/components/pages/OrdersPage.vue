@@ -8,16 +8,16 @@
     <Page actionBarHidden="true">
         <GridLayout rows="*" columns="*">
             <ScrollView row="0" col="0" backgroundColor="white">
-                <WrapLayout orientation="vertical" width="100%" paddingBottom="20">
-                    <GridLayout rows="120, *" columns="*">
+                <WrapLayout orientation="vertical" width="100%">
+                    <GridLayout rows="120, *" columns="*" height="100%">
                         <FlexboxLayout class="gradient" row="0" col="0" justifyContent="space-between" alignItems="flex-start" padding="10" borderRadius="0 0 20 20">
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
                             <Label fontSize="22" color="white" marginTop="2" text="Pedidos pendientes" textWrap="true" />
                             <Label text="" textWrap="true" />
                         </FlexboxLayout>
 
-                        <StackLayout row="1" col="0" padding="10" marginTop="-55">
-                            <StackLayout v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" width="100%" borderRadius="5">
+                        <StackLayout row="1" col="0" marginTop="-55">
+                            <StackLayout width="95%" marginBottom="35" v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" borderRadius="5">
                                 <Label fontSize="22" :text="item.name" textWrap="true" />
                                 <Label textWrap="true">
                                     <FormattedString>
@@ -38,7 +38,8 @@
 
                                 <FlexboxLayout justifyContent="center" alignItems="center">
                                     
-                                    <Button marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
+                                    <Button v-if="order == null" marginTop="10" backgroundColor="#F24464" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
+                                    <Button v-else marginTop="10" backgroundColor="#F2CBC2" color="white" text="Orden en progreso" disabled />
                                     
                                 </FlexboxLayout>
                             </StackLayout>
@@ -68,10 +69,13 @@ export default {
     data(){
         return{
             orders: [],
+
+            order: null,
         }
     },
 
     mounted() {
+        this.getOrder()
         this.getOrders()
     },
 
@@ -89,10 +93,10 @@ export default {
                                                     .where('listDeliveryMen', 'array-contains', this.user.uid)
                                                     .where('level', '==', 2)
                                                     .where('status', '==', 'PENDIENTE')
-                                                    .get()
-                                                    .then(query => {
+                                                    .onSnapshot(query => {
+                                                        this.orders = []
                                                         query.forEach(doc => {
-                                                            
+
                                                             let order = doc.data()
 
                                                             Object.defineProperty(order, 'id', {
@@ -106,9 +110,38 @@ export default {
 
                                                             console.log(this.orders)
                                                         })
+                                                        
                                                     })
+                // this.$store.commit('updateOrders', this.orders)
 
                 console.log('dalee 2')
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async getOrder(){
+            try {
+                let response = await firebase.firestore.collection('orders')
+                                                    .where('status', '==', 'ACEPTADA')
+                                                    .where('deliveryMan', '==', this.user.uid)
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
+
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
+
+                                                            this.order = order
+                                                        })
+                                                    })
+
             } catch (error) {
                 console.log(error)
             }
@@ -120,7 +153,7 @@ export default {
 
                 confirm({
                     title: "Aceptar pedido",
-                    message: "¿Queres aceptar este pedido?",
+                    message: "¿Quieres aceptar este pedido?",
                     okButtonText: "Aceptar",
                     cancelButtonText: "Cancelar"
                 }).then(async result => {
