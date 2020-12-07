@@ -1,12 +1,12 @@
 {
     "NativescriptExtend.fileAssociations": [
         {
-            "systemId": "/Users/iopromotor/Desktop/Nativescript/repartidores-app/schema/tns.xsd",
+            "systemId": "/Users/gerardolucero/Desktop/nativescript/repartidores-app/schema/tns.xsd",
             "pattern": "**/**/*.xml"
         },
         {
             "systemId": "http://www.w3.org/2001/XMLSchema.xsd",
-            "pattern": "/Users/iopromotor/Desktop/Nativescript/repartidores-app/schema/tns.xsd"
+            "pattern": "/Users/gerardolucero/Desktop/nativescript/repartidores-app/schema/tns.xsd"
         }
     ],
     "files.exclude": {

@@ -6,6 +6,12 @@ import VueDevtools from 'nativescript-vue-devtools'
 
 import { TextJustify } from "nativescript-text-justify";
 
+import {install} from 'nativescript-material-bottomsheet';
+install();
+
+import BottomSheetPlugin from 'nativescript-material-bottomsheet/vue';
+Vue.use(BottomSheetPlugin);
+
 import NSVueShadow from 'nativescript-vue-shadow'
 Vue.use(NSVueShadow)
 
@@ -57,7 +63,11 @@ firebase.init({
 
       firebase.getCurrentUser()
               .then((user) => {
+                console.log('Actualzando token')
                 store.dispatch('updateUserToken', {
+                    user: user.uid,
+                  })
+                store.dispatch('getPhotos', {
                     user: user.uid,
                   })
               })
@@ -88,12 +98,6 @@ firebase.init({
               title: "Entendido",
               launch: true
             },
-            {
-              id: "no",
-              type: "button",
-              title: "Cancelar",
-              launch: false
-            }
           ]
         }])
 
@@ -115,6 +119,7 @@ Vue.registerElement('MapView', ()=> require('nativescript-google-maps-sdk').MapV
 Vue.registerElement('MLKitBarcodeScanner', () => require('nativescript-plugin-firebase/mlkit/barcodescanning').MLKitBarcodeScanner)
 Vue.registerElement('DropDown', () => require('nativescript-drop-down/drop-down').DropDown)
 Vue.registerElement('TextJustify', () => require('nativescript-text-justify').TextJustify)
+Vue.registerElement('DrawingPad', () => require('nativescript-drawingpad').DrawingPad)
 Vue.registerElement(
   'CheckBox',
   () => require('@nstudio/nativescript-checkbox').CheckBox,
@@ -134,32 +139,47 @@ new Vue({
   mounted(){
     firebase.getCurrentUser()
             .then(async (user) => {
-                this.$showModal(ModalLogin)
 
                 let response = await firebase.firestore.collection('users')
                                                     .doc(user.uid)
                                                     .get()
 
                 if(response.exists){
+                    this.$showModal(ModalLogin)
                     let user = response.data()
 
-                    if (user.role == 'Admin') {
+                    console.log(user);
+
+                    if (!user.completeProfile) {
                         this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/scaner', { clearHistory: true })
-                    }else{
-                      if (!user.completeProfile) {
-                          this.$store.commit('updateUser', user)
-                          this.$navigator.navigate('/complete-profile', { clearHistory: true })
-                      } else {
-                          if(user.terms){
-                              this.$store.commit('updateUser', user)
-                              this.$navigator.navigate('/home', { clearHistory: true })
-                          }else{
-                              this.$store.commit('updateUser', user)
-                              this.$navigator.navigate('/terms', { clearHistory: true })
-                          }
-                      }
+                        this.$navigator.navigate('/complete-profile', { clearHistory: true })
+
+                        return
+                    } 
+                    
+                    if (!user.INE) {
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/ine', { clearHistory: true })
+
+                        return
                     }
+                    
+                    if (!user.terms) {
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/terms', { clearHistory: true })
+
+                        return
+                    }
+                    
+                    if (!user.contract) {
+                        this.$store.commit('updateUser', user)
+                        this.$navigator.navigate('/contract', { clearHistory: true })
+
+                        return
+                    } 
+
+                    this.$store.commit('updateUser', user)
+                    this.$navigator.navigate('/home', { clearHistory: true })
                     
                 }
             })

@@ -11,7 +11,6 @@
     }
 
     .box-1{
-        background-image: url('~/assets/images/waves.png');
         background-position: center;
         background-size: cover;
     }
@@ -49,9 +48,9 @@
 
 <template>
     <Page actionBarHidden="true" @loaded="navigatingTo($event)">
-        <GridLayout ~mainContent columns="*" rows="*" backgroundColor="#F3F3F3">
-            <AbsoluteLayout row="0" col="0">
-                <StackLayout id="grid" class="box-1" top="0" left="0" width="100%" height="100%">
+        <GridLayout ~mainContent columns="*" rows="*" backgroundColor="#F3F3F3" v-if="user.active">
+            <AbsoluteLayout row="0" col="0" id="grid">
+                <StackLayout class="box-1" top="0" left="0" width="100%" height="100%">
                     <MapView
                         borderRadius="10"
                         width="100%"
@@ -61,40 +60,144 @@
                         :longitude="origin.longitude"
                         v-if="allowExecution"
                         @mapReady="mapReady"
-                        @markerSelect="locationSelected($event)"
                     />
                 </StackLayout>
 
-                <!-- Profile -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" left="5" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToProfile">
-                    <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
+                <!-- Ubication -->
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="15" left="15" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="updateUbication">
+                    <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
                 </FlexboxLayout>
 
                 <!-- Notifications -->
-                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="5" :left="width - 65" width="60" height="60" backgroundColor="white" borderRadius="100">
+                <FlexboxLayout v-shadow="12" justifyContent="center" alignItems="center" top="15" :left="width - 75" width="60" height="60" backgroundColor="white" borderRadius="100" @tap="goToOrders">
                     <Label text="" class="font-awesome" fontSize="20" color="black" textWrap="true" />
                 </FlexboxLayout>
                     <!-- Notifications number -->
-                    <FlexboxLayout v-shadow="13" justifyContent="center" alignItems="center" top="50" :left="width - 25" width="20" height="20" backgroundColor="red" borderRadius="100">
-                        <Label text="2" class="font-awesome" fontSize="10" color="white" textWrap="true" />
+                    <FlexboxLayout v-shadow="13" justifyContent="center" alignItems="center" top="60" :left="width - 35" width="20" height="20" backgroundColor="red" borderRadius="100">
+                        <Label :text="orders.length" class="font-awesome" fontSize="10" color="white" textWrap="true" />
                     </FlexboxLayout>
             </AbsoluteLayout>
             
-            <StackLayout id="box-2" ref="box2" class="box-2" row="0" col="0" backgroundColor="#F2CBC2">
+            <StackLayout v-shadow="20" id="box-2" ref="box2" class="box-2" row="0" col="0" backgroundColor="#F2CBC2">
                 <GridLayout rows="50, *" columns="*">
-                    <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="0"  @swipe="swipeBox2">
-                        <Label class="font-awesome" text="" color="#F24464" fontSize="25" textWrap="true" />
+                    <FlexboxLayout id="swiper" justifyContent="center" alignItems="center" row="0" col="0"  @swipe="swipeBox2">
+                        <Label class="font-awesome" text="" color="#BF3952" fontSize="25" textWrap="true" />
                     </FlexboxLayout>
                     <ScrollView row="1" col="0" backgroundColor="white">
                         <WrapLayout orientation="vertical" width="90%" paddingBottom="20">
                             <StackLayout>
-                                <TextView class="details" margin="0" editable="false" :text="journeyDetails"/>
+
+                                <!-- Perfil, historial, configuracion etc... -->
+                                <GridLayout rows="*" columns="*, *, *, *" marginTop="20">
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="0" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToProfile">
+                                            <Label text="" class="font-awesome" fontSize="25" color="white" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="1" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToHistory">
+                                            <Label color="white" class="font-awesome" fontSize="25" text="" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="2" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToPhone">
+                                            <Label color="white" class="font-awesome" fontSize="22" text="" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout id="binnie" padding="5" row="0" col="3" width="100%" :height="height2" justifyContent="center" alignItems="center">
+                                        <FlexboxLayout justifyContent="center" alignItems="center" width="100%" height="100%" backgroundColor="#BF3952" borderRadius="5" @tap="goToConfiguration">
+                                            <Label color="white" class="font-awesome" fontSize="22" text="" textWrap="true" />
+                                        </FlexboxLayout>
+                                        
+                                    </FlexboxLayout>
+                                </GridLayout>
+
+                                <FlexboxLayout v-if="order != null" justifyContent="center" alignItems="center" marginTop="15">
+                                    <Label fontSize="24" fontWeight="bold" :text="`#${order.orderNumber}`" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+
+                                <!-- Informacion de longitud y tiempos de llegada -->
+                                <StackLayout padding="10" v-if="order != null" marginTop="10">
+                                    <Label fontSize="18" textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="El destino esta a " />
+                                            <Span :text="journeyDetails[0]" />
+                                        </FormattedString>
+                                    </Label>
+                                    <Label fontSize="18" textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Tiempo aproximado de llegada " />
+                                            <Span :text="journeyDetails[1]" />
+                                        </FormattedString>
+                                    </Label>
+                                </StackLayout>
+                                <FlexboxLayout v-else justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Image src="~/assets/images/no-order.png" width="100%" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+                                    <Label fontSize="22" text="No hay ningún viaje en curso" textWrap="true" />
+                                </FlexboxLayout>
+
+                                <!-- Informacion de la orden, destino, aceptar y cancelar -->
+                                <StackLayout v-if="order != null" marginTop="10" backgroundColor="white" padding="10" width="100%" borderRadius="5">
+                                    <Label fontSize="22" :text="order.name" textWrap="true" />
+                                    <Label textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Desde: " />
+                                            <Span :text="order.directionOrigin" />
+                                        </FormattedString>
+                                    </Label>
+                                    <FlexboxLayout justifyContent="center" alignItems="center">
+                                        <Label margin="10 0" color="black" fontSize="20" class="font-awesome" text="" textWrap="true" />
+                                        
+                                    </FlexboxLayout>
+                                    <Label textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Hasta: " />
+                                            <Span :text="order.directionDestination" />
+                                        </FormattedString>
+                                    </Label>
+                                    <GridLayout v-if="order.flag == 1" rows="50" columns="*, 10, 50" marginTop="10">
+                                        <StackLayout row="0" col="0">
+                                            <Button width="100%" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
+                                        </StackLayout>
+                                        <Label row="0" col="1" textWrap="true" />
+                                        <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="2">
+                                            <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="red" color="white" text="" @tap="cancelOrder" />
+                                        </FlexboxLayout>
+                                    </GridLayout>
+                                    <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
+                                </StackLayout>
+                                
+                                <StackLayout marginTop="15" borderWidth="1" borderColor="black" />
+
+                                <StackLayout v-if="order != null" marginTop="15" backgroundColor="white" padding="10" width="100%" borderRadius="5">
+                                    <Label textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="18" fontWeight="bold" text="Detalles: " />
+                                            <Span :text="order.details.reference" />
+                                        </FormattedString>
+                                    </Label>
+                                </StackLayout>
                             </StackLayout>
                         </WrapLayout>
                     </ScrollView>
                 </GridLayout>
             </StackLayout>
         </GridLayout>
+        <FlexboxLayout width="95%" height="100%" v-else justifyContent="center" alignItems="center" flexDirection="column">
+            <Image src="~/assets/images/no-order.png" width="100%" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
+            <Label fontSize="22" textAlignment="center" text="Tu cuenta se encuentra suspendida, ponte en contacto al siguiente numero para mas información: " textWrap="true" />
+            <Label fontSize="22" text="6141101086" textWrap="true" @tap="goToPhone" />
+
+            <FlexboxLayout class="container" justifyContent="center" alignItems="center" width="100%" height="70" backgroundColor="#F2CBC2" borderRadius="15 15 15 15" @tap="logOut">
+                <Label text="SALIR" color="white" fontSize="18" fontWeight="bold" textWrap="true" />
+                
+            </FlexboxLayout>
+            
+        </FlexboxLayout>
     </Page>
 </template>
 
@@ -136,6 +239,11 @@ const LoadingIndicator = require('@nstudio/nativescript-loading-indicator').Load
 const Mode = require('@nstudio/nativescript-loading-indicator').Mode;
 const loader = new LoadingIndicator();
 
+const dialogs = require('tns-core-modules/ui/dialogs')
+
+import { Image } from "ui/image";
+import { ImageSource } from "image-source";
+
 const options = {
     message: 'Cargando...',
     details: 'Recuperando informacion',
@@ -161,6 +269,8 @@ const options = {
     // }
 };
 
+import OptionSheet from '../pages/bottom-sheet/OptionSheet'
+
 export default {
     name: 'Home',
 
@@ -168,23 +278,29 @@ export default {
         return{
             width: 0,
             height: '',
+            height2: '',
+
+            orders: [],
 
             origin: { 
                 latitude: 28.7186667, 
                 longitude: -106.145014 
             },
             destination: { 
-                latitude: 28.7281124, 
-                longitude: -106.1194358
+                latitude: 0, 
+                longitude: 0
             },
-            journeyDetails: 'Journey: Not started yet!',
+            journeyDetails: [],
             allowExecution: false,
             journeyStarted: false,
             mapView: null,
-            zoom: 17,
+            zoom: 14,
             marker: null,
             ubication: null,
             APIKEY: 'AIzaSyDndG_C_5iRRkYDO3GHchQFNUchdBZvDas',
+
+            order: null,
+            flag: 2,
         }
     },
 
@@ -196,7 +312,7 @@ export default {
     ],
 
     created(){
-        this.setDestination()
+        this.getOrder()
 
          /* dont run the android permissions routine for iOS */
         if (platformModule.isIOS) {
@@ -217,6 +333,7 @@ export default {
 
     mounted(){
         this.getLocation()
+        this.getOrders()
     },
 
     filters: {
@@ -229,12 +346,133 @@ export default {
 
     computed: {
         ...mapState([
-                'user'
+                'user',
             ]),
 
     },
 
     methods: {
+        navigatingTo(args){
+
+            if (this.user.active) {
+                const page = args.object.page
+                const box = page.getViewById('box-2')
+                const swiper = page.getViewById('swiper')
+
+                const grid = page.getViewById('grid')
+
+                const binnie = page.getViewById('binnie')
+
+                setTimeout(() => {
+                    console.log('Este es el tamaño: ' + grid.getActualSize().height)
+                    console.log('Este es el tamaño 2: ' + platformModule.screen.mainScreen.heightDIPs)
+                    console.log('Este es el tamaño 3: ' + platformModule.screen.mainScreen.heightPixels)
+                    console.log('Tamaño swiper: ' + swiper.getActualSize().height)
+                    this.width = grid.getActualSize().width
+                    this.height = grid.getActualSize().width
+
+                    this.height2 = binnie.getActualSize().width
+
+                    box.animate({
+                        translate: {
+                            x: 0,
+                            y: grid.getActualSize().height - swiper.getActualSize().height
+                        },
+                        curve: AnimationCurve.easeIn,
+                        duration: 100,
+                    })
+                }, 500) 
+            }
+              
+        },
+        
+        swipeBox2(args){
+            if (this.user.active) {
+                const page = args.object.page
+                const box = page.getViewById('box-2')
+                const grid = page.getViewById('grid')
+                const swiper = page.getViewById('swiper')
+
+                if (args.direction == 4) {
+                    box.animate({
+                        translate: {
+                            x: 0,
+                            y: 0
+                        },
+                        curve: AnimationCurve.easeIn,
+                        duration: 400,
+                    })
+                }
+
+                if (args.direction == 8) {
+                    box.animate({
+                        translate: {
+                            x: 0,
+                            y: grid.getActualSize().height - swiper.getActualSize().height
+                        },
+                        curve: AnimationCurve.easeIn,
+                        duration: 400,
+                    })
+                }
+            }
+        },
+
+        async getOrders(){
+            try {
+                this.orders = []
+
+                console.log('dale')
+                let response = await firebase.firestore.collection('orders')
+                                                    .where('listDeliveryMen', 'array-contains', this.user.uid)
+                                                    .where('level', '==', 2)
+                                                    .where('status', '==', 'PENDIENTE')
+                                                    .get()
+                                                    .then(query => {
+                                                        this.orders = []
+                                                        
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
+
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
+
+                                                            this.orders.push(order)
+
+                                                            console.log(this.orders)
+                                                        })
+                                                    })
+
+                console.log('dalee 2')
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        
+        async updateUbication(){
+            try {
+
+                let response = await firebase.firestore.collection('users')
+                                                        .doc(this.user.uid)
+                                                        .update({ _geoloc: { lat: this.origin.latitude, lng: this.origin.longitude } })
+                                                        .then(() => {
+                                                            alert({
+                                                                title: "Aviso",
+                                                                message: "Ubicación actualizada",
+                                                                okButtonText: "Entendido"
+                                                            }).then(() => {
+                                                                console.log("Alert dialog closed");
+                                                            });
+                                                        })
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
         //Geolocalizacion
         getLocation(){
             geolocation.getCurrentLocation({
@@ -280,9 +518,24 @@ export default {
         },
 
         setDestination(){
+            console.log(1)
             try {
-                this.destination.latitude = '28.6941922'
-                this.destination.longitude = '-106.1209962'  
+                if (this.order != null) {
+                    if (this.order.flag == 1) {
+
+                        this.destination.latitude = this.order.origin.latitude
+                        this.destination.longitude = this.order.origin.longitude
+
+                        this.startJourney();
+                    } else {
+
+                        this.destination.latitude = this.order.destination.latitude
+                        this.destination.longitude = this.order.destination.longitude
+                        // this.clearRoute()
+                        this.startJourney();
+                    }
+                }
+                  
             } catch(e) {
                 // statements
                 console.log(e);
@@ -291,20 +544,32 @@ export default {
 
         //Actions MAP
         mapReady(args) {
+            console.log(2)
             /* get the mapView instance */
             this.mapView = args.object;
             this.mapView.settings.scrollGesturesEnabled = true
             this.mapView.settings.zoomGesturesEnabled = true
+
+            let imgMarker = "~/assets/images/marker3.png"
+
+            const imageSource = ImageSource.fromFileSync(imgMarker);
+            
+
+            const icon2 = new Image();
+            icon2.imageSource = imageSource;
+            icon2.width = 10;
+            icon2.height = 10;
+            
             
             /* turn on my location button on map */
             this.enableMyLocationButton(true);
             /* add destination marker to map */
-            this.addMarkerToMap(this.destinationMarker, true);
+            this.addMarkerToMap(this.destinationMarker, true, icon2);
             /* add my location marker to map (which will point to our location when journey starts) - visibility hidden  */
-            this.addMarkerToMap(this.myLocationMarker, false);
+            this.addMarkerToMap(this.myLocationMarker, false, icon2);
             /* set map origin coordinates to present device location */
             this.fetchMyLocation();
-            this.startJourney();
+            this.startJourney()
         },
 
         locationSelected(args) {
@@ -334,6 +599,7 @@ export default {
         },
 
         startJourney() {
+            console.log(3)
             /* hide my location indicator and button */
             this.enableMyLocationButton(false);
             /* un-hide my location marker */
@@ -344,21 +610,33 @@ export default {
             /* start watching for location changes and update the map and journey details accordingly */
             this.watchLocationAndUpdateJourney();
 
+            let imgMarker = "~/assets/images/marker3.png"
+
+            const imageSource = ImageSource.fromFileSync(imgMarker);
+            
+
+            const icon2 = new Image();
+            icon2.imageSource = imageSource;
+            icon2.width = 10;
+            icon2.height = 10;
+
             const marker = new Marker()
             marker.position = Position.positionFromLatLng(this.destination.latitude, this.destination.longitude)
             marker.title = 'Destino'
             marker.snippet = "Este es el destino"
             marker.userData = {index: 1};
+
             (this.mapView).addMarker(marker);
         },
 
         endJourney() {
             /* stop watching for location changes */
-            this.clearWatch();
+            // this.clearWatch();
+            this.mapView.removeAllMarkers();
             /* remove the route drawn on map */
             this.clearRoute();
             /* hide my location marker  */
-            this.myLocationMarker.visible = false;
+            this.myLocationMarker.visible = true;
             /* bring back my location button on screen */
             this.enableMyLocationButton(true);
             /* update journey details */
@@ -366,52 +644,210 @@ export default {
             this.journeyDetails = "Destination Reached.";
         },
 
-        navigatingTo(args){
-            const page = args.object.page
-            const box = page.getViewById('box-2')
-            const grid = page.getViewById('grid')
-            const pulse = page.getViewById('pulse-special')
+        async getOrder(){
+            try {
+                let response = await firebase.firestore.collection('orders')
+                                                    .where('status', '==', 'ACEPTADA')
+                                                    .where('deliveryMan', '==', this.user.uid)
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
 
-            setTimeout(() => {
-                console.log('Este es el tamaño: ' + grid.getActualSize().width)
-                this.width = grid.getActualSize().width
-                this.height = grid.getActualSize().width
-            }, 500)   
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
 
-            box.animate({
-                translate: {
-                    x: 0,
-                    y: platformModule.screen.mainScreen.heightDIPs - 74
-                },
-                curve: AnimationCurve.easeIn,
-                duration: 100,
-            })
+                                                            this.order = order
 
-        },
-        
-        swipeBox2(args){
-            const page = args.object.page
-            const box = page.getViewById('box-2')
-            if (args.direction == 4) {
-                box.animate({
-                    translate: {
-                        x: 0,
-                        y: 0
-                    },
-                    curve: AnimationCurve.easeIn,
-                    duration: 400,
-                })
+                                                            if (this.order != null) {
+                                                                console.log(0)
+                                                                this.setDestination()
+                                                            }
+                                                        })
+                                                    })
+
+            } catch (error) {
+                console.log(error)
             }
+        },
 
-            if (args.direction == 8) {
-                box.animate({
-                    translate: {
-                        x: 0,
-                        y: platformModule.screen.mainScreen.heightDIPs - 74
-                    },
-                    curve: AnimationCurve.easeIn,
-                    duration: 400,
+        startDelivery(){
+            // const options = {
+
+            // };
+            // this.$showBottomSheet(OptionSheet, options)
+
+            // return
+            try {
+                console.log(this.order)
+
+                confirm({
+                    title: "Comenzar entrega",
+                    message: "¿Quieres comenzar la entrega?",
+                    okButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then(async result => {
+                    if (result) {
+                        let response = await firebase.firestore.collection('orders')
+                                                    .doc(this.order.id)
+                                                    .update({ flag: 2, process: 3})
+
+                        this.clearRoute()
+
+                        this.order.flag = 2
+
+                        this.setDestination()
+                    }
+                });                
+
+            } catch (error) {
+                
+            }
+        },
+
+        async updateOrderStatus(){
+            try {
+                console.log(this.order)
+
+                confirm({
+                    title: "Finalizar entrega",
+                    message: "¿Quieres finalizar este entrega?",
+                    okButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then(async result => {
+                    if (result) {
+                        let response = await firebase.firestore.collection('orders')
+                                                    .doc(this.order.id)
+                                                    .update({ status: 'FINALIZADO', process: 4})
+
+                        let delivered = await firebase.firestore.collection('information_user')
+                                                    .doc(this.user.uid)
+                                                    .collection('delivered')
+                                                    .doc(this.order.id)
+                                                    .set({ order: this.order.id })
+                        this.order = null
+
+                        this.destination.latitude = 0
+                        this.destination.longitude = 0
+
+                        this.endJourney()
+                        this.clearRoute()
+                    }
+                });                
+            
+
+
+            } catch (error) {
+                
+            }
+        },
+
+        cancelOrder(){
+            prompt({
+                title: "Cancelar entrega",
+                message: "¿Realmente quieres cancelar esta entrega? Escribe el motivo.",
+                okButtonText: "Si",
+                cancelButtonText: "No",
+                defaultText: "Motivo: ",
+                inputType: dialogs.inputType.text
+            }).then(result => {
+                console.log(result.result)
+                if (result.result) {
+                    
+                    this.cancelOrderUpdate(result.text)
+                }
+            });
+        },
+
+        async cancelOrderUpdate(txt = 'Sin motivo'){
+            try {
+                let newList = this.order.listDeliveryMen.filter(document => document != this.user.uid)
+
+                let orderID = this.order.id
+
+                let response = await firebase.firestore.collection('orders')
+                                                .doc(this.order.id)
+                                                .update({ status: 'PENDIENTE', deliveryMan: null, flag: 0, listDeliveryMen: newList })
+                                                .then(query => {
+                                                    this.order = null
+
+                                                    this.destination.latitude = 0
+                                                    this.destination.longitude = 0
+
+                                                    this.endJourney()
+                                                    this.clearRoute()
+                                                })
+
+                this.makeReportCancelation(txt, orderID)
+                this.getUsersNotification(newList)                        
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async makeReportCancelation(txt = 'Sin motivo', orderID){
+            try {
+                let response = await firebase.firestore.collection('information_user')
+                                                .doc(this.user.uid)
+                                                .collection('orders')
+                                                .add({ order: orderID, reason: txt })
+                                                .then(query => {
+
+                                                    alert({
+                                                        title: "Orden cancelada",
+                                                        message: "Se ha cancelado la orden",
+                                                        okButtonText: "Entendido"
+                                                    }).then(() => {
+                                                        console.log("Alert dialog closed");
+                                                    });
+                                                })
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async getUsersNotification(list){
+            try {
+                let arrayUsers = []
+                let response = await firebase.firestore.collection('users')
+                                        .where('uid', 'in', list)
+                                        .get()
+                                        .then(query => {
+                                            query.forEach(doc => {
+                                                arrayUsers.push(doc.data())
+                                            })
+                                        })
+
+                console.log(arrayUsers)
+
+                this.createNotifications(arrayUsers)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
+        async createNotifications(users){
+            try {
+                let notificationCollection = firebase.firestore.collection('notifications')
+
+                // Begin a new batch
+                let batch = firebase.firestore.batch()
+
+                // Set each document, as part of the batch
+                users.forEach(document => {
+                    let ref = notificationCollection.doc(document.token);
+                    batch.set(ref, { title: 'Nueva orden', content: 'Hay una nueva orden disponible' })
                 })
+
+                // Commit the entire batch
+                return batch.commit();
+            } catch (error) {
+                console.log(error)
             }
         },
 
@@ -427,14 +863,55 @@ export default {
             })
         },
 
+        goToHistory(){
+            this.$navigator.navigate('/history', 
+            {
+            transition: 
+                {
+                    name: 'slideTop', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
+        goToOrders(){
+            this.$navigator.navigate('/orders', 
+            {
+            transition: 
+                {
+                    name: 'slideRight', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
+        goToConfiguration(){
+            this.$navigator.navigate('/configuration', 
+            {
+            transition: 
+                {
+                    name: 'slideRight', 
+                    duration: 500, 
+                    curve: 'linear'
+                }
+            })
+        },
+
         goToPhone(){
             console.log('Hola Mundo')
-            const phoneNumber = '200-48-10'
+            const phoneNumber = '614-126-5003'
 
-            TNSPhone.requestCallPermission('You should accept the permission to be able to make a direct phone call.')
+            TNSPhone.requestCallPermission('Debes aceptar los permisos para poder hacer llamadas.')
                 .then(() => TNSPhone.dial(phoneNumber, false))
                 .catch(() => TNSPhone.dial(phoneNumber, true))
         },
+
+        logOut(){
+            firebase.logout()
+            this.$navigator.navigate('/login', { clearHistory: true })
+        }
     }
 }
 </script>

@@ -1,21 +1,23 @@
-<style scoped>
-    
+<style>
+    .gradient{
+        background: linear-gradient(45deg, #BF3952, #F24464);
+    }
 </style>
 
 <template>
     <Page actionBarHidden="true">
         <GridLayout rows="*" columns="*">
-            <ScrollView row="0" col="0" backgroundColor="white" @scroll="onScroll($event)" scrollBarIndicatorVisible="false">
-                <WrapLayout @layoutChanged="onLayoutChanged($event)" orientation="vertical" width="100%">
+            <ScrollView row="0" col="0" backgroundColor="white">
+                <WrapLayout orientation="vertical" width="100%">
                     <GridLayout rows="120, *" columns="*" height="100%">
                         <FlexboxLayout class="gradient" row="0" col="0" justifyContent="space-between" alignItems="flex-start" padding="10" borderRadius="0 0 20 20">
                             <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
-                            <Label fontSize="22" color="white" marginTop="2" text="Historial" textWrap="true" />
-                            <Label padding="10" class="font-awesome" fontSize="20" color="white" text="" textWrap="true" @tap="goToHome" />
+                            <Label fontSize="22" color="white" marginTop="2" text="Pedidos pendientes" textWrap="true" />
+                            <Label text="" textWrap="true" />
                         </FlexboxLayout>
 
                         <StackLayout row="1" col="0" marginTop="-55">
-                            <StackLayout marginBottom="35" v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" width="95%" borderRadius="5">
+                            <StackLayout width="95%" marginBottom="35" v-for="(item, index) in orders" :key="index" marginTop="10" v-shadow="20" backgroundColor="white" padding="10" borderRadius="5">
                                 <Label fontSize="22" :text="item.name" textWrap="true" />
                                 <Label textWrap="true">
                                     <FormattedString>
@@ -33,11 +35,14 @@
                                         <Span :text="item.directionDestination" />
                                     </FormattedString>
                                 </Label>
-                            </StackLayout>
 
-                            <FlexboxLayout width="100%" height="100" justifyContent="center" alignItems="center">
-                                <ActivityIndicator :busy="busy" />
-                            </FlexboxLayout>
+                                <FlexboxLayout justifyContent="center" alignItems="center">
+                                    
+                                    <Button v-if="order == null" marginTop="10" backgroundColor="#F24464" color="white" text="Aceptar pedido" @tap="updateOrderStatus(item)" />
+                                    <Button v-else marginTop="10" backgroundColor="#F2CBC2" color="white" text="Orden en progreso" disabled />
+                                    
+                                </FlexboxLayout>
+                            </StackLayout>
                         </StackLayout>
                     </GridLayout>
                 </WrapLayout>
@@ -47,67 +52,49 @@
 </template>
 
 <script>
+import { query } from 'nativescript-plugin-firebase'
+
 //Firebase
 const firebase = require("nativescript-plugin-firebase")
 
 //Vuex
 import { mapState } from 'vuex'
 
-//Vuelidate
-import { required, maxLength } from 'vuelidate/lib/validators'
-
-//Toast
-import * as Toast from 'nativescript-toast'
-
 //Moment
-const moment = require('moment')
+let moment = require('moment')
 
 export default {
-    name: 'History',
+    name: 'Orders',
 
     data(){
         return{
             orders: [],
-            last: null,
 
-            lastItemY: 0,
-            bussy: false,
-            i: 1,
+            order: null,
         }
     },
 
-    mounted(){
+    mounted() {
+        this.getOrder()
         this.getOrders()
-    },
-
-    filters: {
-        formatDate(date){
-            moment.locale('es')
-            
-            return moment(date).format('LL')
-        }
     },
 
     computed: {
         ...mapState([
-            'user'
-        ])
+                'user'
+            ]),
     },
 
     methods: {
         async getOrders(){
-            this.busy = true
-
             try {
                 console.log('dale')
                 let response = await firebase.firestore.collection('orders')
-                                                    .where('status', '==', 'FINALIZADO')
-                                                    .where('deliveryMan', '==', this.user.uid)
-                                                    .limit(4)
-                                                    .get()
-                                                    .then(query => {
-                                                        this.last = query.docs[query.docs.length - 1];
-
+                                                    .where('listDeliveryMen', 'array-contains', this.user.uid)
+                                                    .where('level', '==', 2)
+                                                    .where('status', '==', 'PENDIENTE')
+                                                    .onSnapshot(query => {
+                                                        this.orders = []
                                                         query.forEach(doc => {
 
                                                             let order = doc.data()
@@ -125,59 +112,65 @@ export default {
                                                         })
                                                         
                                                     })
+                // this.$store.commit('updateOrders', this.orders)
 
                 console.log('dalee 2')
             } catch (error) {
                 console.log(error)
             }
-            finally{
-                this.busy = false
-            }
         },
 
-        async nextOrders(){
-            this.busy = true
+        async getOrder(){
             try {
-                if (this.last == undefined) {
-                    return
-                }
                 let response = await firebase.firestore.collection('orders')
-                                                        .where('status', '==', 'FINALIZADO')
-                                                        .where('deliveryMan', '==', this.user.uid)
-                                                        .limit(4)
-                                                        .startAfter(this.last)
-                                                        .get()
-                                                        .then(query => {
-                                                            this.last = query.docs[query.docs.length - 1];
-                                                            query.forEach(doc => {
-                                                                this.orders.push(doc.data())
-                                                            })
+                                                    .where('status', '==', 'ACEPTADA')
+                                                    .where('deliveryMan', '==', this.user.uid)
+                                                    .get()
+                                                    .then(query => {
+                                                        query.forEach(doc => {
+                                                            
+                                                            let order = doc.data()
+
+                                                            Object.defineProperty(order, 'id', {
+                                                                enumerable: true,
+                                                                configurable: true,
+                                                                writable: true,
+                                                                value: doc.id
+                                                            });
+
+                                                            this.order = order
                                                         })
-            } catch(e) {
-                console.log(e);
-            }
-            finally{
-                this.busy = false
+                                                    })
+
+            } catch (error) {
+                console.log(error)
             }
         },
 
-        onScroll: function (args) {
-            const scrollView = args.object
-            let verticalOffset = scrollView.getActualSize().height + scrollView.verticalOffset
-            if (verticalOffset >= this.lastItemY) {
-                if (!this.busy && this.i <= 100) {
-                    //loader.show(options)
-                    this.nextOrders()
-                }
+        async updateOrderStatus(order){
+            try {
+                console.log(order)
+
+                confirm({
+                    title: "Aceptar pedido",
+                    message: "¿Quieres aceptar este pedido?",
+                    okButtonText: "Aceptar",
+                    cancelButtonText: "Cancelar"
+                }).then(async result => {
+                    if (result) {
+                        let response = await firebase.firestore.collection('orders')
+                                                    .doc(order.id)
+                                                    .update({ status: 'ACEPTADA', deliveryMan: this.user.uid, flag: 1 })
+
+                        this.goToHome()
+                    }
+                });                
+            
+            
+
+            } catch (error) {
+                
             }
-
-        },
-
-        onLayoutChanged(args){
-            const containerLyt = args.object
-            let length = containerLyt.getChildrenCount()
-            let lastItem = containerLyt.getChildAt(length - 1)
-            this.lastItemY = lastItem.getLocationRelativeTo(containerLyt).y
         },
 
         goToHome(){
@@ -191,6 +184,6 @@ export default {
                     }
                 })
         } 
-    }
+    },
 }
 </script>

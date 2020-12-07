@@ -8,18 +8,18 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:468473832934:android:3d3136029b4d2e2d9c2227",
+        "mobilesdk_app_id": "1:468473832934:android:2f8fe5e594e42df09c2227",
         "android_client_info": {
-          "package_name": "com.log3d.repartidores"
+          "package_name": "com.log3d.fassst"
         }
       },
       "oauth_client": [
         {
-          "client_id": "468473832934-424qqn93vhp7i42rolalcpb0pa5t0rs0.apps.googleusercontent.com",
+          "client_id": "468473832934-7dnggv0k216bbbkt25mju81q9he1gv9e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.log3d.repartidores",
-            "certificate_hash": "9ae430b71023850fe664a139f47580c376fec382"
+            "package_name": "com.log3d.fassst",
+            "certificate_hash": "d58eb87df3125c6f6b645cd512508f572ea175d3"
           }
         },
         {

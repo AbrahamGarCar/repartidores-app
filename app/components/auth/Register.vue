@@ -25,28 +25,28 @@
                         <StackLayout row="1" col="0" v-if="window == 1">
                             <FlexboxLayout row="1" col="0" justifyContent="center" alignItems="center" flexDirection="column">
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.name" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Nombre" text="" />
+                                    <TextField v-model="user.name" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Nombre*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.lastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido paterno" text="" />
+                                    <TextField v-model="user.lastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido paterno*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.secondLastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido materno" text="" />
+                                    <TextField v-model="user.secondLastName" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Apellido materno*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electronico" text="" />
+                                    <TextField v-model="user.email" color="black" keyboardType="email" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Correo electrónico*" text="" />
                                 </StackLayout>
                                 <StackLayout width="90%" marginTop="10">
-                                    <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña" text="" />
+                                    <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña*" text="" />
                                 </StackLayout>
                                 <StackLayout width="90%" marginTop="10">
-                                    <TextField color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Repetir contraseña" text="" />
+                                    <TextField color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Repetir contraseña*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular" text="" />
+                                    <TextField v-model="user.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Direccion" v-model="user.direction" />
+                                    <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Dirección*" v-model="user.direction" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <ListView height="100" for="item in places">
@@ -58,7 +58,7 @@
 
                                 <StackLayout marginTop="10" width="90%">
                                     <FlexboxLayout justifyContent="center" alignItems="center">
-                                        <Label text="Fecha de nacimiento" color="black" fontSize="18" textWrap="true" />
+                                        <Label text="Fecha de nacimiento*" color="black" fontSize="18" textWrap="true" />
                                     </FlexboxLayout>
                                     <DatePicker v-model="user.birthdate" :maxDate="maxDate" minDate="01-01-1950" />
                                 </StackLayout>
@@ -74,7 +74,7 @@
 
                         <StackLayout row="1" col="0" v-if="window == 2">
                             <StackLayout width="90%">
-                                <Label textAlignment="center" text="Ya por ultimo sube un par de fotos, una de perfil y una completa." textWrap="true" />
+                                <Label textAlignment="center" text="Sube un par de fotos, una de perfil y una completa." textWrap="true" />
                                 <Label textAlignment="center" fontSize="12" text="Permite a la aplicación acceder a tu cámara" textWrap="true" />
                                 
                             </StackLayout>
@@ -100,6 +100,17 @@
                                 </WrapLayout>
                             </StackLayout>
 
+                            <GridLayout rows="*" columns="*, *" marginTop="-10">
+                                <FlexboxLayout row="0" col="0" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Label text="Foto de perfil" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+                                <FlexboxLayout row="0" col="1" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <Label text="Foto completa" textWrap="true" />
+                                    
+                                </FlexboxLayout>
+                            </GridLayout>
+
                             <!-- <StackLayout>
                                 <Label text="Foto frente:" textWrap="true" />
                                 <Label :text="photoOne" textWrap="true" />
@@ -115,7 +126,12 @@
                                 <Button width="100%" fontSize="16" height="40" backgroundColor="#022873" color="white" borderRadius="10" text="Regresar" @tap="window = 1" />
                                 <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Registrarme" @tap="createUser" />
 
-                                <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesion." textWrap="true" @tap="goToLogin" />
+                                <Label marginTop="10" color="black" text="¿Ya tienes una cuenta? Inicia sesión." textWrap="true" @tap="goToLogin" />
+                            </FlexboxLayout>
+
+                            <FlexboxLayout marginTop="15" justifyContent="center" alignItems="center">
+                                <Label fontSize="22" :text="`${percent}%`" textWrap="true" />
+                                
                             </FlexboxLayout>
                         </StackLayout>
                     </GridLayout>
@@ -216,6 +232,16 @@ export default {
                 role: 'Usuario',
                 registerDate: new Date(),
                 completeProfile: true,
+                active: false,
+                INE: false,
+                contract: false,
+                planActivate: new Date(),
+                planDeactivate: new Date(),
+                plan: null,
+                _geoloc: {
+                    lat: 0,
+                    lng: 0,
+                }
             },
 
             reasonsItems: [
@@ -238,6 +264,8 @@ export default {
             photoTwo: null,
 
             window: 1,
+
+            percent: 0,
         }
     },
 
@@ -504,6 +532,7 @@ export default {
 
                     if(response.additionalUserInfo.isNewUser){
                         await firebase.firestore.collection('users').doc(user.uid).set(user)
+                        await firebase.firestore.collection('information_user').doc(user.uid).set({ name: this.user.name, cancellationsCount: 0, deliveredCount: 0 })
                     }
                     
                     this.uid = response.uid
@@ -574,10 +603,31 @@ export default {
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
                     console.log("Percentage complete: " + status.percentageCompleted);
+
+                    this.percent = status.percentageCompleted
                 },
                 metadata
               }).then((uploadedFile) => {
-                    this.getResizePath(fotoId)
+                    let arrayPhotos = []
+
+                    firebase.storage.getDownloadUrl({
+                        remoteFullPath: 'users/' + fotoId + '.jpg'
+                    }).then(async (url) => {
+
+                        let data = {
+                            photo: url,
+                            user: this.uid,
+                            control: this.controlPhotos
+                        }
+
+                        arrayPhotos.push(url)
+
+                        let response = await firebase.firestore.collection('user_photos').add(data)
+                        this.controlUploadPhotos()
+                    }).catch(error => {
+                        console.log(error);
+                        loader.hide()
+                    })
                 },
                     (error) => {
                         loader.hide()
@@ -649,14 +699,16 @@ export default {
                 if(response.exists){
                     let user = response.data()
 
-                    if(user.terms){
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/home', { clearHistory: true })
-                    }else{
-                        this.$store.commit('updateUser', user)
-                        this.$navigator.navigate('/terms', { clearHistory: true })
-                    }  
-                    
+                    this.$store.dispatch('updateUserToken', {
+                        user: user.uid,
+                    })
+
+                    this.$store.dispatch('getPhotos', {
+                        user: user.uid,
+                    })
+
+                    this.$navigator.navigate('/ine', { clearHistory: true })
+
                 }
             } catch (error) {
                 loader.hide()

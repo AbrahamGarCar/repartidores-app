@@ -5,6 +5,9 @@ import * as platform from "tns-core-modules/platform"
 import * as decodePolyline from "decode-google-map-polyline"
 import { Position, Marker, Polyline, Bounds } from "nativescript-google-maps-sdk"
 
+import { Image } from "ui/image";
+import { ImageSource } from "image-source";
+
 const MapsUIHelper = {
     data() {
         return {
@@ -26,6 +29,13 @@ const MapsUIHelper = {
             }
         },
         addMarkerToMap(marker, visibility, icon) {
+
+            // let imgMarker = "~/assets/images/marker3.png"
+
+            // const imageSource = ImageSource.fromFileSync(imgMarker);
+            // const icon2 = new Image();
+            // icon2.imageSource = imageSource;
+
             marker.position = Position.positionFromLatLng(0, 0);
             marker.draggable = true;
             marker.visible = visibility;
@@ -128,8 +138,10 @@ const DistanceMatrixAPIHelper = {
                 this.endJourney();
                 return;
             }
-            this.journeyDetails = "Tu destino esta a " + this.distance + " de distancia \n";
-            this.journeyDetails += "Tiempo aproximando de llegada: " + this.duration;
+            this.journeyDetails = [
+                this.distance,
+                this.duration
+            ];
         }
     }
 };
