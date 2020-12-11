@@ -117,20 +117,20 @@
 
                                 <FlexboxLayout v-if="order != null" justifyContent="center" alignItems="center" marginTop="15">
                                     <Label fontSize="24" fontWeight="bold" :text="`#${order.orderNumber}`" textWrap="true" />
-                                    
+                                    <!-- <Button text="Mostrar en google maps" @tap="goToGoogleMaps" /> -->
                                 </FlexboxLayout>
 
                                 <!-- Informacion de longitud y tiempos de llegada -->
                                 <StackLayout padding="10" v-if="order != null" marginTop="10">
-                                    <Label fontSize="18" textWrap="true">
+                                    <Label fontSize="19" textWrap="true">
                                         <FormattedString>
-                                            <Span fontSize="18" fontWeight="bold" text="El destino esta a " />
+                                            <Span fontSize="19" fontWeight="bold" text="El destino esta a " />
                                             <Span :text="journeyDetails[0]" />
                                         </FormattedString>
                                     </Label>
-                                    <Label fontSize="18" textWrap="true">
+                                    <Label fontSize="19" textWrap="true">
                                         <FormattedString>
-                                            <Span fontSize="18" fontWeight="bold" text="Tiempo aproximado de llegada " />
+                                            <Span fontSize="19" fontWeight="bold" text="Tiempo aproximado de llegada " />
                                             <Span :text="journeyDetails[1]" />
                                         </FormattedString>
                                     </Label>
@@ -145,7 +145,7 @@
                                     <Label fontSize="22" :text="order.name" textWrap="true" />
                                     <Label textWrap="true">
                                         <FormattedString>
-                                            <Span fontSize="18" fontWeight="bold" text="Desde: " />
+                                            <Span fontSize="19" fontWeight="bold" text="Desde: " />
                                             <Span :text="order.directionOrigin" />
                                         </FormattedString>
                                     </Label>
@@ -155,20 +155,56 @@
                                     </FlexboxLayout>
                                     <Label textWrap="true">
                                         <FormattedString>
-                                            <Span fontSize="18" fontWeight="bold" text="Hasta: " />
+                                            <Span fontSize="19" fontWeight="bold" text="Hasta: " />
                                             <Span :text="order.directionDestination" />
                                         </FormattedString>
                                     </Label>
-                                    <GridLayout v-if="order.flag == 1" rows="50" columns="*, 10, 50" marginTop="10">
+
+                                    <GridLayout marginTop="15" rows="auto" columns="*, *, *">
+                                        <FlexboxLayout row="0" col="0" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                            <Label fontWeight="bold" text="Costo:" textWrap="true" />
+                                            
+                                            <Label fontSize="20" :text="`$${order.cost}`" textWrap="true" />
+                                            
+                                        </FlexboxLayout>
+                                        <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                            <Label fontWeight="bold" text="Envío:" textWrap="true" />
+                                            
+                                            <Label fontSize="20" :text="`$${order.infoDestination.cost}`" textWrap="true" />
+                                            
+                                        </FlexboxLayout>
+                                        <FlexboxLayout row="0" col="2" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                            <Label fontWeight="bold" text="Total:" textWrap="true" />
+                                            
+                                            <Label fontSize="20" :text="`$${getTotal(order.cost, order.infoDestination.cost)}`" textWrap="true" />
+                                            
+                                        </FlexboxLayout>
+                                    </GridLayout>
+                                    <GridLayout marginTop="15" v-if="order.flag == 1" rows="50" columns="*, 10, 50, 10, 50">
                                         <StackLayout row="0" col="0">
                                             <Button width="100%" borderRadius="5" backgroundColor="#BF3952" color="white" text="Comenzar entrega" @tap="startDelivery" />
                                         </StackLayout>
                                         <Label row="0" col="1" textWrap="true" />
                                         <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="2">
+                                            <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="blue" color="white" text="" @tap="goToGoogleMaps" />
+                                        </FlexboxLayout>
+                                        <Label row="0" col="3" textWrap="true" />
+                                        <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="4">
                                             <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="red" color="white" text="" @tap="cancelOrder" />
                                         </FlexboxLayout>
                                     </GridLayout>
-                                    <Button v-else marginTop="10" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
+                                    <GridLayout v-else rows="50" columns="*, 10, 50" marginTop="10">
+                                        <StackLayout row="0" col="0">
+                                            <Button width="100%" borderRadius="5" backgroundColor="#BF3952" color="white" text="Finalizar entrega" @tap="updateOrderStatus" />
+                                        </StackLayout>
+                                        <Label row="0" col="1" textWrap="true" />
+                                        <FlexboxLayout justifyContent="center" alignItems="center" row="0" col="2">
+                                            <Button width="100%" borderRadius="5" class="font-awesome" backgroundColor="blue" color="white" text="" @tap="goToGoogleMaps" />
+                                        </FlexboxLayout>
+                                        
+                                    </GridLayout>
+
+                                    
                                 </StackLayout>
                                 
                                 <StackLayout marginTop="15" borderWidth="1" borderColor="black" />
@@ -176,7 +212,13 @@
                                 <StackLayout v-if="order != null" marginTop="15" backgroundColor="white" padding="10" width="100%" borderRadius="5">
                                     <Label textWrap="true">
                                         <FormattedString>
-                                            <Span fontSize="18" fontWeight="bold" text="Detalles: " />
+                                            <Span fontSize="19" fontWeight="bold" text="Numero de contacto: " />
+                                            <Span :text="order.details.telephone" />
+                                        </FormattedString>
+                                    </Label>
+                                    <Label marginTop="15" textWrap="true">
+                                        <FormattedString>
+                                            <Span fontSize="19" fontWeight="bold" text="Detalles: " />
                                             <Span :text="order.details.reference" />
                                         </FormattedString>
                                     </Label>
@@ -207,6 +249,9 @@ const firebase = require("nativescript-plugin-firebase")
 
 //Vuex
 import { mapState } from 'vuex'
+
+//Utils
+const utilsModule = require("tns-core-modules/utils/utils");
 
 //Geolocation
 import * as geolocation from 'nativescript-geolocation'
@@ -352,6 +397,14 @@ export default {
     },
 
     methods: {
+        getTotal(cost, delivery){
+            return Number(cost) + Number(delivery)
+        },
+
+        goToGoogleMaps(){
+            utilsModule.openUrl(`https://www.google.com/maps/dir//${this.destination.latitude},${this.destination.longitude}/@${this.destination.latitude},${this.destination.longitude}`)
+        },
+
         navigatingTo(args){
 
             if (this.user.active) {
