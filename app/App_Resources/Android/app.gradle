@@ -11,6 +11,7 @@
 
 android {
   defaultConfig {
+    compileSdkVersion 29
     minSdkVersion 19
     generatedDensities = []
   }

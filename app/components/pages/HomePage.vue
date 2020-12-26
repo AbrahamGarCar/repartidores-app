@@ -160,23 +160,17 @@
                                         </FormattedString>
                                     </Label>
 
-                                    <GridLayout marginTop="15" rows="auto" columns="*, *, *">
+                                    <GridLayout marginTop="15" rows="auto" columns="*, *">
                                         <FlexboxLayout row="0" col="0" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
-                                            <Label fontWeight="bold" text="Costo:" textWrap="true" />
-                                            
-                                            <Label fontSize="20" :text="`$${order.cost}`" textWrap="true" />
-                                            
-                                        </FlexboxLayout>
-                                        <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                             <Label fontWeight="bold" text="Envío:" textWrap="true" />
                                             
                                             <Label fontSize="20" :text="`$${order.infoDestination.cost}`" textWrap="true" />
                                             
                                         </FlexboxLayout>
-                                        <FlexboxLayout row="0" col="2" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                        <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                             <Label fontWeight="bold" text="Total:" textWrap="true" />
                                             
-                                            <Label fontSize="20" :text="`$${getTotal(order.cost, order.infoDestination.cost)}`" textWrap="true" />
+                                            <Label fontSize="20" :text="`$${getTotal(order.cost, order.infoDestination.costClient)}`" textWrap="true" />
                                             
                                         </FlexboxLayout>
                                     </GridLayout>

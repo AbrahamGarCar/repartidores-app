@@ -121,6 +121,8 @@ export default {
                 var totalAmount = this.orders.reduce((sum, value) => (typeof value.infoDestination.cost == "number" ? sum + value.infoDestination.cost : sum), 0);
                 return totalAmount
             }
+
+            return 0
             
         }
     },

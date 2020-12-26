@@ -16,7 +16,7 @@
                                     <Image borderRadius="100" :src="photos[0]" stretch="aspectFill" />
                                 </StackLayout> -->
                                 <StackLayout width="150" height="150" borderRadius="100" v-shadow="20">
-                                    <Image borderRadius="100" :src="photos[0]" stretch="aspectFill" />
+                                    <Image borderRadius="100" :src="photos[0].photo" stretch="aspectFill" />
                                 </StackLayout>
                             </FlexboxLayout>
                             

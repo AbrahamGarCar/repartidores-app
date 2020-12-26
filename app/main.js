@@ -140,12 +140,14 @@ new Vue({
     firebase.getCurrentUser()
             .then(async (user) => {
 
+              this.$showModal(ModalLogin)
+
                 let response = await firebase.firestore.collection('users')
                                                     .doc(user.uid)
                                                     .get()
 
                 if(response.exists){
-                    this.$showModal(ModalLogin)
+                    
                     let user = response.data()
 
                     console.log(user);

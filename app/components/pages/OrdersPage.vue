@@ -36,23 +36,17 @@
                                     </FormattedString>
                                 </Label>
 
-                                <GridLayout rows="auto" columns="*, *, *">
+                                <GridLayout rows="auto" columns="*, *">
                                     <FlexboxLayout row="0" col="0" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
-                                        <Label fontWeight="bold" text="Costo:" textWrap="true" />
-                                        
-                                        <Label fontSize="20" :text="`$${item.cost}`" textWrap="true" />
-                                        
-                                    </FlexboxLayout>
-                                    <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                         <Label fontWeight="bold" text="Envío:" textWrap="true" />
                                         
                                         <Label fontSize="20" :text="`$${item.infoDestination.cost}`" textWrap="true" />
                                         
                                     </FlexboxLayout>
-                                    <FlexboxLayout row="0" col="2" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                    <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                         <Label fontWeight="bold" text="Total:" textWrap="true" />
                                         
-                                        <Label fontSize="20" :text="`$${getTotal(item.cost, item.infoDestination.cost)}`" textWrap="true" />
+                                        <Label fontSize="20" :text="`$${getTotal(item.cost, item.infoDestination.costClient)}`" textWrap="true" />
                                         
                                     </FlexboxLayout>
                                 </GridLayout>
