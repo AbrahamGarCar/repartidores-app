@@ -340,6 +340,10 @@ export default {
 
             order: null,
             flag: 2,
+
+            breakTime: false,
+            watchId: '',
+            saveUbicationVar: '',
         }
     },
 
@@ -390,7 +394,99 @@ export default {
 
     },
 
+    watch: {
+        'origin.latitude': function (newVal, oldVal) {
+            let number_1 = this.truncarNumbers(oldVal, 3)
+            let number_2 = this.truncarNumbers(newVal, 3)
+            console.log(number_1)
+            console.log(number_2)
+            if(number_1 != number_2){
+                if(this.breakTime){
+                    clearTimeout(this.saveUbicationVar)
+                    this.breakTime = false
+                }
+                this.getNewUbication()
+            }
+        },
+
+        'origin.longitude': function (newVal, oldVal) {
+            let number_1 = this.truncarNumbers(oldVal, 3)
+            let number_2 = this.truncarNumbers(newVal, 3)
+            console.log(number_1)
+            console.log(number_2)
+            if(number_1 != number_2){
+                if(this.breakTime){
+                    clearTimeout(this.saveUbicationVar)
+                    this.breakTime = false
+                }
+                this.getNewUbication()
+            }
+        },
+    },
+
     methods: {
+
+        //Truncar numeros
+        truncarNumbers(x, posiciones = 0) {
+            var s = x.toString()
+            var l = s.length
+            var decimalLength = s.indexOf('.') + 1
+            if (l - decimalLength <= posiciones){
+                return x
+            }
+            // Parte decimal del número
+            var isNeg  = x < 0
+            var decimal =  x % 1
+            var entera  = isNeg ? Math.ceil(x) : Math.floor(x)
+            // Parte decimal como número entero
+            // Ejemplo: parte decimal = 0.77
+            // decimalFormated = 0.77 * (10^posiciones)
+            // si posiciones es 2 ==> 0.77 * 100
+            // si posiciones es 3 ==> 0.77 * 1000
+            var decimalFormated = Math.floor(
+                Math.abs(decimal) * Math.pow(10, posiciones)
+            )
+            // Sustraemos del número original la parte decimal
+            // y le sumamos la parte decimal que hemos formateado
+            var finalNum = entera + 
+                ((decimalFormated / Math.pow(10, posiciones))*(isNeg ? -1 : 1))
+            
+            return finalNum
+        },
+
+        //Iniciamos un contador de 60 segundos, despues de eso obtenemos la posicion actual
+        getNewUbication(){
+            console.log('Entra para actualizar');
+            this.breakTime = true
+            this.saveUbicationVar = setTimeout(() => {
+                //Obtenemos la ubicacion
+                this.getLocation()
+                
+            }, 2000)
+        },
+
+        async saveUbication(){
+            this.breakTime = false
+            return
+
+            try {                
+                if (this.order != null) {
+                    if (this.order.flag != 1) {
+                        let response = await firebase.firestore.collection('orders')
+                                                    .doc(this.order.id)
+                                                    .update({ route: firebase.firestore.FieldValue.arrayUnion(this.origin) })
+                
+                        this.breakTime = false
+
+                        console.log('Se guardo la ubicacion');
+                    }
+                }
+                
+            } catch (error) {
+                console.log(error)
+            }
+        },
+
         getTotal(cost, delivery){
             return Number(cost) + Number(delivery)
         },
@@ -530,6 +626,8 @@ export default {
                 if (location) {
                     this.origin.latitude = location.latitude
                     this.origin.longitude = location.longitude
+
+                    this.saveUbication()
                     this.watchLocation()
                 }
             }, (e) => {
@@ -749,6 +847,8 @@ export default {
                         this.order.flag = 2
 
                         this.setDestination()
+
+                        this.getLocation()
                     }
                 });                
 
@@ -814,6 +914,8 @@ export default {
         async cancelOrderUpdate(txt = 'Sin motivo'){
             try {
                 let newList = this.order.listDeliveryMen.filter(document => document != this.user.uid)
+
+                console.log('Esta es la lista: ', newList);
 
                 let orderID = this.order.id
 

@@ -23,6 +23,22 @@
           }
         },
         {
+          "client_id": "468473832934-e4jo97l4nmakeipsobrm8e4o87tofn3e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.log3d.fassst",
+            "certificate_hash": "f0b0d7996403047b381bd8329de6fc189c78f566"
+          }
+        },
+        {
+          "client_id": "468473832934-gieq7ki9vu8d9e2oj86hqjj0v4ur1ehf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.log3d.fassst",
+            "certificate_hash": "7fd1d7a9ada14e14352ceb84d00cebbcbc7c8336"
+          }
+        },
+        {
           "client_id": "468473832934-qnqd49hnum7riiorieo4pfda688k2f7j.apps.googleusercontent.com",
           "client_type": 3
         }

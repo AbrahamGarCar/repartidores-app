@@ -84,9 +84,9 @@ firebase.init({
           subtitle: message.subtitle,
           body: message.body,
           bigTextStyle: false, // Allow more than 1 row of the 'body' text on Android, but setting this to true denies showing the 'image'
-          color: new Color("green"),
-        //   image: "https://images-na.ssl-images-amazon.com/images/I/61mx-VbrS0L.jpg",
-          thumbnail: "https://2.bp.blogspot.com/-H_SZ3nAmNsI/VrJeARpbuSI/AAAAAAAABfc/szsV7_F609k/s200/emoji.jpg",
+          color: new Color("red"),
+          image: "https://app.fassst.mx/img/logo.0436684f.png",
+          thumbnail: "https://ibb.co/Lg2zy82",
           forceShowWhenInForeground: true,
           channel: "vue-channel",
           ticker: "Special ticker text for Vue (Android only)",
