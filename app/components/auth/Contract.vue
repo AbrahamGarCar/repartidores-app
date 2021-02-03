@@ -225,9 +225,22 @@
                         <Button width="90%" fontSize="16" height="40" backgroundColor="#F24464" borderRadius="10" text="Borrar firma" color="white" @tap="clearMyDrawing" />
                     </FlexboxLayout>
 
-                    <FlexboxLayout width="100%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                    <GridLayout rows="*" columns="2*, *">
+                        <StackLayout row="0" col="0">
+                            <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                                <Button width="90%" fontSize="16" height="40" backgroundColor="#F24464" color="white" borderRadius="10" text="Continuar" @tap="signDraw" />
+                            </FlexboxLayout>
+                        </StackLayout>
+                        <StackLayout row="0" col="1">
+                            <FlexboxLayout width="100%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                                <Button width="90%" fontSize="16" height="40" backgroundColor="black" borderRadius="10" text="Salir" color="white" @tap="singOut" />
+                            </FlexboxLayout>
+                        </StackLayout>
+                    </GridLayout>
+
+                    <!-- <FlexboxLayout width="100%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
                         <Button width="90%" fontSize="16" height="40" backgroundColor="#F24464" borderRadius="10" text="Continuar" color="white" @tap="signDraw" />
-                    </FlexboxLayout>
+                    </FlexboxLayout> -->
                     
                 </WrapLayout>
             </ScrollView>
@@ -502,6 +515,12 @@ Suspendisse potenti. Fusce sed maximus libero, at cursus ex. Morbi vitae dolor e
             } catch (error) {
                 console.log(error)
             }
+        },
+
+        singOut(){
+            this.$emit('closeModal')
+            firebase.logout()
+            this.$navigator.navigate('/login', { clearHistory: true })
         }
     }
 }

@@ -226,7 +226,7 @@
         <FlexboxLayout width="95%" height="100%" v-else justifyContent="center" alignItems="center" flexDirection="column">
             <Image src="~/assets/images/no-order.png" width="100%" stretch="aspectFit" verticalAlignment="center" horizontalAlignment="center" />
             <Label fontSize="22" textAlignment="center" text="Tu cuenta se encuentra suspendida, ponte en contacto al siguiente numero para mas información: " textWrap="true" />
-            <Label fontSize="22" text="6141101086" textWrap="true" @tap="goToPhone" />
+            <Label fontSize="22" text="6141265003" textWrap="true" @tap="goToPhone" />
 
             <FlexboxLayout class="container" justifyContent="center" alignItems="center" width="100%" height="70" backgroundColor="#F2CBC2" borderRadius="15 15 15 15" @tap="logOut">
                 <Label text="SALIR" color="white" fontSize="18" fontWeight="bold" textWrap="true" />

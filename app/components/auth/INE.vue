@@ -72,9 +72,22 @@
                                 
                             </StackLayout> -->
 
-                            <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                            <GridLayout rows="*" columns="2*, *">
+                                <StackLayout row="0" col="0">
+                                    <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                                        <Button width="90%" fontSize="16" height="40" backgroundColor="#F24464" color="white" borderRadius="10" text="Cargar fotos" @tap="createUser" />
+                                    </FlexboxLayout>
+                                </StackLayout>
+                                <StackLayout row="0" col="1">
+                                    <FlexboxLayout width="100%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
+                                        <Button width="90%" fontSize="16" height="40" backgroundColor="black" borderRadius="10" text="Salir" color="white" @tap="singOut" />
+                                    </FlexboxLayout>
+                                </StackLayout>
+                            </GridLayout>
+
+                            <!-- <FlexboxLayout width="90%" marginTop="10" marginBottom="10" justifyContent="center" alignItems="center" flexDirection="column">
                                 <Button width="100%" fontSize="16" height="40" backgroundColor="#F24464" color="white" marginTop="10" borderRadius="10" text="Cargar fotos" @tap="createUser" />
-                            </FlexboxLayout>
+                            </FlexboxLayout> -->
 
                             <FlexboxLayout marginTop="15" justifyContent="center" alignItems="center">
                                 <Label fontSize="22" :text="`${percent}%`" textWrap="true" />
@@ -111,6 +124,10 @@ const imageModule = require("tns-core-modules/ui/image")
 //Gallery
 const imagePicker = require("nativescript-imagepicker")
 const context = imagePicker.create({ mode: "single" })
+
+const fileSystemModule = require("tns-core-modules/file-system");
+import { Image } from "ui/image";
+import { ImageSource } from 'tns-core-modules/image-source'
 
 //LOADER
 const LoadingIndicator = require('@nstudio/nativescript-loading-indicator').LoadingIndicator
@@ -168,6 +185,8 @@ export default {
             photoTwo: null,
 
             percent: 0,
+
+            isAndroid: true,
         }
     },
 
@@ -252,15 +271,28 @@ export default {
             }
 
             camera.takePicture(options).then((response) => {
-                console.log('Resultado...')
-
                 let image = new imageModule.Image()
                 image.src = response
-                if(args == 1){
-                    this.photoOne = image.src._android
-                }else if(args == 2){
-                    this.photoTwo = image.src._android
-                }
+                let imgTemp = image.src._android
+                console.log('Resultado...:', imgTemp)
+
+                ImageSource.fromAsset(response).then((source) => {
+                    setTimeout(() => {
+                        let imgSrc = source.resize(250)
+                        var folder = fileSystemModule.knownFolders.documents();
+                        var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
+                        var saved = imgSrc.saveToFile(path, "png");
+
+                        console.log("saved: " + saved);
+                        console.log("IMAGEN SRC.....", path);
+
+                        if(args == 1){
+                            this.photoOne = path
+                        }else if(args == 2){
+                            this.photoTwo = path
+                        }
+                    }, this.isAndroid ? 0 : 1000);             
+                });
                 
             }).catch((error) => {
                 console.log('Error: ' + error.message)
@@ -275,13 +307,22 @@ export default {
                     return context.present();
                 })
                 .then((selection) => {
-                    let image = new imageModule.Image()
-                    image.src = selection
-                    if(args== 1){
-                        this.photoOne = image.src[0]._android
-                    }else if(args == 2){
-                        this.photoTwo = image.src[0]._android
-                    }
+                    ImageSource.fromAsset(selection[0]).then((source) => {
+                        setTimeout(() => {
+                            let imgSrc = source.resize(300)
+                            var folder = fileSystemModule.knownFolders.documents();
+                            var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
+                            var saved = imgSrc.saveToFile(path, "png");
+                            console.log("saved: " + saved);
+                            console.log("IMAGEN SRC.....", path);
+
+                            if(args== 1){
+                                this.photoOne = path
+                            }else if(args == 2){
+                                this.photoTwo = path
+                            }
+                        }, this.isAndroid ? 0 : 1000);             
+                    });
                     
                 }).catch((e) => {
                     // process error
@@ -456,6 +497,12 @@ export default {
                     curve: 'linear'
                 }
             })
+        },
+
+        singOut(){
+            this.$emit('closeModal')
+            firebase.logout()
+            this.$navigator.navigate('/login', { clearHistory: true })
         }
     }
 }
