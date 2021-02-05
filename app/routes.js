@@ -1,5 +1,6 @@
 import Login from './components/auth/Login'
 import Register from './components/auth/Register'
+import ForgotPassword from './components/auth/ForgotPassword'
 import INE from './components/auth/INE'
 import ContractPage from './components/auth/Contract'
 import HomePage from './components/pages/HomePage'
@@ -20,6 +21,10 @@ export const routes = {
 
     '/register': {
         component: Register,
+    },
+
+    '/forgot-password': {
+        component: ForgotPassword,
     },
 
     '/ine': {

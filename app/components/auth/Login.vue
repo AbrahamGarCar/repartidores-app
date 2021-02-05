@@ -29,7 +29,7 @@
                         <TextField ref="inputPassword" v-model="user.password" color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Contraseña" text="" />
                     </StackLayout>
                     <FlexboxLayout width="90%" marginTop="10" justifyContent="space-between" alignItems="center">
-                        <Label @tap="forgotPassword" text="¿Olvidaste tu contraseña? " color="black" fontSize="13" textWrap="true" />
+                        <Label @tap="forgotPassword" text="¿Olvidaste tu contraseña?" color="black" fontSize="13" textWrap="true" />
                         
                         <Label v-if="showPw" @tap="showPassword" marginRight="5" text="" color="black" class="font-awesome" fontSize="13" textWrap="true" />
                         <Label v-else @tap="showPassword" marginRight="5" text="" color="black" class="font-awesome" fontSize="13" textWrap="true" />
