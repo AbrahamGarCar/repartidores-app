@@ -120,6 +120,7 @@ Vue.registerElement('MLKitBarcodeScanner', () => require('nativescript-plugin-fi
 Vue.registerElement('DropDown', () => require('nativescript-drop-down/drop-down').DropDown)
 Vue.registerElement('TextJustify', () => require('nativescript-text-justify').TextJustify)
 Vue.registerElement('DrawingPad', () => require('nativescript-drawingpad').DrawingPad)
+Vue.registerElement('PDFView', () => require('nativescript-pdf-view').PDFView)
 Vue.registerElement(
   'CheckBox',
   () => require('@nstudio/nativescript-checkbox').CheckBox,

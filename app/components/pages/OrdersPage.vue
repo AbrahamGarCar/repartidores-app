@@ -36,7 +36,7 @@
                                     </FormattedString>
                                 </Label>
 
-                                <GridLayout rows="auto" columns="*, *">
+                                <GridLayout rows="auto" columns="*, *, *">
                                     <FlexboxLayout row="0" col="0" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                         <Label fontWeight="bold" text="Envío:" textWrap="true" />
                                         
@@ -44,6 +44,12 @@
                                         
                                     </FlexboxLayout>
                                     <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                        <Label fontWeight="bold" text="Costo:" textWrap="true" />
+                                        
+                                        <Label fontSize="20" :text="`$${Number(item.cost) - Number(item.infoDestination.costRestaurant)}`" textWrap="true" />
+                                        
+                                    </FlexboxLayout>
+                                    <FlexboxLayout row="0" col="2" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                         <Label fontWeight="bold" text="Total:" textWrap="true" />
                                         
                                         <Label fontSize="20" :text="`$${getTotal(item.cost, item.infoDestination.costClient)}`" textWrap="true" />

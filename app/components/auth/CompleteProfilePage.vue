@@ -380,15 +380,29 @@ export default {
             }
 
             camera.takePicture(options).then((response) => {
-                console.log('Resultado...')
-
                 let image = new imageModule.Image()
                 image.src = response
-                if(args == 1){
-                    this.photoOne = image.src._android
-                }else if(args == 2){
-                    this.photoTwo = image.src._android
-                }
+                let imgTemp = image.src._android
+                console.log('Resultado...:', imgTemp)
+
+                ImageSource.fromAsset(response).then((source) => {
+                    setTimeout(() => {
+                        let imgSrc = source.resize(250)
+                        var folder = fileSystemModule.knownFolders.documents();
+                        var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
+                        var saved = imgSrc.saveToFile(path, "png");
+
+                        console.log("saved: " + saved);
+                        console.log("IMAGEN SRC.....", path);
+
+                        if(args == 1){
+                            this.photoOne = path
+                        }else if(args == 2){
+                            this.photoTwo = path
+                        }
+                    }, this.isAndroid ? 0 : 1000);             
+                });
+                
                 
             }).catch((error) => {
                 console.log('Error: ' + error.message)
@@ -403,13 +417,22 @@ export default {
                     return context.present();
                 })
                 .then((selection) => {
-                    let image = new imageModule.Image()
-                    image.src = selection
-                    if(args== 1){
-                        this.photoOne = image.src[0]._android
-                    }else if(args == 2){
-                        this.photoTwo = image.src[0]._android
-                    }
+                    ImageSource.fromAsset(selection[0]).then((source) => {
+                        setTimeout(() => {
+                            let imgSrc = source.resize(300)
+                            var folder = fileSystemModule.knownFolders.documents();
+                            var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
+                            var saved = imgSrc.saveToFile(path, "png");
+                            console.log("saved: " + saved);
+                            console.log("IMAGEN SRC.....", path);
+
+                            if(args== 1){
+                                this.photoOne = path
+                            }else if(args == 2){
+                                this.photoTwo = path
+                            }
+                        }, this.isAndroid ? 0 : 1000);             
+                    });
                     
                 }).catch((e) => {
                     // process error
