@@ -168,22 +168,7 @@ export default {
 
     validations: {
         user: {
-            name: {
-                required,
-            },
-            lastName: {
-                required,
-            },
-            secondLastName: {
-                required,
-            },
             telephone: {
-                required,
-            },
-            direction: {
-                required,
-            },
-            birthdate: {
                 required,
             },
         }
@@ -418,30 +403,9 @@ export default {
 
         async saveInfo(){
             if(this.$v.user.$invalid){
-                if(!this.$v.user.name.required){
-                    Toast.makeText("Nombre obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.lastName.required){
-                    Toast.makeText("Apellido obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.secondLastName.required){
-                    Toast.makeText("Apellido obligatorio.", "long").show()
-                }
-
                 if(!this.$v.user.telephone.required){
                     Toast.makeText("Telefono obligatorio.", "long").show()
                 }
-
-                if(!this.$v.user.direction.required){
-                    Toast.makeText("Telefono obligatorio.", "long").show()
-                }
-
-                if(!this.$v.user.birthdate.required){
-                    Toast.makeText("Fecha de nacimiento obligatorio.", "long").show()
-                }
-
                 return
             }
 

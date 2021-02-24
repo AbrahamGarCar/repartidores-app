@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "468473832934-bul14af156hjbqa1smpi1ds0bpj2eg6e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.log3d.fassst",
+            "certificate_hash": "9ae430b71023850fe664a139f47580c376fec382"
+          }
+        },
+        {
           "client_id": "468473832934-e4jo97l4nmakeipsobrm8e4o87tofn3e.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

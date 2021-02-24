@@ -43,7 +43,7 @@
                                     <TextField color="black" secure="true" borderRadius="10" backgroundColor="white" padding="5" fontSize="16" hint="Repetir contraseña*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
-                                    <TextField v-model="user.telephone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
+                                    <TextField v-model="user.telephone" keyboardType="phone" color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" hint="Numero celular*" text="" />
                                 </StackLayout>
                                 <StackLayout marginTop="10" width="90%">
                                     <TextField color="black" borderRadius="10" backgroundColor="white" padding="5 5 5 5" fontSize="16" text="" editable="true" hint="Dirección*" v-model="user.direction" />
@@ -161,6 +161,8 @@ const imageModule = require("tns-core-modules/ui/image")
 const fileSystemModule = require("tns-core-modules/file-system");
 import { Image } from "ui/image";
 import { ImageSource } from 'tns-core-modules/image-source'
+
+import { isAndroid, isIOS, device, screen } from "tns-core-modules/platform";
 
 //Gallery
 const imagePicker = require("nativescript-imagepicker")
@@ -418,73 +420,430 @@ export default {
         },
 
         //Fotos
-        takePhoto(args){
-            const options = {
-                width: 300,
-                height: 300,
-                keepAspectRatio: false,
-                saveToGallery: true
-            }
+        // takePhoto(args){
+        //     const options = {
+        //         width: 300,
+        //         height: 300,
+        //         keepAspectRatio: false,
+        //         saveToGallery: true
+        //     }
 
-            camera.takePicture(options).then((response) => {
-                let image = new imageModule.Image()
-                image.src = response
-                let imgTemp = image.src._android
-                console.log('Resultado...:', imgTemp)
+        //     camera.takePicture(options).then((response) => {
+        //         let image = new imageModule.Image()
+        //         image.src = response
+        //         let imgTemp = image.src._android
+        //         console.log('Resultado...:', imgTemp)
 
-                ImageSource.fromAsset(response).then((source) => {
-                    setTimeout(() => {
-                        let imgSrc = source.resize(250)
-                        var folder = fileSystemModule.knownFolders.documents();
-                        var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
-                        var saved = imgSrc.saveToFile(path, "png");
+        //         ImageSource.fromAsset(response).then((source) => {
+        //             setTimeout(() => {
+        //                 let imgSrc = source.resize(250)
+        //                 var folder = fileSystemModule.knownFolders.documents();
+        //                 var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
+        //                 var saved = imgSrc.saveToFile(path, "png");
 
-                        console.log("saved: " + saved);
-                        console.log("IMAGEN SRC.....", path);
+        //                 console.log("saved: " + saved);
+        //                 console.log("IMAGEN SRC.....", path);
 
-                        if(args == 1){
-                            this.photoOne = path
-                        }else if(args == 2){
-                            this.photoTwo = path
-                        }
-                    }, this.isAndroid ? 0 : 1000);             
-                });
+        //                 if(args == 1){
+        //                     this.photoOne = path
+        //                 }else if(args == 2){
+        //                     this.photoTwo = path
+        //                 }
+        //             }, this.isAndroid ? 0 : 1000);             
+        //         });
                 
                 
-            }).catch((error) => {
-                console.log('Error: ' + error.message)
-            })
-        },
+        //     }).catch((error) => {
+        //         console.log('Error: ' + error.message)
+        //     })
+        // },
 
         //Abrir galeria
-        openGallery(args){
-            context
+        // openGallery(args){
+        //     context
+        //         .authorize()
+        //         .then(() => {
+        //             return context.present();
+        //         })
+        //         .then((selection) => {
+        //             ImageSource.fromAsset(selection[0]).then((source) => {
+        //                 setTimeout(() => {
+        //                     let imgSrc = source.resize(300)
+        //                     var folder = fileSystemModule.knownFolders.documents();
+        //                     var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
+        //                     var saved = imgSrc.saveToFile(path, "png");
+        //                     console.log("saved: " + saved);
+        //                     console.log("IMAGEN SRC.....", path);
+
+        //                     if(args== 1){
+        //                         this.photoOne = path
+        //                     }else if(args == 2){
+        //                         this.photoTwo = path
+        //                     }
+        //                 }, this.isAndroid ? 0 : 1000);             
+        //             });
+                    
+        //         }).catch((e) => {
+        //             // process error
+        //             console.log(e)
+        //         })
+        // },
+
+        takePhoto(args) {
+            camera
+                .takePicture({
+                width: 400, //these are in device independent pixels
+                keepAspectRatio: true, //    keepAspectRatio is enabled.
+                saveToGallery: false //Don't save a copy in local gallery, ignored by some Android devices
+                })
+                .then(imageAsset => {
+                imageAsset.options.autoScaleFactor = false;
+                imageAsset.options.keepAspectRatio = true;
+                imageAsset.options.width = 400;
+
+                //save to file
+                ImageSource.fromAsset(imageAsset).then(
+                    imageSource => {
+                    var ratio = 400 / imageSource.width;
+                    var newheight = imageSource.height * ratio;
+                    var newwidth = imageSource.width * ratio;
+                    if (imageSource.width > 400) {
+                        console.log(
+                        "Resizing original image dimentions from : " +
+                            imageSource.height +
+                            " x " +
+                            imageSource.width +
+                            " to " +
+                            newheight +
+                            " x " +
+                            newwidth
+                        );
+                        if (isIOS) {
+                            console.log("Ignoring resize for camera images on iOS");
+                            let filename =  `${this.generateUUID()}.jpg`;
+                            let folder = fileSystemModule.knownFolders.documents();
+                            let fullpath = fileSystemModule.path.join(folder.path, filename);
+                            let saved = imageSource.saveToFile(fullpath, "jpeg");
+
+                            if (saved) {
+                                if(args == 1){
+                                    this.photoOne = fullpath
+                                }else if(args == 2){
+                                    this.photoTwo = fullpath
+                                }
+                                console.log(
+                                "image imensions: " +
+                                    imageSource.height +
+                                    " x " +
+                                    imageSource.width
+                                );
+                            } else {
+                                console.log(
+                                "Error! Unable to save photo to local file for upload"
+                                );
+                            }
+                        } else if (isAndroid) {
+                            try {
+                                var downsampleOptions = new android.graphics.BitmapFactory.Options();
+                                downsampleOptions.inSampleSize = this.getSampleSize(
+                                imageAsset.android,
+                                { maxWidth: newwidth, maxHeight: newheight }
+                                );
+                                var bitmap = android.graphics.BitmapFactory.decodeFile(
+                                imageAsset.android,
+                                downsampleOptions
+                                );
+                                
+                                imageSource.setNativeSource(bitmap);
+
+                                let filename =  `${this.generateUUID()}.jpg`;
+                                let folder = fileSystemModule.knownFolders.documents();
+                                let fullpath = fileSystemModule.path.join(folder.path, filename);
+                                let saved = imageSource.saveToFile(fullpath, "jpeg");
+
+                                if (saved) {
+                                    if(args == 1){
+                                        this.photoOne = fullpath
+                                    }else if(args == 2){
+                                        this.photoTwo = fullpath
+                                    }
+
+                                    console.log(
+                                        "Resized image imensions: " +
+                                        imageSource.height +
+                                        " x " +
+                                        imageSource.width
+                                    );
+                                } else {
+                                    console.log(
+                                        "Error! Unable to save image to local file for saving"
+                                    );
+                                }
+                                loader.hide();
+                            } catch (err) {
+                                console.log(err);
+                                loader.hide();
+                            }
+                        }
+                    } else {
+                        // let filename =  `${this.generateUUID()}.jpg`;
+                        // let folder = fileSystemModule.knownFolders.documents();
+                        // let fullpath = fileSystemModule.path.join(folder.path, filename);
+                        // let saved = imageSource.saveToFile(fullpath, "jpeg");
+
+                        let saved = false;
+                        let filePath = "";
+                        const folderPath = fileSystemModule.knownFolders.documents();
+                        let fileName = `${this.generateUUID()}.jpg`;
+                        console.log("saving image " + fileName + " to path " + folderPath );
+                        filePath = fileSystemModule.path.join(folder.path, filename);
+                        saved = imageSource.saveToFile(filePath, "jpeg");
+
+                        if (saved) {
+                            if(args == 1){
+                                this.photoOne = filePath
+                            }else if(args == 2){
+                                this.photoTwo = filePath
+                            }
+                        } else {
+                            console.log(
+                                "Error! Unable to save image to local file for saving"
+                            );
+                        }
+                        loader.hide();
+                    }
+                    },
+                    err => {
+                    console.log("Failed to load from asset");
+                    }
+                );
+            })
+            .catch(err => {
+            console.error(err);
+            });
+        },
+
+        getSampleSize(uri, options) {
+            var scale = 1;
+            if (isAndroid) {
+                var boundsOptions = new android.graphics.BitmapFactory.Options();
+                boundsOptions.inJustDecodeBounds = true;
+                android.graphics.BitmapFactory.decodeFile(uri, boundsOptions);
+                // Find the correct scale value. It should be the power of 2.
+                var outWidth = boundsOptions.outWidth;
+                var outHeight = boundsOptions.outHeight;
+                if (options) {
+                    var targetSize =
+                    options.maxWidth < options.maxHeight
+                    ? options.maxWidth
+                    : options.maxHeight;
+
+                    while (
+                        !(
+                        this.matchesSize(targetSize, outWidth) ||
+                        this.matchesSize(targetSize, outHeight)
+                        )
+                    ) {
+                        outWidth /= 2;
+                        outHeight /= 2;
+                        scale *= 2;
+                    }
+                }
+            }
+            return scale;
+        },
+
+        matchesSize(targetSize, actualSize) {
+            return targetSize && actualSize / 2 < targetSize;
+        },
+
+        openGallery(args) {
+            try {
+                context
                 .authorize()
                 .then(() => {
                     return context.present();
                 })
-                .then((selection) => {
-                    ImageSource.fromAsset(selection[0]).then((source) => {
-                        setTimeout(() => {
-                            let imgSrc = source.resize(300)
-                            var folder = fileSystemModule.knownFolders.documents();
-                            var path = fileSystemModule.path.join(folder.path, `${this.generateUUID()}.png`);
-                            var saved = imgSrc.saveToFile(path, "png");
-                            console.log("saved: " + saved);
-                            console.log("IMAGEN SRC.....", path);
+                .then(selection => {
+                    const imageAsset = selection.length > 0 ? selection[0] : null;
+                    imageAsset.options = {
+                        width: 400,
+                        keepAspectRatio: true,
+                        autoScaleFactor: false
+                    };
 
-                            if(args== 1){
-                                this.photoOne = path
-                            }else if(args == 2){
-                                this.photoTwo = path
+                    loader.show();
+
+                    ImageSource.fromAsset(imageAsset).then(imageSource => {
+                        var ratio = 400 / imageSource.width;
+                        var newheight = imageSource.height * ratio;
+                        var newwidth = imageSource.width * ratio;
+
+                        if (imageSource.width > 400) {
+                            console.log(
+                                "Resizing original image dimentions from : " +
+                                imageSource.height +
+                                " x " +
+                                imageSource.width +
+                                " to " +
+                                newheight +
+                                " x " +
+                                newwidth
+                            );
+                        if (isIOS) {
+                            try {
+                                let that = this;
+                                let manager = PHImageManager.defaultManager();
+                                let options = new PHImageRequestOptions();
+
+                                options.resizeMode = PHImageRequestOptionsResizeMode.Exact;
+                                options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+                                manager.requestImageForAssetTargetSizeContentModeOptionsResultHandler(
+                                    imageAsset.ios,
+                                    { width: newwidth, height: newheight },
+                                    PHImageContentModeAspectFill,
+                                    options,
+                                    function(result, info) {
+                                        let saved = false;
+                                        let filePath = "";
+                                        const folderPath = fileSystemModule.knownFolders.documents().path;
+                                        let fileName =
+                                            that.$store.state.profile.id +
+                                            "-" +
+                                            new Date().getTime() +
+                                            ".jpg";
+                                        console.log(
+                                            "saving image " +
+                                            fileName +
+                                            " to path " +
+                                            folderPath
+                                        );
+                                        console.log(
+                                            "Original image dimentions: " +
+                                            imageSource.height +
+                                            " x " +
+                                            imageSource.width
+                                        );
+                                        filePath = path.join(folderPath, fileName);
+                                        let newasset = new imageAssetModule.ImageAsset(result);
+
+                                    ImageSource
+                                        .fromAsset(newasset)
+                                        .then(newimageSource => {
+                                        saved = newimageSource.saveToFile(
+                                            filePath,
+                                            "jpeg"
+                                        );
+                                        if (saved) {
+                                            if(args== 1){
+                                                that.photoOne = filePath
+                                            }else if(args == 2){
+                                                that.photoTwo = filePath
+                                            }
+                                            console.log(
+                                            "Resized image imensions: " +
+                                                newimageSource.height +
+                                                " x " +
+                                                newimageSource.width
+                                            );
+                                        } else {
+                                            console.log(
+                                            "Error! Unable to save image to local file for saving"
+                                            );
+                                        }
+                                        loader.hide();
+                                        });
+                                    }
+                                );
+                            } catch (e) {
+                                console.log("err: " + e);
+                                console.log("stack: " + e.stack);
                             }
-                        }, this.isAndroid ? 0 : 1000);             
+                        } else if (isAndroid) {
+                            try {
+                            var downsampleOptions = new android.graphics.BitmapFactory.Options();
+                            downsampleOptions.inSampleSize = this.getSampleSize(
+                                imageAsset.android,
+                                { maxWidth: newwidth, maxHeight: newheight }
+                            );
+                            var bitmap = android.graphics.BitmapFactory.decodeFile(
+                                imageAsset.android,
+                                downsampleOptions
+                            );
+                            imageSource.setNativeSource(bitmap);
+
+                            let filename =  `${this.generateUUID()}.jpg`;
+                            let folder = fileSystemModule.knownFolders.documents();
+                            let fullpath = fileSystemModule.path.join(folder.path, filename);
+                            let saved = imageSource.saveToFile(fullpath, "jpeg");
+
+                            if (saved) {
+
+                                if(args == 1){
+                                    this.photoOne = fullpath
+                                }else if(args == 2){
+                                    this.photoTwo = fullpath
+                                }
+                                console.log(
+                                "Resized image imensions: " +
+                                    imageSource.height +
+                                    " x " +
+                                    imageSource.width
+                                );
+                            } else {
+                                console.log(
+                                "Error! Unable to save image to local file for saving"
+                                );
+                            }
+                            loader.hide();
+                            } catch (err) {
+                            console.log(err);
+                            loader.hide();
+                            }
+                        }
+                        } else {
+                        let saved = false;
+                        let filePath = "";
+                        const folderPath = knownFolders.documents().path;
+                        let fileName =
+                            this.$store.state.profile.id +
+                            "-" +
+                            new Date().getTime() +
+                            ".jpg";
+                        console.log(
+                            "saving image " + fileName + " to path " + folderPath
+                        );
+                        filePath = path.join(folderPath, fileName);
+                        saved = imageSource.saveToFile(filePath, "jpeg");
+
+                        if (saved) {
+                            if(args == 1){
+                                this.photoOne = filePath
+                            }else if(args == 2){
+                                this.photoTwo = filePath
+                            }
+                        } else {
+                            console.log(
+                            "Error! Unable to save image to local file for saving"
+                            );
+                        }
+                        loader.hide();
+                        }
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        loader.hide();
                     });
-                    
-                }).catch((e) => {
-                    // process error
-                    console.log(e)
                 })
+                .catch(err => {
+                    console.log(err);
+                    loader.hide();
+                });
+            } catch (err) {
+                alert("Please select a valid image.");
+                console.log(err);
+                loader.hide();
+            }
         },
 
         async createUser(){
@@ -626,7 +985,7 @@ export default {
 
                 let fotoId = this.generateUUID()
                 firebase.storage.uploadFile({
-                remoteFullPath: 'users/' + fotoId + '.jpg',
+                remoteFullPath: 'users/' + this.uid + '/' + fotoId + '.jpg',
                 localFullPath: args,
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
@@ -639,7 +998,7 @@ export default {
                     let arrayPhotos = []
 
                     firebase.storage.getDownloadUrl({
-                        remoteFullPath: 'users/' + fotoId + '.jpg'
+                        remoteFullPath: 'users/' + this.uid + '/' + fotoId + '.jpg'
                     }).then(async (url) => {
 
                         let data = {

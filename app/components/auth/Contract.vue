@@ -218,7 +218,7 @@ export default {
 
                 let fotoId = this.generateUUID()
                 firebase.storage.uploadFile({
-                remoteFullPath: 'signs/' + fotoId + '.jpg',
+                remoteFullPath: 'signs/' + this.user.uid + '/' + fotoId + '.jpg',
                 localFullPath: args,
                 onProgress: (status) => {
                     console.log("Uploaded fraction: " + status.fractionCompleted);
@@ -229,7 +229,7 @@ export default {
                     let arrayPhotos = []
 
                     firebase.storage.getDownloadUrl({
-                        remoteFullPath: 'signs/' + fotoId + '.jpg'
+                        remoteFullPath: 'signs/' + this.user.uid + '/' + fotoId + '.jpg'
                     }).then(async (url) => {
 
                         let data = {
