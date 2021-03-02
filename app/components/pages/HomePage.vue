@@ -160,7 +160,7 @@
                                         </FormattedString>
                                     </Label>
 
-                                    <GridLayout marginTop="15" rows="auto" columns="*, *">
+                                    <GridLayout marginTop="15" rows="auto" columns="*, *, *">
                                         <FlexboxLayout row="0" col="0" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                             <Label fontWeight="bold" text="Envío:" textWrap="true" />
                                             
@@ -168,6 +168,12 @@
                                             
                                         </FlexboxLayout>
                                         <FlexboxLayout row="0" col="1" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
+                                            <Label fontWeight="bold" text="Costo:" textWrap="true" />
+                                            
+                                            <Label fontSize="20" :text="`$${Number(order.cost) - Number(order.infoDestination.costRestaurant)}`" textWrap="true" />
+                                            
+                                        </FlexboxLayout>
+                                        <FlexboxLayout row="0" col="2" marginTop="15" justifyContent="center" alignItems="center" flexDirection="column">
                                             <Label fontWeight="bold" text="Total:" textWrap="true" />
                                             
                                             <Label fontSize="20" :text="`$${getTotal(order.cost, order.infoDestination.costClient)}`" textWrap="true" />
@@ -217,6 +223,9 @@
                                         </FormattedString>
                                     </Label>
                                 </StackLayout>
+
+                                <Button v-if="order != null" backgroundColor="#be4bdb" color="white" marginTop="15" width="100%" class="font-awesome" text="" fontSize="22" @tap="goToPhoneClient(order.details.telephone)" />
+                                
                             </StackLayout>
                         </WrapLayout>
                     </ScrollView>
@@ -425,6 +434,15 @@ export default {
     },
 
     methods: {
+
+        goToPhoneClient(number){
+            console.log(number)
+            const phoneNumber = number
+
+            TNSPhone.requestCallPermission('Debes aceptar los permisos para poder hacer llamadas.')
+                .then(() => TNSPhone.dial(phoneNumber, false))
+                .catch(() => TNSPhone.dial(phoneNumber, true))
+        },
 
         //Truncar numeros
         truncarNumbers(x, posiciones = 0) {

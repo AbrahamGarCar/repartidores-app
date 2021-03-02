@@ -90,7 +90,7 @@
                                     
                                 </FlexboxLayout>
                                 <FlexboxLayout row="0" col="1" justifyContent="center" alignItems="center" flexDirection="column">
-                                    <Label text="Foto completa" textWrap="true" />
+                                    <Label text="Foto de frente" textWrap="true" />
                                     
                                 </FlexboxLayout>
                             </GridLayout>
